@@ -1,0 +1,58 @@
+﻿<div class="create-product-container">
+  <h2 class="section-title">Create New Product</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <!-- Basic Fields -->
+    @for (field of ['name','price','stock','discountPrice','imageUrl','subCategoryName','techCompanyId']; track $index) {
+        <div class="form-group">
+      <label [for]="field">{{ field | titlecase }}</label>
+      <input [formControlName]="field" [type]="field.includes('price') || field === 'stock' ? 'number' : 'text'" />
+    </div>
+    }
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea formControlName="description"></textarea>
+    </div>
+
+    <!-- Dropdowns -->
+    <div class="form-group">
+      <label>Category</label>
+      <select formControlName="category">
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Status</label>
+      <select formControlName="statusSelect">
+        <option [value]="status.Pending">Pending</option>
+        <option [value]="status.Approved">Approved</option>
+        <option [value]="status.Rejected">Rejected</option>
+      </select>
+    </div>
+
+<!-- Specifications -->
+    <div formArrayName="specifications" class="nested-group">
+      <h3>Specifications</h3>
+      <div *ngFor="let spec of specifications.controls; let i = index" [formGroupName]="i" class="nested-item">
+        <input formControlName="key" placeholder="Key" />
+        <input formControlName="value" placeholder="Value" />
+        <button type="button" (click)="removeSpecification(i)">Remove</button>
+      </div>
+      <button type="button" class="add-btn" (click)="addSpecification()">Add Specification</button>
+    </div>
+
+    <!-- Warranties -->
+    <div formArrayName="warranties" class="nested-group">
+      <h3>Warranties</h3>
+      <div *ngFor="let war of warranties.controls; let i = index" [formGroupName]="i" class="nested-item">
+        <input formControlName="durationInMonths" placeholder="Months" type="number" />
+        <input formControlName="description" placeholder="Description" />
+        <button type="button" (click)="removeWarranty(i)">Remove</button>
+      </div>
+      <button type="button" class="add-btn" (click)="addWarranty()">Add Warranty</button>
+    </div>
+<button class="submit-btn" type="submit" [disabled]="submitting || form.invalid">Create Product</button>
+  </form>
+</div>

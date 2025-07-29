@@ -1,0 +1,81 @@
+<div class="table-wrapper">
+  <table class="table table-dark table-bordered table-hover text-center">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Product</th>
+        <th>Subcategory</th>
+        <th>Status</th>
+        <th>Price</th>
+        <th>Discount</th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (component of components; track component.name) {
+        <tr>
+          <td>{{ component.name }}</td>
+
+          <td>
+            @if (!component.selected) {
+              <button class="btn btn-outline-info" (click)="navigateToCategory(component.name)">
+                <i class="bi bi-plus-circle"></i> Add Component
+              </button>
+            } @else {
+              <div>
+                {{ component.selectedProduct?.name }}
+                <button class="btn btn-sm btn-outline-warning ms-2" (click)="chooseAnother(component.name)">
+                  <i class="bi bi-arrow-repeat"></i> Change
+                </button>
+              </div>
+            }
+          </td>
+
+          <td>{{ component.selectedProduct?.subCategoryName || '-' }}</td>
+
+          <td>
+            <ng-container *ngIf="component.selectedProduct as product; else noStatus">
+              <span [ngClass]="{
+                'text-success': product.status === 'Approved',
+                'text-danger': product.status === 'Rejected'
+              }">
+                <i class="bi" [ngClass]="{
+                  'bi-check-circle-fill': product.status === 'Approved',
+                  'bi-x-circle-fill': product.status === 'Rejected'
+                }"></i>
+                {{ product.status || '-' }}
+              </span>
+            </ng-container>
+            <ng-template #noStatus>-</ng-template>
+          </td>
+
+          <td>
+            <ng-container *ngIf="component.selectedProduct as product; else noPrice">
+              ${{ product.price }}
+            </ng-container>
+            <ng-template #noPrice>-</ng-template>
+          </td>
+
+          <td>
+            <ng-container *ngIf="component.selectedProduct as product; else noDiscount">
+              <ng-container *ngIf="product.discountPrice < product.price; else noDiscount">
+                <span class="text-success">
+                  <i class="bi bi-tags-fill"></i> ${{ product.discountPrice }}
+                </span>
+              </ng-container>
+            </ng-container>
+            <ng-template #noDiscount>-</ng-template>
+          </td>
+
+          <td>
+            @if (component.selected) {
+              <button class="btn btn-outline-danger btn-sm" (click)="removeComponent(component.name)">
+                <i class="bi bi-trash-fill"></i> Remove
+              </button>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

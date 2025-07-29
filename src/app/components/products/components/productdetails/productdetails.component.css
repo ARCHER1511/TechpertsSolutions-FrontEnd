@@ -1,0 +1,85 @@
+﻿.product-details-wrapper {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  color: var(--text-primary);
+  transition: all 0.3s ease-in-out;
+}
+
+.product-title {
+  font-size: 2.5rem;
+  font-family: 'Orbitron', sans-serif;
+  color: var(--primary-color);
+  text-align: center;
+  text-shadow: 0 0 10px var(--primary-color);
+}
+
+.product-subtitle {
+  font-size: 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.product-image {
+  display: block;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: transform 0.3s ease;
+}
+.product-image:hover {
+  transform: scale(1.02);
+}
+
+.product-description {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.product-meta {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.product-pricing {
+  text-align: center;
+  font-size: 1.4rem;
+
+  .price-discount {
+    color: var(--danger);
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+
+  .price-original {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .price-normal {
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-title {
+    font-size: 2rem;
+  }
+  .product-description {
+    font-size: 1rem;
+  }
+}

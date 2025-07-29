@@ -1,0 +1,92 @@
+<div
+  class="cart-flyout p-4 border rounded shadow-lg"
+  *ngIf="CartItems.length > 0; else emptyCart"
+  style="background-color: var(--card-bg);"
+>
+  <h4 class="cart-title mb-4 border-bottom pb-2">🛍️ Your Cart</h4>
+
+  <!-- Cart Items -->
+  <div class="cart-items mb-4">
+    @for (item of CartItems; track $index) {
+      <div class="cart-item row g-3 align-items-center mb-3 border-bottom pb-3">
+      <!-- Image -->
+      @if (item.product?.imageUrl) {
+        <div class="col-3 col-md-2">
+        <img
+          [src]="item.product?.imageUrl || 'assets/placeholder.jpg'"
+          class="img-fluid rounded"
+          [alt]="item.product?.name || 'Product Image'"
+        />
+      </div>
+      }
+
+      <!-- Product Info -->
+      <div class="col-9 col-md-10">
+        <h6 class="mb-1">{{ item.product?.name }}</h6>
+
+        <div class="d-flex flex-wrap align-items-center small mt-2">
+          <span class="me-3 mb-1">
+            Qty: <strong>{{ item.quantity }}</strong>
+          </span>
+          <span class="me-3 mb-1">
+            Price:
+            <strong class="text-success ms-1">
+              {{ item.product?.price | currency: 'EGP' }}
+            </strong>
+          </span>
+        </div>
+
+        <button
+          class="btn btn-sm btn-outline-danger mt-2"
+          (click)="removeItem(item.productId)"
+          [disabled]="isCheckingOut"
+        >
+          ✕ Remove
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Cart Summary -->
+  <div class="cart-summary mb-3 text-end">
+    <p class="fs-5 fw-semibold">
+      Total:
+      <span class="text-success">
+        {{ getTotal() | currency: 'EGP' }}
+      </span>
+    </p>
+  </div>
+
+  <!-- Cart Actions -->
+  <div class="cart-actions d-flex justify-content-between">
+    <button 
+      class="btn btn-outline-secondary" 
+      (click)="clearCart()"
+      [disabled]="isCheckingOut"
+    >
+      🗑️ Clear Cart
+    </button>
+    <button 
+      class="btn btn-primary" 
+      (click)="checkout()"
+      [disabled]="isCheckingOut"
+    >
+      @if (isCheckingOut) {
+        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        Processing...
+      } @else {
+        💳 Proceed to Checkout
+      }
+    </button>
+  </div>
+</div>
+
+<!-- Empty Cart Message -->
+<ng-template #emptyCart>
+  <div class="d-flex justify-content-center align-items-center min-vh-50">
+    <div class="text-center p-4 border rounded shadow empty-cart-box">
+      <p class="fs-5">🛒 Your cart is empty.</p>
+    </div>
+  </div>
+</ng-template>

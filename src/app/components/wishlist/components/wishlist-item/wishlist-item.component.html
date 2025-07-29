@@ -1,0 +1,23 @@
+<div class="card h-100 shadow-sm border-0 rounded-4">
+  <img
+    [src]="item.productImage || 'https://via.placeholder.com/300x200?text=Product'"
+    [alt]="item.productName || 'Product Image'"
+    class="card-img-top rounded-top-4"
+    style="object-fit: cover; height: 200px;"
+  />
+
+  <div class="card-body d-flex flex-column">
+    <h5 class="card-title text-truncate mb-3">
+      {{ item.productName || 'Unnamed Product' }}
+    </h5>
+
+    <div class="mt-auto d-flex gap-2">
+      <button class="btn btn-outline-danger btn-sm w-50" (click)="onRemoveClick()">
+        <i class="bi bi-trash"></i> Remove
+      </button>
+      <button class="btn btn-outline-primary btn-sm w-50" (click)="onAddToCartClick()">
+        <i class="bi bi-cart"></i> Add
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+﻿<div class="dashboard-container">
+  <nav class="sidebar">
+    <h5 class="text-center mb-4">Admin Panel</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard/customers" routerLinkActive="active">All Customers</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard/new-customer" routerLinkActive="active">Add Customer</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard/edit-customer" routerLinkActive="active">Edit Customer</a>
+      </li>
+<li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard/pending-products" routerLinkActive="active">Pending Products</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard/create-product" routerLinkActive="active">Create Products</a>
+      </li>
+<!-- Add more categories here -->
+    </ul>
+    <button class="btn btn-sm btn-outline-secondary w-100 mt-3" (click)="toggleDarkMode()">
+  Toggle Theme
+</button>
+  </nav>
+  <main class="content p-4">
+    <router-outlet></router-outlet>
+  </main>
+</div>

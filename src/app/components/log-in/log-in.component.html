@@ -1,0 +1,41 @@
+﻿<div class="login-system">
+    <div class="login-container floating-anim">
+        <h1 class="login-title tech-glitch text-gradient" data-text="Login">Login</h1>
+        <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()" class="login-form">
+            <div class="form-group floating-label">
+                <input type="email" formControlName="email" id="loginEmail" required placeholder=" " class="form-control">
+                <label for="loginEmail">Email</label>
+                <div class="form-line"></div>
+                <i class="bi bi-envelope input-icon"></i>
+            </div>
+            
+            <div class="form-group floating-label">
+                <input type="password" formControlName="password" id="loginPassword" required placeholder=" " class="form-control">
+                <label for="loginPassword">Password</label>
+                <div class="form-line"></div>
+                <i class="bi bi-lock input-icon"></i>
+            </div>
+            
+            @if (errorMessage) {
+                <div class="error-message pulse-effect">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{errorMessage}}
+                </div>
+            }
+            
+            <button type="submit" class="login-btn pulse-effect" [disabled]="isLoading">
+                @if (!isLoading) {
+                    <span>Log In</span>
+                    <i class="bi bi-arrow-right ms-2"></i>
+                } @else {
+                    <span>Logging in...</span>
+                    <div class="spinner-border spinner-border-sm ms-2" role="status"></div>
+                }
+            </button>
+            
+            <div class="login-footer">
+                <p>Don't have an account? <a routerLink="/register" class="register-link hover-glow">Sign Up</a></p>
+                <a routerLink="/forgot-password" class="forgot-link">Forgot Password?</a>
+            </div>
+</form>
+    </div>
+</div>

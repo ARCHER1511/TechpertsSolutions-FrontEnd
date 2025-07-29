@@ -1,0 +1,181 @@
+/* === IMPORT FONTS === */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+/* === Carousel Caption Container === */
+.carousel-caption-container {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 5;
+  width: 90%;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 1.25rem;
+  animation: floatY 4s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 40px rgba(255, 0, 255, 0.15);
+}
+
+
+
+
+/* === Neon Button === */
+.neon-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  border: 2px solid #00ffff;
+  border-radius: 30px;
+  background: transparent;
+  color: #00ffff;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff66;
+  transition: all 0.3s ease-in-out;
+}
+
+.neon-btn:hover {
+  background: #00ffff;
+  color: #000;
+  box-shadow: 0 0 25px #00ffff;
+  transform: scale(1.05);
+}
+
+/* === Animations === */
+@keyframes glitchFlicker {
+  0% {
+    text-shadow: 0 0 6px #00ffff, 0 0 12px #ff00ff;
+    transform: none;
+  }
+  20% {
+    text-shadow: 0 0 8px #ff00ff, 0 0 14px #00ffff;
+    transform: translateX(-1px);
+  }
+  40% {
+    text-shadow: 0 0 10px #00ffff, 0 0 15px #ff00ff;
+    transform: translateX(1px);
+  }
+  60% {
+    text-shadow: 0 0 6px #ff00ff, 0 0 12px #00ffff;
+    transform: none;
+  }
+  100% {
+    text-shadow: 0 0 10px #00ffff, 0 0 15px #ff00ff;
+    transform: none;
+  }
+}
+
+@keyframes floatY {
+  0% {
+    transform: translateX(-50%) translateY(0px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0px);
+  }
+}
+
+/* === Responsive Enhancements === */
+@media (max-width: 768px) {
+  .heading-glow {
+    font-size: 1.9rem;
+  }
+
+  .neon-btn {
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .carousel-caption-container {
+    bottom: 5%;
+    padding: 1rem;
+  }
+}
+
+.enhanced-carousel {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  margin-bottom: 3rem;
+  height: 320px; /* ✅ Fixed consistent height */
+}
+
+.carousel-inner,
+.carousel-item,
+.carousel-img {
+  height: 100%; /* ✅ Ensure everything matches the fixed height */
+}
+
+.carousel-img {
+  object-fit: fit;
+  width: 100%;
+  transition: transform 0.5s ease;
+  filter: none;
+}
+
+/* Optional responsive tweak */
+@media (max-width: 768px) {
+  .enhanced-carousel {
+    height: 240px;
+  }
+}
+
+/* === Cyberpunk Neon Carousel Arrows === */
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid #00ffff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #00ffff;
+  display: flex;
+   box-shadow: 0 0 10px #00ffff66, 0 0 20px #00ffff33;
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-arrow:hover {
+  background: #00ffff;
+  border: 2px solid #00ffff;
+  color: #000;
+  box-shadow: 0 0 20px #00ffffaa, 0 0 30px #00ffff66;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.arrow-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  text-shadow: 0 0 10px #00ffff;
+}
+
+/* Adjust arrow positions */
+.carousel-control-prev.custom-arrow {
+  left: 0.5rem;
+}
+
+.carousel-control-next.custom-arrow {
+  right: 0.5rem;
+}
+
+/* Responsive tweak for smaller screens */
+@media (max-width: 768px) {
+  .custom-arrow {
+    width: 30px;
+    height: 30px;
+  }
+
+  .arrow-icon {
+    font-size: 1rem;
+  }
+}

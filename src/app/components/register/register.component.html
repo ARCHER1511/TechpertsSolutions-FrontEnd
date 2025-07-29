@@ -1,0 +1,77 @@
+<div class="register-system">
+  <div class="register-container">
+    <div class="register-image">
+      <div class="image-overlay">
+        <h2>Join Our Community</h2>
+        <p>Create your account and unlock exclusive features</p>
+      </div>
+    </div>
+    
+    <div class="register-content">
+      <h1 class="register-title">Create Your Account</h1>
+      
+      <form class="register-form" [formGroup]="registerForm" (ngSubmit)="registerSubmit()">
+        <div class="form-group floating-label">
+          <input type="text" id="fullName" placeholder=" " formControlName="FullName" />
+          <label for="fullName">Full Name</label>
+          <i class="input-icon bi bi-person"></i>
+          <div class="form-line"></div>
+        </div>
+
+        <div class="form-group floating-label">
+          <input type="text" id="userName" placeholder=" " formControlName="UserName" />
+          <label for="userName">Username</label>
+          <i class="input-icon bi bi-at"></i>
+          <div class="form-line"></div>
+        </div>
+
+        <div class="form-group floating-label">
+          <input type="email" id="email" placeholder=" " formControlName="Email" />
+          <label for="email">Email</label>
+          <i class="input-icon bi bi-envelope"></i>
+          <div class="form-line"></div>
+        </div>
+
+        <div class="form-group floating-label">
+          <input type="text" id="address" placeholder=" " formControlName="Address" />
+          <label for="address">Address</label>
+          <i class="input-icon bi bi-geo-alt"></i>
+          <div class="form-line"></div>
+        </div>
+
+        <div class="form-group floating-label">
+          <input type="password" id="password" placeholder=" " formControlName="Password" />
+          <label for="password">Password</label>
+          <i class="input-icon bi bi-lock"></i>
+          <div class="form-line"></div>
+        </div>
+
+        <div class="form-group floating-label">
+          <input type="password" id="confirmPassword" placeholder=" " formControlName="ConfirmPassword" />
+          <label for="confirmPassword">Confirm Password</label>
+          <i class="input-icon bi bi-check-circle"></i>
+          <div class="form-line"></div>
+        </div>
+
+        <div class="form-group floating-label">
+          <input type="text" id="phone" placeholder=" " formControlName="PhoneNumber" />
+          <label for="phone">Phone</label>
+          <i class="input-icon bi bi-telephone"></i>
+          <div class="form-line"></div>
+        </div>
+
+        <button type="submit" class="register-btn">
+          <span>Sign Up</span>
+          <i class="bi bi-arrow-right"></i>
+        </button>
+
+        <div class="form-footer">
+          <p class="login-link">
+            Already have an account?
+            <a routerLink="/login" class="register-link">Sign In</a>
+          </p>
+        </div>
+            </form>
+    </div>
+  </div>
+</div>

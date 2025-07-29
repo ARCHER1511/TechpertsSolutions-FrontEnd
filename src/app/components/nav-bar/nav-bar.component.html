@@ -1,0 +1,178 @@
+﻿<nav
+  class="navbar navbar-expand-lg custom-navbar shadow-sm py-3"
+  [ngClass]="navbarClasses"
+>
+  <div class="container">
+    <!-- Logo -->
+    <a
+      class="navbar-brand d-flex align-items-center fw-bold gap-2"
+      routerLink="/"
+    >
+      <img [src]="logo" alt="logo" style="height: 48px; width: auto" />
+    </a>
+
+    <!-- Mobile toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarContent"
+      aria-controls="navbarContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="bi bi-list navbar-toggler-icon-custom"></i>
+    </button>
+
+    <div
+      class="collapse navbar-collapse justify-content-between"
+      id="navbarContent"
+    >
+      <!-- Center Links -->
+      <ul class="navbar-nav mx-auto d-flex flex-row gap-3">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/home"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Home</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/selector" routerLinkActive="active"
+>Build</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/pc-compare" routerLinkActive="active"
+            >Compare</a
+>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/categories" routerLinkActive="active"
+            >Categories</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/products" routerLinkActive="active"
+            >Products</a
+          >
+        </li>
+<!-- <li class="nav-item">
+<a class="nav-link" routerLink="/blog" routerLinkActive="active"
+            >Blog</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/about" routerLinkActive="active"
+            >About</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/contact" routerLinkActive="active"
+            >Contact</a
+          >
+</li> -->
+</ul>
+
+      <!-- Right Section -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Dark Mode Toggle -->
+        <div
+          class="toggle-container"
+          (click)="toggleDarkMode()"
+          [class.active]="isDarkMode"
+        >
+          <div class="toggle-button">
+            <i
+              class="bi"
+              [ngClass]="isDarkMode ? 'bi-moon-fill' : 'bi-sun-fill'"
+            ></i>
+          </div>
+        </div>
+
+        <!-- Authenticated -->
+        @if (isLogedIn) {
+        <!-- Profile Dropdown -->
+        <div class="dropdown me-3">
+          <button
+            class="btn profile-btn dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+          >
+            @if (userName) {
+            <i class="bi bi-person-circle me-1"></i> {{ userName }}
+            }
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item">Profile</a></li>
+            <li><a class="dropdown-item">Settings</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a
+                class="dropdown-item text-danger"
+                (click)="_authService.logOut()"
+                >Logout</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Wishlist -->
+        <a
+          class="btn wishlist-btn position-relative d-flex align-items-center gap-2"
+          routerLink="/wish-list"
+        >
+          <i class="bi bi-heart-fill"></i>
+          <span
+            class="wishlist-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            [ngClass]="{ updated: wishlistUpdated }"
+          >
+            {{ wishlistItemCount$ | async }}
+          </span>
+        </a>
+
+        <!-- Cart -->
+        <a
+          class="btn cart-btn position-relative d-flex align-items-center gap-2"
+          [ngClass]="{ 'cart-animated': animateCart$ | async }"
+          routerLink="/cart"
+        >
+          <i class="bi bi-cart-fill fs-5"></i>
+          <span class="cart-text">Cart</span>
+
+          <span
+            class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            [ngClass]="{ updated: cartUpdated }"
+          >
+            {{ cartItemCount$ | async }}
+          </span>
+
+          <span class="cart-total ms-2 fw-semibold">
+            ${{ cartTotalPrice$ | async }}
+          </span>
+        </a>
+        } @else {
+        <!-- Not Logged In -->
+        <a
+          class="btn custom-btn"
+          routerLink="/login"
+          routerLinkActive="active-btn"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-box-arrow-in-right me-1"></i> Log In
+        </a>
+        <a
+class="btn custom-btn"
+routerLink="/register"
+          routerLinkActive="active-btn"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-person-plus me-1"></i> Register
+        </a>
+        }
+      </div>
+    </div>
+  </div>
+</nav>
