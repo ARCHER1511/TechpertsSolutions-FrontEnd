@@ -1,0 +1,182 @@
+<div class="tech-dashboard-container">
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading dashboard...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !loading) {
+    <div class="text-center py-5">
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ error }}
+      </div>
+    </div>
+  }
+
+  <!-- Dashboard Content -->
+  @if (techCompanyData && !loading) {
+    <div class="row">
+      <!-- Header -->
+      <div class="col-12 mb-4">
+        <div class="dashboard-header card">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h2 class="mb-2">Welcome, {{ techCompanyData.name }}</h2>
+                <p class="text-muted mb-0">{{ techCompanyData.description || 'Tech Company Dashboard' }}</p>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <span class="badge bg-success fs-6">Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="col-md-3 mb-4">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-tools stat-icon text-primary"></i>
+            <h3 class="stat-number">{{ stats.totalRequests }}</h3>
+            <p class="stat-label">Total Requests</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-clock stat-icon text-warning"></i>
+            <h3 class="stat-number">{{ stats.pendingRequests }}</h3>
+            <p class="stat-label">Pending Requests</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-check-circle stat-icon text-success"></i>
+            <h3 class="stat-number">{{ stats.completedRequests }}</h3>
+            <p class="stat-label">Completed</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-box stat-icon text-info"></i>
+            <h3 class="stat-number">{{ stats.activeProducts }}</h3>
+            <p class="stat-label">Active Products</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance Requests -->
+      <div class="col-md-8 mb-4">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Maintenance Requests</h5>
+            <a routerLink="/tech-company/maintenance" class="btn btn-outline-success btn-sm">
+              View All
+            </a>
+          </div>
+          <div class="card-body">
+            @if (maintenanceRequests.length > 0) {
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Customer</th>
+                      <th>Service Type</th>
+                      <th>Status</th>
+                      <th>Priority</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (request of maintenanceRequests.slice(0, 5); track request.id) {
+                      <tr>
+                        <td>{{ request.customerName || 'N/A' }}</td>
+                        <td>{{ request.serviceType }}</td>
+                        <td>
+                          <span class="badge" [ngClass]="{
+                            'bg-warning': request.status === 'Pending',
+                            'bg-info': request.status === 'Accepted',
+                            'bg-primary': request.status === 'InProgress',
+                            'bg-success': request.status === 'Completed'
+                          }">
+                            {{ request.status }}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="badge" [ngClass]="{
+                            'bg-success': request.priority === 'Low',
+                            'bg-warning': request.priority === 'Medium',
+                            'bg-danger': request.priority === 'High' || request.priority === 'Critical'
+                          }">
+                            {{ request.priority }}
+                          </span>
+                        </td>
+                        <td>
+                          @if (request.status === 'Pending') {
+                            <button class="btn btn-success btn-sm me-1" (click)="acceptMaintenanceRequest(request.id)">
+                              Accept
+                            </button>
+                          }
+                          @if (request.status === 'InProgress') {
+                            <button class="btn btn-primary btn-sm" (click)="completeMaintenanceRequest(request.id)">
+                              Complete
+                            </button>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="text-center py-4">
+                <i class="bi bi-inbox display-4 text-muted"></i>
+                <p class="text-muted mt-2">No maintenance requests found</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <a routerLink="/tech-company/maintenance" class="btn btn-success">
+                <i class="bi bi-wrench me-2"></i>View Maintenance Requests
+              </a>
+              <a routerLink="/tech-company/products" class="btn btn-outline-success">
+                <i class="bi bi-box me-2"></i>Manage Products
+              </a>
+              <a routerLink="/maintenance/create" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle me-2"></i>Create Maintenance Request
+              </a>
+              <a routerLink="/profile" class="btn btn-outline-secondary">
+                <i class="bi bi-person me-2"></i>Update Profile
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div> 

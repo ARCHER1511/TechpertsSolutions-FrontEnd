@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { AdminService } from '../../../../Services/admin.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { AdminService } from '../../../../Services/admin.service';
   templateUrl: './pending-products.component.html',
   styleUrl: './pending-products.component.css'
 })
-export class PendingProductsComponent {
+export class PendingProductsComponent implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
   products = signal<any[]>([]);

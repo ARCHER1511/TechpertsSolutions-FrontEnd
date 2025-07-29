@@ -35,6 +35,7 @@ export class CustomerService {
   constructor(private http: HttpClient) {}
 
   getAllCustomers(): Observable<CustomerResponse> {
+    console.log('Fetching customers from:', `${this.apiUrl}/All`);
     return this.http.get<CustomerResponse>(`${this.apiUrl}/All`);
   }
 

@@ -1,77 +1,184 @@
-<div class="register-system">
-  <div class="register-container">
-    <div class="register-image">
-      <div class="image-overlay">
-        <h2>Join Our Community</h2>
-        <p>Create your account and unlock exclusive features</p>
+<div class="section min-h-screen flex items-center justify-center">
+  <div class="container max-w-2xl">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Left Side - Image/Info -->
+      <div class="hidden lg:block">
+        <div class="card h-full bg-gradient-to-br from-primary-500 to-primary-600 text-white">
+          <div class="card-body p-8 flex flex-col justify-center">
+            <div class="text-center">
+              <div class="w-24 h-24 mx-auto mb-6 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="bi bi-people text-4xl"></i>
+              </div>
+              <h2 class="text-3xl font-bold mb-4">Join Our Community</h2>
+              <p class="text-lg opacity-90">
+                Create your account and unlock exclusive features for building your dream PC
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    
-    <div class="register-content">
-      <h1 class="register-title">Create Your Account</h1>
-      
-      <form class="register-form" [formGroup]="registerForm" (ngSubmit)="registerSubmit()">
-        <div class="form-group floating-label">
-          <input type="text" id="fullName" placeholder=" " formControlName="FullName" />
-          <label for="fullName">Full Name</label>
-          <i class="input-icon bi bi-person"></i>
-          <div class="form-line"></div>
-        </div>
 
-        <div class="form-group floating-label">
-          <input type="text" id="userName" placeholder=" " formControlName="UserName" />
-          <label for="userName">Username</label>
-          <i class="input-icon bi bi-at"></i>
-          <div class="form-line"></div>
-        </div>
+      <!-- Right Side - Form -->
+      <div class="card">
+        <div class="card-body p-8">
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">Create Your Account</h1>
+            <p class="text-tertiary">Join thousands of users building amazing PCs</p>
+          </div>
 
-        <div class="form-group floating-label">
-          <input type="email" id="email" placeholder=" " formControlName="Email" />
-          <label for="email">Email</label>
-          <i class="input-icon bi bi-envelope"></i>
-          <div class="form-line"></div>
-        </div>
+          <!-- Registration Form -->
+          <form [formGroup]="registerForm" (ngSubmit)="registerSubmit()" class="space-y-6">
+            <!-- Full Name -->
+            <div>
+              <label for="fullName" class="block text-sm font-medium mb-2">Full Name</label>
+              <div class="relative">
+                <i class="bi bi-person absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="text" 
+                  id="fullName" 
+                  formControlName="fullName"
+                  class="form-input pl-10 w-full"
+                  placeholder="Enter your full name"
+                />
+              </div>
+            </div>
 
-        <div class="form-group floating-label">
-          <input type="text" id="address" placeholder=" " formControlName="Address" />
-          <label for="address">Address</label>
-          <i class="input-icon bi bi-geo-alt"></i>
-          <div class="form-line"></div>
-        </div>
+            <!-- Username -->
+            <div>
+              <label for="userName" class="block text-sm font-medium mb-2">Username</label>
+              <div class="relative">
+                <i class="bi bi-at absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="text" 
+                  id="userName" 
+                  formControlName="userName"
+                  class="form-input pl-10 w-full"
+                  placeholder="Choose a username"
+                />
+              </div>
+            </div>
 
-        <div class="form-group floating-label">
-          <input type="password" id="password" placeholder=" " formControlName="Password" />
-          <label for="password">Password</label>
-          <i class="input-icon bi bi-lock"></i>
-          <div class="form-line"></div>
-        </div>
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-medium mb-2">Email Address</label>
+              <div class="relative">
+                <i class="bi bi-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email"
+                  class="form-input pl-10 w-full"
+                  placeholder="Enter your email"
+                />
+              </div>
+            </div>
 
-        <div class="form-group floating-label">
-          <input type="password" id="confirmPassword" placeholder=" " formControlName="ConfirmPassword" />
-          <label for="confirmPassword">Confirm Password</label>
-          <i class="input-icon bi bi-check-circle"></i>
-          <div class="form-line"></div>
-        </div>
+            <!-- Address -->
+            <div>
+              <label for="address" class="block text-sm font-medium mb-2">Address</label>
+              <div class="relative">
+                <i class="bi bi-geo-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="text" 
+                  id="address" 
+                  formControlName="address"
+                  class="form-input pl-10 w-full"
+                  placeholder="Enter your address"
+                />
+              </div>
+            </div>
 
-        <div class="form-group floating-label">
-          <input type="text" id="phone" placeholder=" " formControlName="PhoneNumber" />
-          <label for="phone">Phone</label>
-          <i class="input-icon bi bi-telephone"></i>
-          <div class="form-line"></div>
-        </div>
+            <!-- Password -->
+            <div>
+              <label for="password" class="block text-sm font-medium mb-2">Password</label>
+              <div class="relative">
+                <i class="bi bi-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="password" 
+                  id="password" 
+                  formControlName="password"
+                  class="form-input pl-10 w-full"
+                  placeholder="Create a password"
+                />
+              </div>
+            </div>
 
-        <button type="submit" class="register-btn">
-          <span>Sign Up</span>
-          <i class="bi bi-arrow-right"></i>
-        </button>
+            <!-- Confirm Password -->
+            <div>
+              <label for="confirmPassword" class="block text-sm font-medium mb-2">Confirm Password</label>
+              <div class="relative">
+                <i class="bi bi-check-circle absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="password" 
+                  id="confirmPassword" 
+                  formControlName="confirmPassword"
+                  class="form-input pl-10 w-full"
+                  placeholder="Confirm your password"
+                />
+              </div>
+            </div>
 
-        <div class="form-footer">
-          <p class="login-link">
-            Already have an account?
-            <a routerLink="/login" class="register-link">Sign In</a>
-          </p>
+            <!-- Phone -->
+            <div>
+              <label for="phone" class="block text-sm font-medium mb-2">Phone Number</label>
+              <div class="relative">
+                <i class="bi bi-telephone absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="text" 
+                  id="phone" 
+                  formControlName="phoneNumber"
+                  class="form-input pl-10 w-full"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+            </div>
+
+            <!-- Role Selection -->
+            <div>
+              <label class="block text-sm font-medium mb-3">Select Roles</label>
+              @if (loadingRoles) {
+                <div class="text-center py-4">
+                  <div class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                  <span class="text-sm text-tertiary">Loading roles...</span>
+                </div>
+              } @else {
+                <div class="space-y-3">
+                  @for (role of availableRoles; track role.id) {
+                    <label class="flex items-start gap-3 p-3 border border-border-primary rounded-lg hover:bg-surface-secondary cursor-pointer transition-colors">
+                      <input 
+                        type="checkbox" 
+                        [id]="'role-' + role.id"
+                        [value]="role.id"
+                        formControlName="selectedRoles"
+                        class="mt-1"
+                      />
+                      <div>
+                        <div class="font-medium">{{ role.name }}</div>
+                        <div class="text-sm text-tertiary">{{ role.description }}</div>
+                      </div>
+                    </label>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-full">
+              <span>Create Account</span>
+              <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </form>
+
+          <!-- Footer -->
+          <div class="text-center mt-6">
+            <p class="text-sm text-tertiary">
+              Already have an account?
+              <a routerLink="/log-in" class="text-primary hover:text-primary-600 font-medium">Sign In</a>
+            </p>
+          </div>
         </div>
-            </form>
+      </div>
     </div>
   </div>
 </div>

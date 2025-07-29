@@ -1,0 +1,303 @@
+<div class="profile-container">
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading profile...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !loading) {
+    <div class="text-center py-5">
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ error }}
+      </div>
+    </div>
+  }
+
+  <!-- Profile Content -->
+  @if (userData && !loading) {
+    <div class="row">
+      <!-- Profile Header -->
+      <div class="col-12 mb-4">
+        <div class="profile-header card">
+          <div class="card-body text-center">
+            <div class="profile-avatar mb-3">
+              <i class="bi bi-person-circle display-1 text-primary"></i>
+            </div>
+            <h2 class="profile-name">{{ userData.name || userData.fullName }}</h2>
+            <p class="profile-email text-muted">{{ userData.email }}</p>
+            
+            <!-- Role Badges -->
+            <div class="role-badges mt-3">
+              @for (role of userRoles; track role) {
+                <span class="badge bg-primary me-2">{{ role }}</span>
+              }
+            </div>
+
+            <!-- Primary Dashboard Access -->
+            <div class="mt-4">
+              <a [routerLink]="getDashboardRoute()" class="btn btn-primary">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Go to {{ getPrimaryRole() }} Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Details -->
+      <div class="col-md-8">
+        <!-- Debug Information (remove in production) -->
+        <div class="alert alert-info mb-4" *ngIf="true">
+          <h5><i class="bi bi-bug me-2"></i>Debug Information</h5>
+          <div class="row">
+            <div class="col-md-6">
+              <strong>User Roles:</strong> {{ userRoles.join(', ') }}<br>
+              <strong>User ID:</strong> {{ getUserId() }}<br>
+              <strong>Customer ID:</strong> {{ getCustomerId() }}<br>
+              <strong>User Name:</strong> {{ getUserName() }}
+            </div>
+            <div class="col-md-6">
+              <strong>Tech Company ID:</strong> {{ localStorage.getItem('techCompanyId') || 'Not found' }}<br>
+              <strong>Delivery Person ID:</strong> {{ localStorage.getItem('deliveryPersonId') || 'Not found' }}<br>
+              <strong>Admin ID:</strong> {{ localStorage.getItem('adminId') || 'Not found' }}<br>
+              <strong>Cart ID:</strong> {{ localStorage.getItem('cartId') || 'Not found' }}
+            </div>
+          </div>
+          <div class="mt-2">
+            <strong>Role Checks:</strong><br>
+            Is Admin: {{ isAdmin() }} | 
+            Is Tech Company: {{ isTechCompany() }} | 
+            Is Customer: {{ isCustomer() }} | 
+            Is Delivery Person: {{ isDeliveryPerson() }}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Profile Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Name</label>
+                <p class="form-control-plaintext">{{ userData.name || userData.fullName }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Email</label>
+                <p class="form-control-plaintext">{{ userData.email }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Phone</label>
+                <p class="form-control-plaintext">{{ userData.phone || userData.phoneNumber }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Address</label>
+                <p class="form-control-plaintext">{{ userData.address || 'Not provided' }}</p>
+              </div>
+              @if (userData.registrationDate) {
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold">Member Since</label>
+                  <p class="form-control-plaintext">{{ userData.registrationDate | date:'mediumDate' }}</p>
+                </div>
+              }
+              @if (userData.lastLoginDate) {
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold">Last Login</label>
+                  <p class="form-control-plaintext">{{ userData.lastLoginDate | date:'medium' }}</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Role-Specific Information -->
+        @if (roleSpecificData.techCompany) {
+          <div class="card mt-3">
+            <div class="card-header">
+              <h6 class="mb-0">Tech Company Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-2">
+                  <label class="form-label fw-bold">Company Name</label>
+                  <p class="form-control-plaintext">{{ roleSpecificData.techCompany.name }}</p>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label class="form-label fw-bold">Specialization</label>
+                  <p class="form-control-plaintext">{{ roleSpecificData.techCompany.specialization || 'Not specified' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (roleSpecificData.deliveryPerson) {
+          <div class="card mt-3">
+            <div class="card-header">
+              <h6 class="mb-0">Delivery Person Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-2">
+                  <label class="form-label fw-bold">Vehicle Type</label>
+                  <p class="form-control-plaintext">{{ roleSpecificData.deliveryPerson.vehicleType || 'Not specified' }}</p>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label class="form-label fw-bold">License Number</label>
+                  <p class="form-control-plaintext">{{ roleSpecificData.deliveryPerson.licenseNumber || 'Not specified' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Role-Specific Sidebar -->
+      <div class="col-md-4">
+        <!-- Admin Panel -->
+        @if (isAdmin()) {
+          <div class="card mb-3">
+            <div class="card-header">
+              <h6 class="mb-0">Admin Actions</h6>
+            </div>
+            <div class="card-body">
+              <a routerLink="/dashboard" class="btn btn-primary btn-sm w-100 mb-2">
+                <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+              </a>
+              <a routerLink="/dashboard/customers" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                <i class="bi bi-people me-2"></i>Manage Customers
+              </a>
+              <a routerLink="/dashboard/pending-products" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                <i class="bi bi-box me-2"></i>Pending Products
+              </a>
+              <a routerLink="/dashboard/create-product" class="btn btn-outline-primary btn-sm w-100">
+                <i class="bi bi-plus-circle me-2"></i>Create Product
+              </a>
+            </div>
+          </div>
+        }
+
+        <!-- Tech Company Panel -->
+        @if (isTechCompany()) {
+          <div class="card mb-3">
+            <div class="card-header">
+              <h6 class="mb-0">Tech Company Actions</h6>
+            </div>
+            <div class="card-body">
+              <a routerLink="/tech-company/dashboard" class="btn btn-success btn-sm w-100 mb-2">
+                <i class="bi bi-tools me-2"></i>Tech Dashboard
+              </a>
+              <a routerLink="/tech-company/maintenance" class="btn btn-outline-success btn-sm w-100 mb-2">
+                <i class="bi bi-wrench me-2"></i>Maintenance Requests
+              </a>
+              <a routerLink="/tech-company/products" class="btn btn-outline-success btn-sm w-100">
+                <i class="bi bi-box me-2"></i>My Products
+              </a>
+            </div>
+          </div>
+        }
+
+        <!-- Delivery Person Panel -->
+        @if (isDeliveryPerson()) {
+          <div class="card mb-3">
+            <div class="card-header">
+              <h6 class="mb-0">Delivery Actions</h6>
+            </div>
+            <div class="card-body">
+              <a routerLink="/delivery/dashboard" class="btn btn-warning btn-sm w-100 mb-2">
+                <i class="bi bi-truck me-2"></i>Delivery Dashboard
+              </a>
+              <a routerLink="/delivery/orders" class="btn btn-outline-warning btn-sm w-100 mb-2">
+                <i class="bi bi-box-seam me-2"></i>My Deliveries
+              </a>
+              <a routerLink="/delivery/history" class="btn btn-outline-warning btn-sm w-100">
+                <i class="bi bi-clock-history me-2"></i>Delivery History
+              </a>
+            </div>
+          </div>
+        }
+
+        <!-- Customer Panel -->
+        @if (isCustomer()) {
+          <div class="card mb-3">
+            <div class="card-header">
+              <h6 class="mb-0">Customer Actions</h6>
+            </div>
+            <div class="card-body">
+              <a routerLink="/customer/orders" class="btn btn-info btn-sm w-100 mb-2">
+                <i class="bi bi-cart me-2"></i>My Orders
+              </a>
+              <a routerLink="/wish-list" class="btn btn-outline-info btn-sm w-100 mb-2">
+                <i class="bi bi-heart me-2"></i>Wishlist
+              </a>
+              <a routerLink="/maintenance/create" class="btn btn-outline-info btn-sm w-100 mb-2">
+                <i class="bi bi-wrench me-2"></i>Request Maintenance
+              </a>
+              <a routerLink="/maintenance/history" class="btn btn-outline-info btn-sm w-100">
+                <i class="bi bi-clock-history me-2"></i>Maintenance History
+              </a>
+            </div>
+          </div>
+        }
+
+        <!-- Quick Stats -->
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">Quick Stats</h6>
+          </div>
+          <div class="card-body">
+            @if (isCustomer()) {
+              <div class="d-flex justify-content-between mb-2">
+                <span>Total Orders:</span>
+                <span class="badge bg-primary">{{ quickStats.totalOrders }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Active Orders:</span>
+                <span class="badge bg-success">{{ quickStats.activeOrders }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Wishlist Items:</span>
+                <span class="badge bg-info">{{ quickStats.wishlistItems }}</span>
+              </div>
+            }
+            
+            @if (isTechCompany()) {
+              <div class="d-flex justify-content-between mb-2">
+                <span>Products:</span>
+                <span class="badge bg-success">{{ quickStats.products }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Maintenance Requests:</span>
+                <span class="badge bg-warning">{{ quickStats.maintenanceRequests }}</span>
+              </div>
+            }
+            
+            @if (isDeliveryPerson()) {
+              <div class="d-flex justify-content-between mb-2">
+                <span>Active Deliveries:</span>
+                <span class="badge bg-warning">{{ quickStats.deliveries }}</span>
+              </div>
+            }
+            
+            @if (isAdmin()) {
+              <div class="d-flex justify-content-between mb-2">
+                <span>Total Customers:</span>
+                <span class="badge bg-primary">-</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Pending Products:</span>
+                <span class="badge bg-warning">-</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div> 

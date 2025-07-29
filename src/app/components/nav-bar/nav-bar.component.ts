@@ -47,6 +47,13 @@ export class NavBarComponent implements OnInit {
     this.wishlistService.initializeWishlistState();
     this._authService.initialize();
 
+    // Initialize theme from localStorage
+    if (this._isBrowser) {
+      const savedTheme = localStorage.getItem('theme');
+      this.isDarkMode = savedTheme === 'dark';
+      this.applyTheme();
+    }
+
     // Observables
     this.cartItemCount$ = this.cartService.itemCount$;
     this.cartTotalPrice$ = this.cartService.totalPrice$;
@@ -95,9 +102,29 @@ export class NavBarComponent implements OnInit {
 
   toggleDarkMode(): void {
     this.isDarkMode = !this.isDarkMode;
-    document.body.classList.toggle('dark-mode', this.isDarkMode);
-    document.body.classList.toggle('light-theme', !this.isDarkMode);
-    document.body.classList.toggle('dark-theme', this.isDarkMode);
+    this.applyTheme();
+    
+    // Save theme preference
+    if (this._isBrowser) {
+      localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    }
+  }
+
+  private applyTheme(): void {
+    if (this._isBrowser) {
+      // Use requestAnimationFrame for smooth transitions
+      requestAnimationFrame(() => {
+        document.body.classList.toggle('dark-mode', this.isDarkMode);
+        document.body.classList.toggle('light-theme', !this.isDarkMode);
+        document.body.classList.toggle('dark-theme', this.isDarkMode);
+        
+        // Add transition class for smooth animation
+        document.body.classList.add('theme-transition');
+        setTimeout(() => {
+          document.body.classList.remove('theme-transition');
+        }, 300);
+      });
+    }
   }
 
   @HostListener('window:scroll')
@@ -123,5 +150,9 @@ export class NavBarComponent implements OnInit {
 
   get themeIcon(): string {
     return this.isDarkMode ? 'bi-moon-fill' : 'bi-sun-fill';
+  }
+
+  logout(): void {
+    this._authService.logOut();
   }
 }

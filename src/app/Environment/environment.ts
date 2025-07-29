@@ -1,5 +1,5 @@
 export class Environment {
-  static useHttps: boolean = true; // Set to true for HTTPS, false for HTTP
+  static useHttps: boolean = true; // Set to false for HTTP to avoid SSL issues
   static httpBaseUrl: string = 'http://localhost:7230/api';
   static httpsBaseUrl: string = 'https://localhost:7230/api';
 

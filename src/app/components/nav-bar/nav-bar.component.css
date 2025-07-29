@@ -289,6 +289,9 @@ body.dark-mode .active-btn:hover {
   box-shadow: 0 0 8px rgba(255, 75, 43, 0.6);
   transform: scale(1);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  z-index: 9999 !important; 
+  top: -0.1rem !important;
+  right: -0.1rem !important;
 }
 
 .cart-badge:hover {

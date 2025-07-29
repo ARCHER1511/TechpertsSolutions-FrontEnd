@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { IProduct, ProductSpecification } from '../../Interfaces/iproduct';
 
 @Component({
   selector: 'app-test-comparison',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <div class="container mt-4">
       <h3>Test Comparison Logic</h3>

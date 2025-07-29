@@ -1,67 +1,110 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment';
+
+export interface Admin {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface AdminStats {
+  totalCustomers: number;
+  totalProducts: number;
+  totalOrders: number;
+  totalRevenue: number;
+  pendingProducts: number;
+  activeOrders: number;
+  completedOrders: number;
+}
+
+export interface AdminResponse {
+  success: boolean;
+  message: string;
+  data: Admin[];
+}
+
+export interface SingleAdminResponse {
+  success: boolean;
+  message: string;
+  data: Admin;
+}
+
+export interface AdminStatsResponse {
+  success: boolean;
+  message: string;
+  data: AdminStats;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
+  private apiUrl = `${Environment.baseUrl}/Admins`;
 
-  private readonly baseUrl = `${Environment.baseUrl}/admins`;
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  // Admin Endpoints
-  getAllAdmins(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/all`);
+  // Get all admins
+  getAllAdmins(): Observable<AdminResponse> {
+    return this.http.get<AdminResponse>(`${this.apiUrl}/all`);
   }
 
-  getAdminById(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${id}`);
+  // Get admin by ID
+  getAdminById(id: string): Observable<SingleAdminResponse> {
+    return this.http.get<SingleAdminResponse>(`${this.apiUrl}/${id}`);
   }
 
-  // Product Management
+  // Get pending products
   getPendingProducts(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/products/pending`);
+    return this.http.get(`${this.apiUrl}/products/pending`);
   }
 
+  // Approve product
   approveProduct(productId: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/products/${productId}/approve`, {});
+    return this.http.post(`${this.apiUrl}/products/${productId}/approve`, {});
   }
 
+  // Reject product
   rejectProduct(productId: string, reason: string): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post(`${this.baseUrl}/products/${productId}/reject`, JSON.stringify(reason), { headers });
+    return this.http.post(`${this.apiUrl}/products/${productId}/reject`, { reason });
   }
 
-  // Order Management
+  // Get all orders
   getAllOrders(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/orders`);
+    return this.http.get(`${this.apiUrl}/orders`);
   }
 
+  // Get orders by status
   getOrdersByStatus(status: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/orders/status/${status}`);
+    return this.http.get(`${this.apiUrl}/orders/status/${status}`);
   }
 
+  // Update order status
   updateOrderStatus(orderId: string, status: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}/orders/${orderId}/status?statusUpdate=${status}`, {});
+    return this.http.put(`${this.apiUrl}/orders/${orderId}/status`, { status });
   }
 
+  // Mark order as in progress
   markOrderInProgress(orderId: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}/orders/${orderId}/mark-in-progress`, {});
+    return this.http.put(`${this.apiUrl}/orders/${orderId}/mark-in-progress`, {});
   }
 
+  // Mark order as delivered
   markOrderDelivered(orderId: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}/orders/${orderId}/mark-delivered`, {});
+    return this.http.put(`${this.apiUrl}/orders/${orderId}/mark-delivered`, {});
   }
 
+  // Mark order as pending
   markOrderPending(orderId: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}/orders/${orderId}/mark-pending`, {});
+    return this.http.put(`${this.apiUrl}/orders/${orderId}/mark-pending`, {});
   }
 
-  // Dashboard Stats
-  getDashboardStats(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/dashboard/stats`);
+  // Get dashboard stats
+  getDashboardStats(): Observable<AdminStatsResponse> {
+    return this.http.get<AdminStatsResponse>(`${this.apiUrl}/dashboard/stats`);
   }
 }
