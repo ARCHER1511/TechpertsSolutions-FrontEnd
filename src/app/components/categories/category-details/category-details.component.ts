@@ -2,7 +2,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { IProduct } from '../../../Interfaces/iproduct';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../../Services/product.service';
+import { CategoryService } from '../../../Services/category.service';
+
 @Component({
   selector: 'app-category-details',
   standalone: true,
@@ -12,47 +13,55 @@ import { ProductService } from '../../../Services/product.service';
 })
 export class CategoryDetailsComponent implements OnInit {
   categoryName = '';
-products: IProduct[] = [];
-loading = false;
+  products: IProduct[] = [];
+  loading = false;
   error = '';
 
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
-private productService: ProductService
-) {}
+    private categoryService: CategoryService
+  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ?? '';
-    this.categoryName = this.mapCategory(id);
+    console.log(`🏷️ Category Details Component - Category ID: ${id}`);
     this.loadProductsByCategory(id);
   }
 
-  mapCategory(id: string): string {
-    const map: { [key: string]: string } = {
-      cpu: 'Processors',
-      gpu: 'Graphics Cards',
-      motherboard: 'Motherboards',
-    };
-    return map[id] || 'Unknown';
-  }
-
   loadProductsByCategory(categoryId: string): void {
+    console.log(`🔄 Loading products for category ID: ${categoryId}`);
     this.loading = true;
     this.error = '';
 
-    // Load products for the specific category
-this.productService.getAllProducts(1, 50, 'name', false, categoryId).subscribe({
+    this.categoryService.getCategoryById(categoryId).subscribe({
       next: (response) => {
-        if (response.success) {
-          this.products = response.data.items;
-} else {
+        console.log(`📦 Category API Response:`, response);
+        if (response.success && response.data) {
+          this.categoryName = response.data.name;
+          this.products = response.data.products?.map(catProduct => ({
+            id: catProduct.id,
+            name: catProduct.name,
+            price: catProduct.price,
+            discountPrice: catProduct.price, // Assuming no discount for now
+            imageUrl: catProduct.imageUrl || '',
+            category: response.data.name,
+            categoryName: response.data.name,
+            subCategoryId: '',
+            subCategoryName: '',
+            status: 'Approved', // Default status
+            specifications: catProduct.specifications || []
+          })) || [];
+          console.log(`✅ Loaded ${this.products.length} products for category: ${response.data.name}`);
+          console.log(`📋 Products:`, this.products);
+        } else {
           this.error = response.message || 'Failed to load products';
+          console.error('❌ Category API error:', response.message);
         }
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading category products:', err);
+        console.error('❌ Error loading category products:', err);
         this.error = 'Failed to load products. Please try again later.';
         this.loading = false;
       }
@@ -60,12 +69,14 @@ this.productService.getAllProducts(1, 50, 'name', false, categoryId).subscribe({
   }
 
   selectProduct(product: IProduct) {
+    console.log(`🎯 Selected product:`, product);
     const enriched = {
       ...product,
       title: product.name,
       link: 'https://example.com/products/' + product.id,
       category: this.categoryName
     };
+    console.log(`🎯 Enriched product for selector:`, enriched);
     this.router.navigate(['/selector'], { state: { selectedProduct: enriched } });
   }
 }
