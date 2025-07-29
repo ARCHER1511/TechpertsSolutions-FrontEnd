@@ -1,29 +1,175 @@
 ﻿<div class="dashboard-container">
+  <!-- Sidebar -->
   <nav class="sidebar">
-    <h5 class="text-center mb-4">Admin Panel</h5>
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i class="bi bi-speedometer2 logo-icon"></i>
+        <h5 class="logo-text">Admin Panel</h5>
+      </div>
+    </div>
+    
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/dashboard/customers" routerLinkActive="active">All Customers</a>
+        <a class="nav-link" routerLink="/dashboard/customers" routerLinkActive="active">
+          <i class="bi bi-people me-3"></i>
+          <span>All Customers</span>
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/dashboard/new-customer" routerLinkActive="active">Add Customer</a>
+        <a class="nav-link" routerLink="/dashboard/new-customer" routerLinkActive="active">
+          <i class="bi bi-person-plus me-3"></i>
+          <span>Add Customer</span>
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/dashboard/edit-customer" routerLinkActive="active">Edit Customer</a>
-      </li>
-<li class="nav-item">
-        <a class="nav-link" routerLink="/dashboard/pending-products" routerLinkActive="active">Pending Products</a>
+        <a class="nav-link" routerLink="/dashboard/edit-customer" routerLinkActive="active">
+          <i class="bi bi-pencil-square me-3"></i>
+          <span>Edit Customer</span>
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/dashboard/create-product" routerLinkActive="active">Create Products</a>
+        <a class="nav-link" routerLink="/dashboard/pending-products" routerLinkActive="active">
+          <i class="bi bi-clock-history me-3"></i>
+          <span>Pending Products</span>
+        </a>
       </li>
-<!-- Add more categories here -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard/create-product" routerLinkActive="active">
+          <i class="bi bi-plus-circle me-3"></i>
+          <span>Create Products</span>
+        </a>
+      </li>
     </ul>
-    <button class="btn btn-sm btn-outline-secondary w-100 mt-3" (click)="toggleDarkMode()">
-  Toggle Theme
-</button>
+    
+    <div class="sidebar-footer">
+      <button class="theme-toggle-btn" (click)="toggleDarkMode()">
+        <i class="bi" [ngClass]="isDarkMode ? 'bi-moon-fill' : 'bi-sun-fill'"></i>
+        <span>{{ isDarkMode ? 'Dark' : 'Light' }} Mode</span>
+      </button>
+    </div>
   </nav>
-  <main class="content p-4">
-    <router-outlet></router-outlet>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="content-header">
+      <div class="header-content">
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-subtitle">Welcome back! Here's what's happening today.</p>
+      </div>
+      <div class="header-actions">
+        <div class="date-display">
+          <i class="bi bi-calendar3 me-2"></i>
+          {{ currentDate | date:'EEEE, MMMM d, y' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-info">
+            <h3 class="stat-number">{{ stats.totalCustomers || 0 }}</h3>
+            <p class="stat-label">Total Customers</p>
+            <div class="stat-change positive">
+              <i class="bi bi-arrow-up"></i>
+              <span>+12% from last month</span>
+            </div>
+          </div>
+          <div class="stat-icon">
+            <i class="bi bi-people"></i>
+          </div>
+        </div>
+        <div class="stat-progress">
+          <div class="progress-circle" [style.--progress]="'75%'">
+            <svg viewBox="0 0 36 36">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="progress-text">75%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-info">
+            <h3 class="stat-number">{{ stats.pendingProducts || 0 }}</h3>
+            <p class="stat-label">Pending Products</p>
+            <div class="stat-change warning">
+              <i class="bi bi-exclamation-triangle"></i>
+              <span>5 need attention</span>
+            </div>
+          </div>
+          <div class="stat-icon">
+            <i class="bi bi-clock-history"></i>
+          </div>
+        </div>
+        <div class="stat-progress">
+          <div class="progress-circle" [style.--progress]="'45%'">
+            <svg viewBox="0 0 36 36">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="progress-text">45%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-info">
+            <h3 class="stat-number">{{ stats.totalOrders || 0 }}</h3>
+            <p class="stat-label">Total Orders</p>
+            <div class="stat-change positive">
+              <i class="bi bi-arrow-up"></i>
+              <span>+8% from last week</span>
+            </div>
+          </div>
+          <div class="stat-icon">
+            <i class="bi bi-cart-check"></i>
+          </div>
+        </div>
+        <div class="stat-progress">
+          <div class="progress-circle" [style.--progress]="'92%'">
+            <svg viewBox="0 0 36 36">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="progress-text">92%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <div class="stat-info">
+            <h3 class="stat-number">{{ stats.revenue || 0 | currency }}</h3>
+            <p class="stat-label">Total Revenue</p>
+            <div class="stat-change positive">
+              <i class="bi bi-arrow-up"></i>
+              <span>+15% from last month</span>
+            </div>
+          </div>
+          <div class="stat-icon">
+            <i class="bi bi-currency-dollar"></i>
+          </div>
+        </div>
+        <div class="stat-progress">
+          <div class="progress-circle" [style.--progress]="'88%'">
+            <svg viewBox="0 0 36 36">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="progress-text">88%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
   </main>
 </div>

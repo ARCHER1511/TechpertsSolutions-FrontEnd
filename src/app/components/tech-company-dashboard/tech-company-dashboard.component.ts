@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TechCompanyService } from '../../Services/tech-company.service';
 import { MaintenanceService } from '../../Services/maintenance.service';
@@ -8,7 +8,7 @@ import { ProductService } from '../../Services/product.service';
 @Component({
   selector: 'app-tech-company-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, DatePipe],
   templateUrl: './tech-company-dashboard.component.html',
   styleUrls: ['./tech-company-dashboard.component.css']
 })
@@ -16,6 +16,7 @@ export class TechCompanyDashboardComponent implements OnInit {
   techCompanyData: any = null;
   maintenanceRequests: any[] = [];
   products: any[] = [];
+  currentDate = new Date();
   stats = {
     totalRequests: 0,
     pendingRequests: 0,
@@ -70,7 +71,8 @@ export class TechCompanyDashboardComponent implements OnInit {
               specialization: 'Software Development',
               email: 'contact@techsolutions.com',
               phone: '+1234567890',
-              address: '123 Tech Street, Innovation City'
+              address: '123 Tech Street, Innovation City',
+              location: 'Innovation City, Tech State'
             };
             this.error = '';
             this.loadMockData(techCompanyId);
@@ -136,6 +138,7 @@ export class TechCompanyDashboardComponent implements OnInit {
       {
         id: '1',
         customerName: 'John Doe',
+        serviceType: 'Software Installation',
         description: 'Software installation needed',
         status: 'Pending',
         priority: 'Medium',
@@ -144,6 +147,7 @@ export class TechCompanyDashboardComponent implements OnInit {
       {
         id: '2',
         customerName: 'Jane Smith',
+        serviceType: 'System Maintenance',
         description: 'System maintenance required',
         status: 'InProgress',
         priority: 'High',
@@ -190,5 +194,51 @@ export class TechCompanyDashboardComponent implements OnInit {
         console.error('Error completing maintenance request:', err);
       }
     });
+  }
+
+  // Status and priority styling methods
+  getStatusClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'status-pending';
+      case 'accepted':
+        return 'status-accepted';
+      case 'inprogress':
+        return 'status-in-progress';
+      case 'completed':
+        return 'status-completed';
+      default:
+        return 'status-default';
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bi-clock';
+      case 'accepted':
+        return 'bi-check-circle';
+      case 'inprogress':
+        return 'bi-gear';
+      case 'completed':
+        return 'bi-check-circle-fill';
+      default:
+        return 'bi-question-circle';
+    }
+  }
+
+  getPriorityClass(priority: string): string {
+    switch (priority.toLowerCase()) {
+      case 'low':
+        return 'priority-low';
+      case 'medium':
+        return 'priority-medium';
+      case 'high':
+        return 'priority-high';
+      case 'critical':
+        return 'priority-critical';
+      default:
+        return 'priority-default';
+    }
   }
 } 

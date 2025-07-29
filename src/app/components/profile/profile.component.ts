@@ -381,4 +381,35 @@ export class ProfileComponent implements OnInit {
   getUserName(): string {
     return localStorage.getItem('userName') || 'Not found';
   }
+
+  // Role badge styling methods
+  getRoleBadgeClass(role: string): string {
+    switch (role.toLowerCase()) {
+      case 'admin':
+        return 'role-badge admin';
+      case 'techcompany':
+        return 'role-badge tech-company';
+      case 'customer':
+        return 'role-badge customer';
+      case 'deliveryperson':
+        return 'role-badge delivery';
+      default:
+        return 'role-badge default';
+    }
+  }
+
+  getRoleIcon(role: string): string {
+    switch (role.toLowerCase()) {
+      case 'admin':
+        return 'bi-shield-check';
+      case 'techcompany':
+        return 'bi-tools';
+      case 'customer':
+        return 'bi-person';
+      case 'deliveryperson':
+        return 'bi-truck';
+      default:
+        return 'bi-person';
+    }
+  }
 } 
