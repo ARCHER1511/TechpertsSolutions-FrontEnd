@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   };
   loading = false;
   error = '';
+  currentDate = new Date();
 
   // Add localStorage property for template access
   localStorage = localStorage;

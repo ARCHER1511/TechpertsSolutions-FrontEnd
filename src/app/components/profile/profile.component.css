@@ -1,9 +1,15 @@
 /* Profile Container */
 .profile-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--bg-color);
+  background-image: var(--bg-image);
+  background-size: fit;
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-position: center;
   padding: 2rem 1rem;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-primary);
 }
 
 /* Loading State */
@@ -13,7 +19,7 @@
   align-items: center;
   justify-content: center;
   min-height: 60vh;
-  color: white;
+  color: var(--text-primary);
 }
 
 .loading-spinner {
@@ -23,8 +29,8 @@
 .spinner {
   width: 3rem;
   height: 3rem;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid white;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--accent-blue);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -37,7 +43,7 @@
 .loading-text {
   font-size: 1.1rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 /* Error State */
@@ -49,38 +55,38 @@
 }
 
 .error-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 3rem 2rem;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
   max-width: 500px;
   width: 100%;
+  color: var(--text-primary);
 }
 
 .error-icon {
   font-size: 4rem;
-  color: #e53e3e;
+  color: var(--accent-red);
   margin-bottom: 1rem;
 }
 
 .error-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .error-message {
-  color: #718096;
+  color: var(--text-secondary);
   margin-bottom: 2rem;
 }
 
 .retry-btn {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
@@ -90,8 +96,9 @@
 }
 
 .retry-btn:hover {
+  background-color: var(--button-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Profile Layout */
@@ -100,21 +107,56 @@
   margin: 0 auto;
 }
 
+/* Page Header */
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 400;
+}
+
+.date-display {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+}
+
 /* Profile Header */
 .profile-header {
   margin-bottom: 2rem;
 }
 
 .header-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 2rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  color: var(--text-primary);
 }
 
 .profile-avatar-section {
@@ -128,11 +170,11 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--accent-blue), var(--primary-color));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 32px rgba(76, 166, 255, 0.3);
 }
 
 .avatar-icon {
@@ -151,7 +193,7 @@
 }
 
 .status-indicator.online {
-  background: #38a169;
+  background: var(--badge-active-bg);
 }
 
 .profile-info {
@@ -161,14 +203,14 @@
 .profile-name {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #1a202c;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   line-height: 1.2;
 }
 
 .profile-email {
   font-size: 1.1rem;
-  color: #718096;
+  color: var(--text-secondary);
   margin: 0 0 1rem 0;
 }
 
@@ -181,21 +223,21 @@
 .meta-item {
   display: flex;
   align-items: center;
-  color: #4a5568;
+  color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 /* Role Section */
 .role-section {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-color);
   padding-top: 1.5rem;
 }
 
 .role-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
 }
 
@@ -217,15 +259,15 @@
 }
 
 .role-badge.admin {
-  background: linear-gradient(135deg, #e53e3e, #c53030);
+  background: linear-gradient(135deg, var(--accent-red), #c53030);
 }
 
 .role-badge.tech-company {
-  background: linear-gradient(135deg, #38a169, #2f855a);
+  background: linear-gradient(135deg, var(--badge-active-bg), #2f855a);
 }
 
 .role-badge.customer {
-  background: linear-gradient(135deg, #3182ce, #2c5282);
+  background: linear-gradient(135deg, var(--accent-blue), #2c5282);
 }
 
 .role-badge.delivery {
@@ -233,12 +275,12 @@
 }
 
 .role-badge.default {
-  background: linear-gradient(135deg, #718096, #4a5568);
+  background: linear-gradient(135deg, var(--text-muted), #4a5568);
 }
 
 .role-badge:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Dashboard Access */
@@ -248,8 +290,8 @@
 }
 
 .dashboard-btn {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   text-decoration: none;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -257,13 +299,14 @@
   display: inline-flex;
   align-items: center;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .dashboard-btn:hover {
+  background-color: var(--button-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-  color: white;
+  box-shadow: var(--shadow-lg);
+  color: var(--button-text);
 }
 
 /* Stats Overview */
@@ -278,20 +321,20 @@
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.95);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  color: var(--text-primary);
 }
 
 .stat-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-xl);
 }
 
 .stat-card::before {
@@ -301,7 +344,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--accent-blue), var(--primary-color));
 }
 
 .stat-content {
@@ -318,14 +361,14 @@
 .stat-number {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #1a202c;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   line-height: 1;
 }
 
 .stat-label {
   font-size: 1rem;
-  color: #718096;
+  color: var(--text-secondary);
   margin: 0 0 0.75rem 0;
   font-weight: 500;
 }
@@ -339,7 +382,7 @@
 }
 
 .stat-change.positive {
-  color: #38a169;
+  color: var(--badge-active-bg);
 }
 
 .stat-change.warning {
@@ -347,7 +390,7 @@
 }
 
 .stat-change.info {
-  color: #3182ce;
+  color: var(--accent-blue);
 }
 
 .stat-change i {
@@ -357,14 +400,14 @@
 .stat-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--accent-blue), var(--primary-color));
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 1.5rem;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(76, 166, 255, 0.3);
 }
 
 /* Progress Circle */
@@ -388,13 +431,13 @@
 
 .progress-circle path:first-child {
   fill: none;
-  stroke: #e2e8f0;
+  stroke: var(--border-color);
   stroke-width: 3;
 }
 
 .progress-circle path:last-child {
   fill: none;
-  stroke: #667eea;
+  stroke: var(--accent-blue);
   stroke-width: 3;
   stroke-linecap: round;
   stroke-dasharray: 100;
@@ -409,17 +452,17 @@
   transform: translate(-50%, -50%);
   font-size: 0.875rem;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--text-primary);
 }
 
 /* Content Area */
 .content-area {
-  background: rgba(255, 255, 255, 0.95);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 2rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
 }
 
 .content-grid {
@@ -430,23 +473,24 @@
 
 /* Profile Details */
 .details-card {
-  background: rgba(255, 255, 255, 0.8);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  color: var(--text-primary);
 }
 
 .card-header {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background-color: var(--sidebar-bg);
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--text-primary);
   margin: 0;
   display: flex;
   align-items: center;
@@ -471,25 +515,26 @@
 .info-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .info-value {
   font-size: 1rem;
-  color: #1a202c;
+  color: var(--text-primary);
   font-weight: 500;
   margin: 0;
 }
 
 /* Quick Actions */
 .action-card {
-  background: rgba(255, 255, 255, 0.8);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  color: var(--text-primary);
 }
 
 .action-buttons {
@@ -512,34 +557,37 @@
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  box-shadow: var(--shadow-md);
 }
 
 .action-btn.primary:hover {
+  background-color: var(--button-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .action-btn.secondary {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background-color: var(--sidebar-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .action-btn.secondary:hover {
-  background: rgba(102, 126, 234, 0.15);
+  background-color: var(--card-bg);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .action-btn.danger {
-  background: linear-gradient(135deg, #e53e3e, #c53030);
+  background-color: var(--accent-red);
   color: white;
   box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
 }
 
 .action-btn.danger:hover {
+  background-color: #c53030;
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
 }
@@ -558,6 +606,16 @@
 @media (max-width: 768px) {
   .profile-container {
     padding: 1rem;
+  }
+  
+  .content-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .page-title {
+    font-size: 2rem;
   }
   
   .header-card {
@@ -633,38 +691,5 @@
   
   .stat-icon {
     order: -1;
-  }
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .header-card,
-  .stat-card,
-  .content-area,
-  .details-card,
-  .action-card {
-    background: rgba(26, 32, 44, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .profile-name,
-  .stat-number,
-  .info-value,
-  .card-title {
-    color: white;
-  }
-  
-  .profile-email,
-  .stat-label,
-  .info-label {
-    color: #a0aec0;
-  }
-  
-  .progress-text {
-    color: white;
-  }
-  
-  .card-header {
-    background: linear-gradient(135deg, #2d3748, #4a5568);
   }
 } 

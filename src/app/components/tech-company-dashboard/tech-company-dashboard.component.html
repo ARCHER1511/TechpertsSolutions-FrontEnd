@@ -27,12 +27,24 @@
   <!-- Dashboard Content -->
   @if (techCompanyData && !loading) {
     <div class="dashboard-layout">
+      <!-- Page Header -->
+      <div class="content-header">
+        <div>
+          <h1 class="page-title">Tech Company Dashboard</h1>
+          <p class="page-subtitle">Manage your maintenance requests and company information</p>
+        </div>
+        <div class="date-display">
+          <i class="bi bi-calendar3 me-2"></i>
+          {{ currentDate | date:'mediumDate' }}
+        </div>
+      </div>
+
       <!-- Header -->
       <div class="dashboard-header">
         <div class="header-card">
           <div class="header-content">
             <div class="welcome-section">
-              <h1 class="welcome-title">Welcome back, {{ techCompanyData.name }}</h1>
+              <h2 class="welcome-title">Welcome back, {{ techCompanyData.name }}</h2>
               <p class="welcome-subtitle">{{ techCompanyData.description || 'Tech Company Dashboard' }}</p>
               <div class="company-meta">
                 <span class="meta-item">

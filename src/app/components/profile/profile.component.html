@@ -27,6 +27,18 @@
   <!-- Profile Content -->
   @if (userData && !loading) {
     <div class="profile-layout">
+      <!-- Page Header -->
+      <div class="content-header">
+        <div>
+          <h1 class="page-title">User Profile</h1>
+          <p class="page-subtitle">Manage your account and view your information</p>
+        </div>
+        <div class="date-display">
+          <i class="bi bi-calendar3 me-2"></i>
+          {{ currentDate | date:'mediumDate' }}
+        </div>
+      </div>
+
       <!-- Profile Header -->
       <div class="profile-header">
         <div class="header-card">
@@ -36,7 +48,7 @@
               <div class="status-indicator online"></div>
             </div>
             <div class="profile-info">
-              <h1 class="profile-name">{{ userData.name || userData.fullName }}</h1>
+              <h2 class="profile-name">{{ userData.name || userData.fullName }}</h2>
               <p class="profile-email">{{ userData.email }}</p>
               <div class="profile-meta">
                 <span class="meta-item">
