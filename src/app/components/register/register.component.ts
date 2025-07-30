@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     password: [null, [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/)]],
     confirmPassword: [null, [Validators.required]],
     phoneNumber: [null, [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)]],
-    selectedRoles: [[], [Validators.required, Validators.minLength(1)]]
+    selectedRole: [null, [Validators.required]]
   }, { validators: this.confirmPassword });
 
   registSub!: Subscription;
@@ -48,8 +48,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.loadingRoles = true;
     this._rolesService.getRegistrationOptions().subscribe({
       next: (response) => {
-        if (response.success) {
-          this.availableRoles = response.data.roles || [];
+        if (response.success && response.data?.roles) {
+          this.availableRoles = response.data.roles;
+        } else {
+          // Fallback to default roles if API response is empty
+          this.availableRoles = [
+            { id: 'Customer', name: 'Customer', description: 'Regular customer account for shopping and PC building' },
+            { id: 'TechCompany', name: 'Tech Company', description: 'Technology company account for maintenance services' },
+            { id: 'DeliveryPerson', name: 'Delivery Person', description: 'Delivery person account for order fulfillment' },
+            { id: 'Admin', name: 'Admin', description: 'Administrator account with full system access' }
+          ];
         }
         this.loadingRoles = false;
       },
@@ -58,9 +66,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.loadingRoles = false;
         // Fallback to default roles if API fails
         this.availableRoles = [
-          { id: 'customer', name: 'Customer', description: 'Regular customer account' },
-          { id: 'techcompany', name: 'TechCompany', description: 'Technology company account' },
-          { id: 'deliveryperson', name: 'DeliveryPerson', description: 'Delivery person account' }
+          { id: 'Customer', name: 'Customer', description: 'Regular customer account for shopping and PC building' },
+          { id: 'TechCompany', name: 'Tech Company', description: 'Technology company account for maintenance services' },
+          { id: 'DeliveryPerson', name: 'Delivery Person', description: 'Delivery person account for order fulfillment' },
+          { id: 'Admin', name: 'Admin', description: 'Administrator account with full system access' }
         ];
       }
     });
@@ -79,11 +88,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
         address: this.registerForm.value.address!,
         password: this.registerForm.value.password!,
         confirmPassword: this.registerForm.value.confirmPassword!,
-        phoneNumber: this.registerForm.value.phoneNumber!,
-        selectedRoles: this.registerForm.value.selectedRoles!
+        phoneNumber: this.registerForm.value.phoneNumber!
       };
 
-      this.registSub = this._authService.register(registrationData).subscribe({
+      // Get the selected role
+      const selectedRole = this.registerForm.value.selectedRole!;
+
+      this.registSub = this._authService.register(registrationData, selectedRole).subscribe({
         next: (res) => {
           console.log(res);
 
@@ -94,7 +105,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
               localStorage.setItem('userRoles', JSON.stringify(res.data.userRoles));
             }
             setTimeout(() => {
-              this._router.navigate(['/login'])
+              this._router.navigate(['/log-in'])
             }, 1000);
           } else {
             this.errMassage = res.message || 'Registration failed';
@@ -122,5 +133,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
   confirmPassword(g: AbstractControl) {
     return g.get('password')?.value === g.get('confirmPassword')?.value
       ? null : { 'mismatch': true };
+  }
+
+  getSelectedRoleName(): string {
+    const selectedRoleId = this.registerForm.get('selectedRole')?.value;
+    const selectedRole = this.availableRoles.find(role => role.id === selectedRoleId);
+    return selectedRole ? selectedRole.name : 'No role selected';
   }
 }

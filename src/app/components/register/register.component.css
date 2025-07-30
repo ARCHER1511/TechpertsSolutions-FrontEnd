@@ -1,12 +1,18 @@
 ﻿/* Register Container */
 .section {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--bg-color);
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-primary);
 }
 
 .container {
@@ -36,18 +42,18 @@
 
 /* Card Styles */
 .card {
-  background: rgba(255, 255, 255, 0.95);
+  background-color: var(--card-bg);
   backdrop-filter: blur(20px);
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-xl);
 }
 
 .card-body {
@@ -60,15 +66,15 @@
 
 /* Left Side - Info Card */
 .bg-gradient-to-br {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-blue), var(--primary-color));
 }
 
 .from-primary-500 {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-blue), var(--primary-color));
 }
 
 .to-primary-600 {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-blue), var(--primary-color));
 }
 
 .text-white {
@@ -148,13 +154,13 @@
 .text-3xl {
   font-size: 2.25rem;
   font-weight: 800;
-  color: #1a202c;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   line-height: 1.2;
 }
 
 .text-tertiary {
-  color: #718096;
+  color: var(--text-secondary);
   font-size: 1.1rem;
   font-weight: 400;
 }
@@ -208,25 +214,25 @@
 .form-input {
   width: 100%;
   padding: 1rem 1rem 1rem 3rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 500;
-  color: #1a202c;
-  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+  background-color: var(--input-bg);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  background: rgba(255, 255, 255, 0.95);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(76, 166, 255, 0.1);
+  background-color: var(--input-bg);
 }
 
 .form-input::placeholder {
-  color: #a0aec0;
+  color: var(--text-muted);
   font-weight: 400;
 }
 
@@ -256,7 +262,7 @@
 }
 
 .border-border-primary {
-  border-color: #e2e8f0;
+  border-color: var(--border-color);
 }
 
 .rounded-lg {
@@ -264,7 +270,7 @@
 }
 
 .hover\:bg-surface-secondary:hover {
-  background-color: #f7fafc;
+  background-color: var(--sidebar-bg);
 }
 
 .cursor-pointer {
@@ -298,7 +304,7 @@
 }
 
 .border-primary {
-  border-color: #667eea;
+  border-color: var(--accent-blue);
 }
 
 .border-t-transparent {
@@ -336,14 +342,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--accent-blue), var(--primary-color));
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-primary:active {
@@ -364,14 +370,14 @@
 }
 
 .text-primary {
-  color: #667eea;
+  color: var(--accent-blue);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .text-primary:hover {
-  color: #5a67d8;
+  color: var(--primary-color);
 }
 
 /* Responsive Design */
@@ -435,45 +441,6 @@
   }
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .card {
-    background: rgba(26, 32, 44, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .text-3xl {
-    color: white;
-  }
-  
-  .text-tertiary {
-    color: #a0aec0;
-  }
-  
-  .form-input {
-    background: rgba(45, 55, 72, 0.8);
-    border-color: #4a5568;
-    color: white;
-  }
-  
-  .form-input:focus {
-    background: rgba(45, 55, 72, 0.95);
-    border-color: #667eea;
-  }
-  
-  .form-input::placeholder {
-    color: #718096;
-  }
-  
-  .border-border-primary {
-    border-color: #4a5568;
-  }
-  
-  .hover\:bg-surface-secondary:hover {
-    background-color: #2d3748;
-  }
-}
-
 /* Animation for form elements */
 .form-input,
 .btn {
@@ -494,61 +461,156 @@
 /* Icon animations */
 .bi {
   transition: transform 0.3s ease;
+  color: var(--text-muted);
 }
 
 .form-input:focus + .bi {
   transform: scale(1.1);
-  color: #667eea;
+  color: var(--accent-blue);
 }
 
 /* Success state for inputs */
 .form-input.valid {
-  border-color: #38a169;
-  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1);
+  border-color: var(--badge-active-bg);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
 }
 
 /* Error state for inputs */
 .form-input.error {
-  border-color: #e53e3e;
+  border-color: var(--accent-red);
   box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
 }
 
-/* Checkbox styling */
-input[type="checkbox"] {
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
+/* Form Select Styling */
+.form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
   transition: all 0.3s ease;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  appearance: none;
 }
 
-input[type="checkbox"]:checked {
-  background: #667eea;
-  border-color: #667eea;
-}
-
-input[type="checkbox"]:focus {
+.form-select:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(76, 166, 255, 0.1);
+}
+
+.form-select.is-invalid {
+  border-color: var(--accent-red);
+}
+
+.form-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--accent-red);
+}
+
+/* Selected Role Display */
+.bg-light {
+  background-color: var(--sidebar-bg) !important;
+}
+
+.border {
+  border: 1px solid var(--border-color) !important;
+}
+
+.rounded {
+  border-radius: 8px !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.text-primary {
+  color: var(--accent-blue) !important;
+}
+
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+
+/* Remove old checkbox styles */
+input[type="checkbox"] {
+  display: none;
+}
+
+label[for^="role-"] {
+  display: none;
 }
 
 /* Role selection hover effects */
 .role-selection-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+/* Enhanced role selection styling */
+label[for^="role-"] {
+  display: none;
+}
+
+label[for^="role-"]:hover {
+  display: none;
+}
+
+label[for^="role-"] input[type="checkbox"]:checked + div {
+  display: none;
+}
+
+/* Role name styling */
+.text-primary {
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+/* Loading state enhancement */
+.loading-roles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.loading-roles .spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
 }
 
 /* Form validation states */
 .form-group.error .form-input {
-  border-color: #e53e3e;
+  border-color: var(--accent-red);
   box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
 }
 
 .form-group.success .form-input {
-  border-color: #38a169;
-  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1);
+  border-color: var(--badge-active-bg);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
 }
 
 /* Loading overlay */
@@ -564,4 +626,63 @@ input[type="checkbox"]:focus {
   justify-content: center;
   border-radius: 24px;
   z-index: 10;
+}
+
+/* Error Message Styles */
+.bg-error\/10 {
+  background-color: rgba(229, 62, 62, 0.1);
+}
+
+.border-error\/20 {
+  border-color: rgba(229, 62, 62, 0.2);
+}
+
+.text-error {
+  color: var(--accent-red);
+}
+
+/* Success Message Styles */
+.bg-success\/10 {
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.border-success\/20 {
+  border-color: rgba(40, 167, 69, 0.2);
+}
+
+.text-success {
+  color: var(--badge-active-bg);
+}
+
+/* Message container styles */
+.rounded-lg {
+  border-radius: 0.75rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+/* Button disabled state */
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loading spinner in button */
+.me-2 {
+  margin-right: 0.5rem;
 }

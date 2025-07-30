@@ -40,6 +40,30 @@ export interface AdminStatsResponse {
   data: AdminStats;
 }
 
+export interface UserRole {
+  userId: string;
+  userName: string;
+  email: string;
+  currentRoles: string[];
+  availableRoles: string[];
+}
+
+export interface RoleAssignmentRequest {
+  userId: string;
+  roleId: string;
+}
+
+export interface RoleUnassignmentRequest {
+  userId: string;
+  roleId: string;
+}
+
+export interface UserRoleResponse {
+  success: boolean;
+  message: string;
+  data: UserRole[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -56,6 +80,28 @@ export class AdminService {
   // Get admin by ID
   getAdminById(id: string): Observable<SingleAdminResponse> {
     return this.http.get<SingleAdminResponse>(`${this.apiUrl}/${id}`);
+  }
+
+  // Get all users with their roles for role management
+  getAllUsersWithRoles(): Observable<UserRoleResponse> {
+    return this.http.get<UserRoleResponse>(`${this.apiUrl}/users/roles`);
+  }
+
+  // Assign role to user
+  assignRoleToUser(userId: string, roleId: string): Observable<any> {
+    const request: RoleAssignmentRequest = { userId, roleId };
+    return this.http.post(`${this.apiUrl}/users/roles/assign`, request);
+  }
+
+  // Unassign role from user
+  unassignRoleFromUser(userId: string, roleId: string): Observable<any> {
+    const request: RoleUnassignmentRequest = { userId, roleId };
+    return this.http.post(`${this.apiUrl}/users/roles/unassign`, request);
+  }
+
+  // Get available roles
+  getAvailableRoles(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/roles/available`);
   }
 
   // Get pending products

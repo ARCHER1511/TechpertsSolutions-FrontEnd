@@ -75,6 +75,11 @@ export const routes: Routes = [
         path: 'create-product',
         loadComponent: () => import('./components/dashboard/components/create-product/create-product.component').then(m => m.CreateProductComponent),
         title: 'Create Product'
+      },
+      {
+        path: 'role-management',
+        loadComponent: () => import('./components/dashboard/components/role-management/role-management.component').then(m => m.RoleManagementComponent),
+        title: 'Role Management'
       }
     ]
   },

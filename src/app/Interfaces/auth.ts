@@ -6,7 +6,10 @@ export interface RegisterRequest {
   password: string;
   confirmPassword: string;
   phoneNumber: string;
-  selectedRoles: string[];
+}
+
+export interface RegisterRequestWithRole extends RegisterRequest {
+  role: string; // This will be sent as a query parameter
 }
 
 export interface LoginRequest {

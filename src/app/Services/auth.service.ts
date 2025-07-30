@@ -37,8 +37,8 @@ export class AuthService {
   }
 
   // Register user with proper interface
-  register(data: RegisterRequest): Observable<AuthResponse> {
-    return this._HttpClient.post<AuthResponse>(`${Environment.baseUrl}/Authentication/register`, data);
+  register(data: RegisterRequest, role: string): Observable<AuthResponse> {
+    return this._HttpClient.post<AuthResponse>(`${Environment.baseUrl}/Authentication/register?role=${role}`, data);
   }
 
   // Login user with proper interface
@@ -63,7 +63,7 @@ export class AuthService {
 
   // Legacy method for backward compatibility
   setRegisterForm(data: object): Observable<any> {
-    return this.register(data as RegisterRequest);
+    return this.register(data as RegisterRequest, 'Customer'); // Assuming default role for backward compatibility
   }
 
   // Legacy method for backward compatibility
