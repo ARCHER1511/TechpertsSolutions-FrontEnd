@@ -440,3 +440,48 @@
     order: -1;
   }
 }
+
+
+
+/* Dark Mode Support */
+.dark-mode .inside-circle {
+  background: #1a202c;
+}
+
+.dark-mode .progress-text {
+  color: white;
+}
+
+
+.progress-circle {
+  width: 80px;
+  height: 80px;
+  --progress: 75;
+}
+
+.circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(#007bff calc(var(--progress) * 1%), #e9ecef 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.inside-circle {
+  width: 60%;
+  height: 60%;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-text {
+  font-weight: 600;
+  font-size: 0.85rem;
+}

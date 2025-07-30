@@ -19,6 +19,7 @@ interface DashboardStats {
 export class DashboardComponent implements OnInit {
   isDarkMode = false;
   currentDate = new Date();
+
   stats: DashboardStats = {
     totalCustomers: 1250,
     pendingProducts: 23,
@@ -26,17 +27,12 @@ export class DashboardComponent implements OnInit {
     revenue: 125000
   };
 
-  ngOnInit() {
-    // Check if dark mode is already set
+  ngOnInit(): void {
     this.isDarkMode = document.body.classList.contains('dark-mode');
   }
 
-  toggleDarkMode() {
+  toggleDarkMode(): void {
     this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
+    document.body.classList.toggle('dark-mode', this.isDarkMode);
   }
 }
