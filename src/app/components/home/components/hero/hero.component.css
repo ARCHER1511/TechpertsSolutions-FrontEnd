@@ -44,9 +44,12 @@
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 1rem;
-  color: var(--primary-color);
+  color: #7f5af0;
 }
 
+.highlight{
+  color:var(--accent-blue);
+}
 .hero-content p {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -64,19 +67,34 @@
   padding: 0.75rem 2rem;
   font-size: 1rem;
   border-radius: 2rem;
-  background-color: var(--button-bg);
+  background-color: var(--accent-blue);
   color: var(--button-text);
   font-weight: 600;
   border: none;
-  box-shadow: 0 0 10px var(--button-bg);
+  box-shadow: 0 0 10px var(--accent-blue);
   transition: all 0.3s ease;
 }
 
 .build-btn:hover {
-  background-color: var(--button-hover-bg);
-  box-shadow: 0 0 15px var(--button-hover-bg);
+  background-color: rgb(45,101,210);
+  box-shadow: 0 0 15px rgb(45,101,210);
 }
-
+.watch-btn {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 2rem;
+  background-color: transparent;
+  color: var(--accent-blue);
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 0 10px var(--accent-blue);
+  transition: all 0.3s ease;
+}
+.watch-btn:hover{
+   background-color: var(--accent-blue);
+  box-shadow: 0 0 15px var(--accent-blue);
+  color: var(--text-primary);
+}
 .social-icons {
   display: flex;
   gap: 1rem;
@@ -196,3 +214,16 @@
   margin-top: 2rem;
 }
 
+@media (max-width: 768px) {
+  .hero-buttons {
+    flex-direction: column;
+    gap: 1.3rem;
+  }
+
+  .hero-buttons button {
+    width: 100%;
+   
+    max-width: 280px;
+    margin: auto;
+  }
+}

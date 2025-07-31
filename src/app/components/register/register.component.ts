@@ -35,6 +35,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
     password: [null, [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/)]],
     confirmPassword: [null, [Validators.required]],
     phoneNumber: [null, [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)]],
+    city: [null, [Validators.maxLength(50)]],
+    country: [null, [Validators.maxLength(50)]],
+    profilePhoto: [null],
     selectedRole: [null, [Validators.required]]
   }, { validators: this.confirmPassword });
 
@@ -88,7 +91,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
         address: this.registerForm.value.address!,
         password: this.registerForm.value.password!,
         confirmPassword: this.registerForm.value.confirmPassword!,
-        phoneNumber: this.registerForm.value.phoneNumber!
+        phoneNumber: this.registerForm.value.phoneNumber!,
+        city: this.registerForm.value.city || undefined,
+        country: this.registerForm.value.country || undefined,
+        profilePhoto: this.registerForm.value.profilePhoto || undefined
       };
 
       // Get the selected role
@@ -136,8 +142,29 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   getSelectedRoleName(): string {
-    const selectedRoleId = this.registerForm.get('selectedRole')?.value;
-    const selectedRole = this.availableRoles.find(role => role.id === selectedRoleId);
-    return selectedRole ? selectedRole.name : 'No role selected';
+    const selectedRole = this.registerForm.value.selectedRole;
+    const role = this.availableRoles.find(r => r.id === selectedRole);
+    return role ? role.name : '';
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.errMassage = 'Please select a valid image file';
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        this.errMassage = 'Image size should be less than 5MB';
+        return;
+      }
+
+      this.registerForm.patchValue({
+        profilePhoto: file
+      });
+    }
   }
 }

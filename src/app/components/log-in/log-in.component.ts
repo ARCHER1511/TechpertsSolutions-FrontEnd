@@ -84,6 +84,9 @@ export class LogInComponent {
               if (res.data?.pcAssemblyId) {
                 localStorage.setItem('pcAssemblyId', res.data.pcAssemblyId);
               }
+              if (res.data?.profilePhotoUrl) {
+                localStorage.setItem('profilePhotoUrl', res.data.profilePhotoUrl);
+              }
               
               console.log('Stored IDs:', {
                 userId: res.data?.userId,
@@ -93,7 +96,8 @@ export class LogInComponent {
                 deliveryPersonId: res.data?.deliveryPersonId,
                 cartId: res.data?.cartId,
                 wishListId: res.data?.wishListId,
-                pcAssemblyId: res.data?.pcAssemblyId
+                pcAssemblyId: res.data?.pcAssemblyId,
+                profilePhotoUrl: res.data?.profilePhotoUrl
               });
               
               // Verify storage

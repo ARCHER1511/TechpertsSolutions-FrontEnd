@@ -1,10 +1,11 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, HostListener, inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { Observable } from "rxjs";
+import { Component, HostListener, inject, OnInit, PLATFORM_ID, OnDestroy } from "@angular/core";
+import { Observable, Subscription } from "rxjs";
 import { AuthService } from "../../Services/auth.service";
 import { CartService } from "../../Services/cart.service";
 import { WishlistService } from "../../Services/wishlist.service";
 import { RouterLink, RouterLinkActive } from "@angular/router";
+import { ImageUtilityService } from "../../Services/image-utility.service";
 
 @Component({
   selector: 'app-nav-bar',
@@ -14,7 +15,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
   styleUrls: ['./nav-bar.component.css']
 })
 
-export class NavBarComponent implements OnInit {
+export class NavBarComponent implements OnInit, OnDestroy {
   isLogedIn = false;
   isDarkMode = false;
   scrolled = false;
@@ -31,10 +32,14 @@ export class NavBarComponent implements OnInit {
   wishlistUpdated = false;
 
   userName: string | null = null;
+  profilePhotoUrl: string = 'assets/Images/default-profile.jpg';
+  userId: string | null = null;
 
   private _platformId = inject(PLATFORM_ID);
   private _isBrowser = isPlatformBrowser(this._platformId);
   public _authService = inject(AuthService);
+  public _imageUtilityService = inject(ImageUtilityService);
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private cartService: CartService,
@@ -62,32 +67,50 @@ export class NavBarComponent implements OnInit {
 
     if (this._isBrowser) {
       // Auth
-      this._authService.isLoggedIn$.subscribe(status => {
-        this.isLogedIn = status;
-      });
+      this.subscriptions.push(
+        this._authService.isLoggedIn$.subscribe(status => {
+          this.isLogedIn = status;
+          if (status) {
+            this.loadProfilePhoto();
+          } else {
+            this.profilePhotoUrl = 'assets/Images/default-profile.jpg';
+          }
+        })
+      );
 
-      this._authService.userName$.subscribe(name => {
-        this.userName = name;
-      });
+      this.subscriptions.push(
+        this._authService.userName$.subscribe(name => {
+          this.userName = name;
+        })
+      );
 
       // Cart count
-      this.cartService.getCart().subscribe(items => {
-        const newCount = items.reduce((sum, i) => sum + i.quantity, 0);
-        if (newCount !== this.cartCount) {
-          this.cartCount = newCount;
-          this.triggerCartAnimation();
-        }
-      });
+      this.subscriptions.push(
+        this.cartService.getCart().subscribe(items => {
+          const newCount = items.reduce((sum, i) => sum + i.quantity, 0);
+          if (newCount !== this.cartCount) {
+            this.cartCount = newCount;
+            this.triggerCartAnimation();
+          }
+        })
+      );
 
       // Wishlist count
-      this.wishlistService.getLoggedWishList().subscribe(res => {
-        const newCount = res.data?.items?.length || 0;
-        if (newCount !== this.wishlistCount) {
-          this.wishlistCount = newCount;
-          this.triggerWishlistAnimation();
-        }
-      });
+      this.subscriptions.push(
+        this.wishlistService.getLoggedWishList().subscribe(res => {
+          const newCount = res.data?.items?.length || 0;
+          if (newCount !== this.wishlistCount) {
+            this.wishlistCount = newCount;
+            this.triggerWishlistAnimation();
+          }
+        })
+      );
     }
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   triggerCartAnimation() {
@@ -154,5 +177,38 @@ export class NavBarComponent implements OnInit {
 
   logout(): void {
     this._authService.logOut();
+  }
+
+  loadProfilePhoto(): void {
+    if (this._isBrowser) {
+      this.userId = localStorage.getItem('customerId');
+      const storedPhotoName = localStorage.getItem('profilePhotoUrl') || 'photo';
+      
+      if (this.userId) {
+        // Try to get profile image from API first
+        this.subscriptions.push(
+          this._imageUtilityService.getProfileImageUrlFromAPI(this.userId, storedPhotoName).subscribe({
+            next: (imageUrl) => {
+              this.profilePhotoUrl = imageUrl;
+            },
+            error: (error) => {
+              console.warn('Failed to load profile image from API, using default:', error);
+              // Fallback to static URL
+              this.profilePhotoUrl = this._imageUtilityService.getProfileImageUrl(this.userId, storedPhotoName);
+            }
+          })
+        );
+      } else {
+        // No user ID, use default profile image
+        this.profilePhotoUrl = 'assets/Images/default-profile.jpg';
+      }
+    }
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      img.src = 'assets/Images/default-profile.jpg';
+    }
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment';
+import { ImageUtilityService } from './image-utility.service';
 
 export interface ImageUploadRequest {
   file: File;
@@ -30,9 +31,12 @@ export interface ImageValidationResponse {
   providedIn: 'root'
 })
 export class ImageUploadService {
-  private apiUrl = `${Environment.baseUrl}/ImageUpload`;
+  private apiUrl = `${Environment.baseImageUrl}/ImageUpload`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private imageUtility: ImageUtilityService
+  ) {}
 
   // Upload image
   uploadImage(file: File, controllerName: string): Observable<ImageUploadResponse> {
@@ -85,5 +89,45 @@ export class ImageUploadService {
   // Delete subcategory image
   deleteSubCategoryImage(subCategoryId: string): Observable<any> {
     return this.http.delete(`${Environment.baseUrl}/SubCategory/${subCategoryId}/delete-image`);
+  }
+
+  /**
+   * Constructs an image URL according to the pattern: localhost/7230/assets/controllername/photo
+   * @param controllerName - The controller name (e.g., 'product', 'category', 'profile')
+   * @param photoName - The photo filename (optional, defaults to 'photo')
+   * @returns The complete image URL
+   */
+  constructImageUrl(controllerName: string, photoName: string = 'photo'): string {
+    return this.imageUtility.getImageUrl(controllerName, photoName);
+  }
+
+  /**
+   * Constructs a product image URL
+   * @param productId - The product ID
+   * @param photoName - The photo filename (optional, defaults to 'photo')
+   * @returns The complete product image URL
+   */
+  constructProductImageUrl(productId: string, photoName: string = 'photo'): string {
+    return this.imageUtility.getProductImageUrl(productId, photoName);
+  }
+
+  /**
+   * Constructs a category image URL
+   * @param categoryId - The category ID
+   * @param photoName - The photo filename (optional, defaults to 'photo')
+   * @returns The complete category image URL
+   */
+  constructCategoryImageUrl(categoryId: string, photoName: string = 'photo'): string {
+    return this.imageUtility.getCategoryImageUrl(categoryId, photoName);
+  }
+
+  /**
+   * Constructs a profile image URL
+   * @param userId - The user ID
+   * @param photoName - The photo filename (optional, defaults to 'photo')
+   * @returns The complete profile image URL
+   */
+  constructProfileImageUrl(userId: string, photoName: string = 'photo'): string {
+    return this.imageUtility.getProfileImageUrl(userId, photoName);
   }
 } 

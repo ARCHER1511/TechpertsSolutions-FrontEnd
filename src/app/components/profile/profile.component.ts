@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
@@ -11,6 +11,8 @@ import { OrderService } from '../../Services/order.service';
 import { WishlistService } from '../../Services/wishlist.service';
 import { MaintenanceService } from '../../Services/maintenance.service';
 import { DeliveryService } from '../../Services/delivery.service';
+import { ImageUtilityService } from '../../Services/image-utility.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -19,10 +21,11 @@ import { DeliveryService } from '../../Services/delivery.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   userData: any = null;
   userRoles: string[] = [];
   roleSpecificData: any = {};
+  profilePhotoUrl: string = 'assets/Images/default-profile.jpg';
   quickStats: any = {
     totalOrders: 0,
     totalWishlist: 0,
@@ -36,6 +39,9 @@ export class ProfileComponent implements OnInit {
 
   // Add localStorage property for template access
   localStorage = localStorage;
+
+  private imageUtilityService = inject(ImageUtilityService);
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private authService: AuthService,
@@ -60,6 +66,11 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   private setDefaultRoles(): void {
     // For testing - set all four roles
     this.userRoles = ['Admin', 'TechCompany', 'Customer', 'DeliveryPerson'];
@@ -76,6 +87,9 @@ export class ProfileComponent implements OnInit {
     if (userRoles) {
       this.userRoles = JSON.parse(userRoles);
     }
+
+    // Load profile photo
+    this.loadProfilePhoto();
 
     console.log('Profile loading - User roles:', this.userRoles);
     console.log('Profile loading - localStorage data:', {
@@ -99,6 +113,30 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  private loadProfilePhoto(): void {
+    const userId = localStorage.getItem('customerId') || localStorage.getItem('userId');
+    const storedPhotoName = localStorage.getItem('profilePhotoUrl') || 'photo';
+    
+    if (userId) {
+      // Try to get profile image from API first
+      this.subscriptions.push(
+        this.imageUtilityService.getProfileImageUrlFromAPI(userId, storedPhotoName).subscribe({
+          next: (imageUrl) => {
+            this.profilePhotoUrl = imageUrl;
+          },
+          error: (error) => {
+            console.warn('Failed to load profile image from API, using static URL:', error);
+            // Fallback to static URL
+            this.profilePhotoUrl = this.imageUtilityService.getProfileImageUrl(userId, storedPhotoName);
+          }
+        })
+      );
+    } else {
+      // No user ID, use default profile image
+      this.profilePhotoUrl = 'assets/Images/default-profile.jpg';
+    }
+  }
+
   private loadUserDataByRole(userId: string | null): void {
     if (!userId) {
       // If no user ID, try to load basic user data from localStorage
@@ -107,29 +145,31 @@ export class ProfileComponent implements OnInit {
     }
 
     // Try to load customer data first
-    this.customerService.getCustomerById(userId).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.userData = response.data;
-        } else {
+    this.subscriptions.push(
+      this.customerService.getCustomerById(userId).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.userData = response.data;
+          } else {
+            // If customer data fails, try to load basic user data
+            this.loadBasicUserData();
+          }
+          
+          // Load additional data based on roles regardless of customer data success
+          this.loadRoleSpecificData();
+          this.loadQuickStats();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading customer data:', err);
           // If customer data fails, try to load basic user data
           this.loadBasicUserData();
+          this.loadRoleSpecificData();
+          this.loadQuickStats();
+          this.loading = false;
         }
-        
-        // Load additional data based on roles regardless of customer data success
-        this.loadRoleSpecificData();
-        this.loadQuickStats();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading customer data:', err);
-        // If customer data fails, try to load basic user data
-        this.loadBasicUserData();
-        this.loadRoleSpecificData();
-        this.loadQuickStats();
-        this.loading = false;
-      }
-    });
+      })
+    );
   }
 
   private loadBasicUserData(): void {
@@ -165,16 +205,18 @@ export class ProfileComponent implements OnInit {
     const techCompanyId = localStorage.getItem('techCompanyId');
     if (techCompanyId) {
       console.log('Loading tech company data for ID:', techCompanyId);
-      this.techCompanyService.getTechCompanyById(techCompanyId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.roleSpecificData.techCompany = response.data;
+      this.subscriptions.push(
+        this.techCompanyService.getTechCompanyById(techCompanyId).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.roleSpecificData.techCompany = response.data;
+            }
+          },
+          error: (err) => {
+            console.error('Error loading tech company data:', err);
           }
-        },
-        error: (err) => {
-          console.error('Error loading tech company data:', err);
-        }
-      });
+        })
+      );
     } else {
       console.error('Tech company ID not found in localStorage');
     }
@@ -184,16 +226,18 @@ export class ProfileComponent implements OnInit {
     const deliveryPersonId = localStorage.getItem('deliveryPersonId');
     if (deliveryPersonId) {
       console.log('Loading delivery person data for ID:', deliveryPersonId);
-      this.deliveryPersonService.getDeliveryPersonById(deliveryPersonId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.roleSpecificData.deliveryPerson = response.data;
+      this.subscriptions.push(
+        this.deliveryPersonService.getDeliveryPersonById(deliveryPersonId).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.roleSpecificData.deliveryPerson = response.data;
+            }
+          },
+          error: (err) => {
+            console.error('Error loading delivery person data:', err);
           }
-        },
-        error: (err) => {
-          console.error('Error loading delivery person data:', err);
-        }
-      });
+        })
+      );
     } else {
       console.error('Delivery person ID not found in localStorage');
     }
@@ -203,16 +247,18 @@ export class ProfileComponent implements OnInit {
     const adminId = localStorage.getItem('adminId');
     if (adminId) {
       console.log('Loading admin data for ID:', adminId);
-      this.adminService.getAdminById(adminId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.roleSpecificData.admin = response.data;
+      this.subscriptions.push(
+        this.adminService.getAdminById(adminId).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.roleSpecificData.admin = response.data;
+            }
+          },
+          error: (err) => {
+            console.error('Error loading admin data:', err);
           }
-        },
-        error: (err) => {
-          console.error('Error loading admin data:', err);
-        }
-      });
+        })
+      );
     } else {
       console.error('Admin ID not found in localStorage');
     }
@@ -230,31 +276,35 @@ export class ProfileComponent implements OnInit {
 
     // Load customer orders only if user has customer role
     if (this.isCustomer()) {
-      this.orderService.getOrdersByCustomer(currentUserId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.quickStats.totalOrders = response.data.length;
-            this.quickStats.activeOrders = response.data.filter((order: any) => 
-              order.status !== 'Delivered' && order.status !== 'Cancelled'
-            ).length;
+      this.subscriptions.push(
+        this.orderService.getOrdersByCustomer(currentUserId).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.quickStats.totalOrders = response.data.length;
+              this.quickStats.activeOrders = response.data.filter((order: any) => 
+                order.status !== 'Delivered' && order.status !== 'Cancelled'
+              ).length;
+            }
+          },
+          error: (err) => {
+            console.error('Error loading orders:', err);
           }
-        },
-        error: (err) => {
-          console.error('Error loading orders:', err);
-        }
-      });
+        })
+      );
 
       // Load wishlist items only if user has customer role
-      this.wishlistService.getWishListByCustomerId(currentUserId).subscribe({
-        next: (response: any) => {
-          if (response.success) {
-            this.quickStats.wishlistItems = response.data.items?.length || 0;
+      this.subscriptions.push(
+        this.wishlistService.getWishListByCustomerId(currentUserId).subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              this.quickStats.wishlistItems = response.data.items?.length || 0;
+            }
+          },
+          error: (err: any) => {
+            console.error('Error loading wishlist:', err);
           }
-        },
-        error: (err: any) => {
-          console.error('Error loading wishlist:', err);
-        }
-      });
+        })
+      );
     }
 
     // Load role-specific stats
@@ -281,16 +331,18 @@ export class ProfileComponent implements OnInit {
     const techCompanyId = localStorage.getItem('techCompanyId');
     if (techCompanyId) {
       // Load maintenance requests
-      this.maintenanceService.getMaintenanceByTechCompany(techCompanyId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.quickStats.maintenanceRequests = response.data.length;
+      this.subscriptions.push(
+        this.maintenanceService.getMaintenanceByTechCompany(techCompanyId).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.quickStats.maintenanceRequests = response.data.length;
+            }
+          },
+          error: (err) => {
+            console.error('Error loading tech company stats:', err);
           }
-        },
-        error: (err) => {
-          console.error('Error loading tech company stats:', err);
-        }
-      });
+        })
+      );
     }
   }
 
@@ -298,16 +350,18 @@ export class ProfileComponent implements OnInit {
     const deliveryPersonId = localStorage.getItem('deliveryPersonId');
     if (deliveryPersonId) {
       // Load deliveries
-      this.deliveryService.getDeliveriesByDeliveryPerson(deliveryPersonId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.quickStats.deliveries = response.data.length;
+      this.subscriptions.push(
+        this.deliveryService.getDeliveriesByDeliveryPerson(deliveryPersonId).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.quickStats.deliveries = response.data.length;
+            }
+          },
+          error: (err) => {
+            console.error('Error loading delivery person stats:', err);
           }
-        },
-        error: (err) => {
-          console.error('Error loading delivery person stats:', err);
-        }
-      });
+        })
+      );
     }
   }
 
@@ -315,17 +369,19 @@ export class ProfileComponent implements OnInit {
     const adminId = localStorage.getItem('adminId');
     if (adminId) {
       // Load admin stats
-      this.adminService.getDashboardStats().subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.quickStats.pendingProducts = response.data.pendingProducts || 0;
-            this.quickStats.totalOrders = response.data.totalOrders || 0;
+      this.subscriptions.push(
+        this.adminService.getDashboardStats().subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.quickStats.pendingProducts = response.data.pendingProducts || 0;
+              this.quickStats.totalOrders = response.data.totalOrders || 0;
+            }
+          },
+          error: (err) => {
+            console.error('Error loading admin stats:', err);
           }
-        },
-        error: (err) => {
-          console.error('Error loading admin stats:', err);
-        }
-      });
+        })
+      );
     }
   }
 
@@ -359,6 +415,21 @@ export class ProfileComponent implements OnInit {
     } else {
       return '/customer/orders';
     }
+  }
+
+  redirectToDashboard(): void {
+    // Only redirect if user has a clear primary role
+    const dashboardRoute = this.getDashboardRoute();
+    
+    // Check if we're already on a dashboard page to avoid infinite redirects
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('/dashboard') || currentPath.includes('/customer/') || 
+        currentPath.includes('/tech-company/') || currentPath.includes('/delivery/')) {
+      return;
+    }
+    
+    // Redirect to appropriate dashboard
+    window.location.href = dashboardRoute;
   }
 
   getPrimaryRole(): string {
@@ -412,5 +483,28 @@ export class ProfileComponent implements OnInit {
       default:
         return 'bi-person';
     }
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      img.src = 'assets/Images/default-profile.jpg';
+    }
+  }
+
+  logout(): void {
+    // Clear all stored data
+    localStorage.clear();
+    // Redirect to login page
+    window.location.href = '/login';
+  }
+
+  hasAnyDashboardAccess(): boolean {
+    return this.isAdmin() || this.isTechCompany() || this.isDeliveryPerson() || this.isCustomer();
+  }
+
+  contactAdmin(): void {
+    // You can implement this to open a contact form or redirect to contact page
+    window.location.href = '/contact';
   }
 } 

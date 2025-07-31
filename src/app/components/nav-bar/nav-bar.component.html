@@ -102,8 +102,18 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
+            @if (profilePhotoUrl) {
+            <img 
+              [src]="profilePhotoUrl" 
+              [alt]="userName || 'Profile'"
+              class="profile-photo me-2"
+              (error)="onImageError($event)"
+            />
+            } @else {
+            <i class="bi bi-person-circle me-1"></i>
+            }
             @if (userName) {
-            <i class="bi bi-person-circle me-1"></i> {{ userName }}
+            {{ userName }}
             }
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -114,7 +124,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/setting">
+              <a class="dropdown-item" routerLink="/profile-settings">
                 <i class="bi bi-gear me-2"></i>
                 Settings
               </a>

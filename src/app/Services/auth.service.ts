@@ -36,29 +36,60 @@ export class AuthService {
     return this._isBrowser && !!localStorage.getItem('userToken');
   }
 
-  // Register user with proper interface
+  // Helper method to convert object to FormData
+  private objectToFormData(obj: any): FormData {
+    const formData = new FormData();
+    
+    Object.keys(obj).forEach(key => {
+      const value = obj[key];
+      if (value !== null && value !== undefined) {
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else if (typeof value === 'boolean') {
+          formData.append(key, value.toString());
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+    
+    return formData;
+  }
+
+  // Register user with FormData
   register(data: RegisterRequest, role: string): Observable<AuthResponse> {
-    return this._HttpClient.post<AuthResponse>(`${Environment.baseUrl}/Authentication/register?role=${role}`, data);
+    const formData = this.objectToFormData(data);
+    formData.append('role', role);
+    
+    return this._HttpClient.post<AuthResponse>(`${Environment.baseUrl}/Authentication/register`, formData);
   }
 
-  // Login user with proper interface
+  // Login user with FormData
   login(data: LoginRequest): Observable<AuthResponse> {
-    return this._HttpClient.post<AuthResponse>(`${Environment.baseUrl}/Authentication/login`, data);
+    const formData = this.objectToFormData(data);
+    
+    return this._HttpClient.post<AuthResponse>(`${Environment.baseUrl}/Authentication/login`, formData);
   }
 
-  // Forgot password
+  // Forgot password with FormData
   forgotPassword(data: ForgotPasswordRequest): Observable<any> {
-    return this._HttpClient.post(`${Environment.baseUrl}/Authentication/forgot-password`, data);
+    const formData = this.objectToFormData(data);
+    
+    return this._HttpClient.post(`${Environment.baseUrl}/Authentication/forgot-password`, formData);
   }
 
-  // Reset password
+  // Reset password with FormData
   resetPassword(data: ResetPasswordRequest): Observable<any> {
-    return this._HttpClient.post(`${Environment.baseUrl}/Authentication/reset-password`, data);
+    const formData = this.objectToFormData(data);
+    
+    return this._HttpClient.post(`${Environment.baseUrl}/Authentication/reset-password`, formData);
   }
 
-  // Delete account
-  deleteAccount(): Observable<any> {
-    return this._HttpClient.delete(`${Environment.baseUrl}/Authentication/delete-account`);
+  // Delete account with FormData
+  deleteAccount(data?: any): Observable<any> {
+    const formData = data ? this.objectToFormData(data) : new FormData();
+    
+    return this._HttpClient.delete(`${Environment.baseUrl}/Authentication/delete-account`, { body: formData });
   }
 
   // Legacy method for backward compatibility
@@ -129,6 +160,7 @@ export class AuthService {
     localStorage.removeItem('cartId');
     localStorage.removeItem('wishListId');
     localStorage.removeItem('pcAssemblyId');
+    localStorage.removeItem('profilePhotoUrl');
 
     this.userData = null;
     this.customerId = null;

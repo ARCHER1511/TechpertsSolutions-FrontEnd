@@ -5,11 +5,13 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { WishlistService } from '../../../../Services/wishlist.service';
 import { ToastrService } from 'ngx-toastr';
+import { ImageUtilityService } from '../../../../Services/image-utility.service';
+import { ImageUrlPipe } from '../../../../Pipes/image-url.pipe';
 
 @Component({
   selector: 'app-product-item',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ImageUrlPipe],
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.css'
 })
@@ -21,6 +23,7 @@ export class ProductItemComponent implements OnInit {
   _cartService = inject(CartService);
   _wishlistService = inject(WishlistService);
   _toastr = inject(ToastrService);
+  _imageUtility = inject(ImageUtilityService);
 
   ngOnInit(): void {
     console.log('Product item initialized with:', this.productC);
@@ -35,7 +38,23 @@ export class ProductItemComponent implements OnInit {
   }
 
   onImgError(event: Event) {
-    (event.target as HTMLImageElement).src = 'https://picsum.photos/seed/' + this.productC.id + '/300/200';
+    // Use the new image utility service to construct the correct image URL
+    const imageUrl = this._imageUtility.getProductImageUrl(this.productC.id);
+    (event.target as HTMLImageElement).src = imageUrl;
+  }
+
+  /**
+   * Get the correct image URL for the product
+   * @returns The formatted image URL
+   */
+  getProductImageUrl(): string {
+    // If the product already has a valid imageUrl, use it
+    if (this.productC.imageUrl && this._imageUtility.isValidImageUrl(this.productC.imageUrl)) {
+      return this.productC.imageUrl;
+    }
+    
+    // Otherwise, construct the URL using the new pattern
+    return this._imageUtility.getProductImageUrl(this.productC.id);
   }
 
   onAddToWishlist(product: IProduct) {

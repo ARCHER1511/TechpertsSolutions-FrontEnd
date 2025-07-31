@@ -2,10 +2,13 @@ export interface RegisterRequest {
   fullName: string;
   userName: string;
   email: string;
-  address: string;
   password: string;
   confirmPassword: string;
+  address: string;
   phoneNumber: string;
+  city?: string;
+  country?: string;
+  profilePhoto?: File;
 }
 
 export interface RegisterRequestWithRole extends RegisterRequest {
@@ -29,6 +32,10 @@ export interface ResetPasswordRequest {
   confirmPassword: string;
 }
 
+export interface DeleteAccountRequest {
+  password: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -46,6 +53,7 @@ export interface AuthResponse {
     wishListId?: string;
     pcAssemblyId?: string | null;
     expiresAt?: string;
+    profilePhotoUrl?: string;
   };
 }
 

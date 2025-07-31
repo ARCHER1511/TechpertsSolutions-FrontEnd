@@ -89,6 +89,53 @@
               </div>
             </div>
 
+            <!-- City and Country -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="city" class="block text-sm font-medium mb-2">City (Optional)</label>
+                <div class="relative">
+                  <i class="bi bi-building absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                  <input 
+                    type="text" 
+                    id="city" 
+                    formControlName="city"
+                    class="form-input pl-10 w-full"
+                    placeholder="Enter your city"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="country" class="block text-sm font-medium mb-2">Country (Optional)</label>
+                <div class="relative">
+                  <i class="bi bi-globe absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                  <input 
+                    type="text" 
+                    id="country" 
+                    formControlName="country"
+                    class="form-input pl-10 w-full"
+                    placeholder="Enter your country"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Photo -->
+            <div>
+              <label for="profilePhoto" class="block text-sm font-medium mb-2">Profile Photo (Optional)</label>
+              <div class="relative">
+                <i class="bi bi-camera absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input 
+                  type="file" 
+                  id="profilePhoto" 
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                  class="form-input pl-10 w-full"
+                />
+              </div>
+              <p class="text-xs text-tertiary mt-1">Max file size: 5MB. Supported formats: JPG, PNG, GIF</p>
+            </div>
+
             <!-- Password -->
             <div>
               <label for="password" class="block text-sm font-medium mb-2">Password</label>

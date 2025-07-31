@@ -11,22 +11,47 @@ export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
     const rolesService = inject(RolesService);
 
     // Check if user is logged in
-    if (!authService.userData || !authService.customerId) {
+    if (!authService.userData || (!authService.customerId && 
+        !localStorage.getItem('techCompanyId') && 
+        !localStorage.getItem('deliveryPersonId') && 
+        !localStorage.getItem('adminId'))) {
       router.navigate(['/login']);
       return false;
     }
 
-    // For now, we'll use a simple approach
-    // In a real app, you'd check the user's roles from the JWT token or API
+    // Check user roles from localStorage
     const userRoles = localStorage.getItem('userRoles');
     
     if (userRoles) {
-      const roles = JSON.parse(userRoles);
-      const hasRequiredRole = allowedRoles.some(role => roles.includes(role));
-      
-      if (hasRequiredRole) {
-        return true;
+      try {
+        const roles = JSON.parse(userRoles);
+        const hasRequiredRole = allowedRoles.some(role => roles.includes(role));
+        
+        if (hasRequiredRole) {
+          return true;
+        }
+      } catch (error) {
+        console.error('Error parsing user roles:', error);
       }
+    }
+
+    // Fallback: Check based on stored IDs
+    const customerId = localStorage.getItem('customerId');
+    const techCompanyId = localStorage.getItem('techCompanyId');
+    const deliveryPersonId = localStorage.getItem('deliveryPersonId');
+    const adminId = localStorage.getItem('adminId');
+
+    if (allowedRoles.includes('Customer') && customerId) {
+      return true;
+    }
+    if (allowedRoles.includes('TechCompany') && techCompanyId) {
+      return true;
+    }
+    if (allowedRoles.includes('DeliveryPerson') && deliveryPersonId) {
+      return true;
+    }
+    if (allowedRoles.includes('Admin') && adminId) {
+      return true;
     }
 
     // If no roles found or user doesn't have required role

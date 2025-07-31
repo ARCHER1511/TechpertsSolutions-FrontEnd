@@ -41,127 +41,404 @@ export const routes: Routes = [
   { path: 'test-comparison', loadComponent: () => import('./components/pc-compare/test-comparison.component').then(m => m.TestComparisonComponent), title: 'Test Comparison' },
   { path: 'debug-specifications', loadComponent: () => import('./components/pc-compare/debug-specifications.component').then(m => m.DebugSpecificationsComponent), title: 'Debug Specifications' },
 
-  // Profile Route
-  { path: 'profile', loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent), title: 'Profile', canActivate: [authGuard] },
+  // Image URL Demo Route
+  { path: 'image-url-demo', loadComponent: () => import('./components/image-url-demo/image-url-demo.component').then(m => m.ImageUrlDemoComponent), title: 'Image URL Demo' },
 
-  // Admin Dashboard Routes
+  // Profile Route - Smart redirect based on user role
+  { 
+    path: 'profile', 
+    loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent), 
+    title: 'Profile', 
+    canActivate: [authGuard] 
+  },
+
+  // Profile Settings Route - Accessible to all authenticated users
+  { path: 'profile-settings', loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent), title: 'Profile Settings', canActivate: [authGuard] },
+
+  // Admin Dashboard Routes - Comprehensive
   {
     path: 'dashboard',
     loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent),
     title: 'Admin Dashboard',
     canActivate: [authGuard, adminGuard],
     children: [
+      // Overview
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
       {
-        path: 'customers',
-        loadComponent: () => import('./components/dashboard/components/customers/customers.component').then(m => m.CustomersComponent),
-        title: 'Dashboard Customers'
+        path: 'overview',
+        loadComponent: () => import('./components/dashboard/pages/overview/overview.component').then(m => m.OverviewComponent),
+        title: 'Dashboard Overview'
       },
+      
+      // Product Management
       {
-        path: 'new-customer',
-        loadComponent: () => import('./components/dashboard/components/add-new-customer/add-new-customer.component').then(m => m.AddNewCustomerComponent),
-        title: 'Dashboard New Customer'
-      },
-      {
-        path: 'edit-customer',
-        loadComponent: () => import('./components/dashboard/components/edit-customer/edit-customer.component').then(m => m.EditCustomerComponent),
-        title: 'Edit Customer'
+        path: 'products',
+        loadComponent: () => import('./components/dashboard/pages/products/products.component').then(m => m.ProductsComponent),
+        title: 'All Products'
       },
       {
         path: 'pending-products',
-        loadComponent: () => import('./components/dashboard/components/pending-products/pending-products.component').then(m => m.PendingProductsComponent),
+        loadComponent: () => import('./components/dashboard/pages/pending-products/pending-products.component').then(m => m.PendingProductsComponent),
         title: 'Pending Products'
       },
       {
         path: 'create-product',
-        loadComponent: () => import('./components/dashboard/components/create-product/create-product.component').then(m => m.CreateProductComponent),
+        loadComponent: () => import('./components/dashboard/pages/create-product/create-product.component').then(m => m.CreateProductComponent),
         title: 'Create Product'
       },
       {
-        path: 'role-management',
-        loadComponent: () => import('./components/dashboard/components/role-management/role-management.component').then(m => m.RoleManagementComponent),
-        title: 'Role Management'
+        path: 'edit-product/:id',
+        loadComponent: () => import('./components/dashboard/pages/edit-product/edit-product.component').then(m => m.EditProductComponent),
+        title: 'Edit Product'
+      },
+      
+      // Order Management
+      {
+        path: 'orders',
+        loadComponent: () => import('./components/dashboard/pages/orders/orders.component').then(m => m.OrdersComponent),
+        title: 'All Orders'
+      },
+      {
+        path: 'order-details/:id',
+        loadComponent: () => import('./components/dashboard/pages/order-details/order-details.component').then(m => m.OrderDetailsComponent),
+        title: 'Order Details'
+      },
+      
+      // User Management
+      {
+        path: 'customers',
+        loadComponent: () => import('./components/dashboard/pages/customers/customers.component').then(m => m.CustomersComponent),
+        title: 'All Customers'
+      },
+      {
+        path: 'tech-companies',
+        loadComponent: () => import('./components/dashboard/pages/tech-companies/tech-companies.component').then(m => m.TechCompaniesComponent),
+        title: 'Tech Companies'
+      },
+      {
+        path: 'delivery-persons',
+        loadComponent: () => import('./components/dashboard/pages/delivery-persons/delivery-persons.component').then(m => m.DeliveryPersonsComponent),
+        title: 'Delivery Persons'
+      },
+      {
+        path: 'user-details/:id',
+        loadComponent: () => import('./components/dashboard/pages/user-details/user-details.component').then(m => m.UserDetailsComponent),
+        title: 'User Details'
+      },
+      
+      // Service Management
+      {
+        path: 'maintenance-requests',
+        loadComponent: () => import('./components/dashboard/pages/maintenance-requests/maintenance-requests.component').then(m => m.MaintenanceRequestsComponent),
+        title: 'Maintenance Requests'
+      },
+      {
+        path: 'pc-assemblies',
+        loadComponent: () => import('./components/dashboard/pages/pc-assemblies/pc-assemblies.component').then(m => m.PcAssembliesComponent),
+        title: 'PC Assemblies'
+      },
+      
+      // Delivery Management
+      {
+        path: 'deliveries',
+        loadComponent: () => import('./components/dashboard/pages/deliveries/deliveries.component').then(m => m.DeliveriesComponent),
+        title: 'All Deliveries'
+      },
+      {
+        path: 'assign-delivery',
+        loadComponent: () => import('./components/dashboard/pages/assign-delivery/assign-delivery.component').then(m => m.AssignDeliveryComponent),
+        title: 'Assign Delivery'
+      },
+      
+      // Commission Management
+      {
+        path: 'commissions',
+        loadComponent: () => import('./components/dashboard/pages/commissions/commissions.component').then(m => m.CommissionsComponent),
+        title: 'Commission Management'
+      },
+      {
+        path: 'commission-settings',
+        loadComponent: () => import('./components/dashboard/pages/commission-settings/commission-settings.component').then(m => m.CommissionSettingsComponent),
+        title: 'Commission Settings'
+      },
+      
+      // Category Management
+      {
+        path: 'categories',
+        loadComponent: () => import('./components/dashboard/pages/categories/categories.component').then(m => m.CategoriesComponent),
+        title: 'Categories'
+      },
+      {
+        path: 'subcategories',
+        loadComponent: () => import('./components/dashboard/pages/subcategories/subcategories.component').then(m => m.SubcategoriesComponent),
+        title: 'Subcategories'
+      },
+      
+      // Notifications
+      {
+        path: 'notifications',
+        loadComponent: () => import('./components/dashboard/pages/notifications/notifications.component').then(m => m.NotificationsComponent),
+        title: 'Notifications'
+      },
+      
+      // Analytics & Reports
+      {
+        path: 'analytics',
+        loadComponent: () => import('./components/dashboard/pages/analytics/analytics.component').then(m => m.AnalyticsComponent),
+        title: 'Analytics'
+      },
+      {
+        path: 'reports',
+        loadComponent: () => import('./components/dashboard/pages/reports/reports.component').then(m => m.ReportsComponent),
+        title: 'Reports'
+      },
+      
+      // Profile Settings
+      {
+        path: 'profile-settings',
+        loadComponent: () => import('./components/dashboard/pages/profile-settings/profile-settings.component').then(m => m.ProfileSettingsComponent),
+        title: 'Profile Settings'
       }
     ]
   },
 
-  // Tech Company Routes
+  // Tech Company Dashboard Routes - Comprehensive
   {
     path: 'tech-company',
     canActivate: [authGuard, techCompanyGuard],
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
         loadComponent: () => import('./components/tech-company-dashboard/tech-company-dashboard.component').then(m => m.TechCompanyDashboardComponent),
         title: 'Tech Company Dashboard'
       },
+      
+      // Product Management
       {
-        path: 'maintenance',
-        loadComponent: () => import('./components/maintenance/maintenance.component').then(m => m.MaintenanceComponent),
+        path: 'products',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/products/products.component').then(m => m.ProductsComponent),
+        title: 'My Products'
+      },
+      {
+        path: 'create-product',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/create-product/create-product.component').then(m => m.CreateProductComponent),
+        title: 'Create Product'
+      },
+      {
+        path: 'edit-product/:id',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/edit-product/edit-product.component').then(m => m.EditProductComponent),
+        title: 'Edit Product'
+      },
+      
+      // Service Management
+      {
+        path: 'maintenance-requests',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/maintenance-requests/maintenance-requests.component').then(m => m.MaintenanceRequestsComponent),
         title: 'Maintenance Requests'
       },
       {
-        path: 'products',
-        loadComponent: () => import('./components/tech-company-products/tech-company-products.component').then(m => m.TechCompanyProductsComponent),
-        title: 'My Products'
+        path: 'pc-assemblies',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/pc-assemblies/pc-assemblies.component').then(m => m.PcAssembliesComponent),
+        title: 'PC Assembly Requests'
+      },
+      
+      // Commission & Earnings
+      {
+        path: 'commissions',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/commissions/commissions.component').then(m => m.CommissionsComponent),
+        title: 'My Commissions'
+      },
+      {
+        path: 'earnings',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/earnings/earnings.component').then(m => m.EarningsComponent),
+        title: 'Earnings Report'
+      },
+      
+      // Profile & Settings
+      {
+        path: 'profile',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/profile/profile.component').then(m => m.ProfileComponent),
+        title: 'Company Profile'
+      },
+      {
+        path: 'profile-settings',
+        loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
+        title: 'Profile Settings'
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./components/tech-company-dashboard/pages/settings/settings.component').then(m => m.SettingsComponent),
+        title: 'Settings'
       }
     ]
   },
 
-  // Delivery Person Routes
+  // Delivery Person Dashboard Routes - Comprehensive
   {
     path: 'delivery',
     canActivate: [authGuard, deliveryPersonGuard],
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
         loadComponent: () => import('./components/delivery-dashboard/delivery-dashboard.component').then(m => m.DeliveryDashboardComponent),
         title: 'Delivery Dashboard'
       },
+      
+      // Delivery Management
       {
-        path: 'orders',
-        loadComponent: () => import('./components/delivery-orders/delivery-orders.component').then(m => m.DeliveryOrdersComponent),
-        title: 'My Deliveries'
+        path: 'active-deliveries',
+        loadComponent: () => import('./components/delivery-dashboard/pages/active-deliveries/active-deliveries.component').then(m => m.ActiveDeliveriesComponent),
+        title: 'Active Deliveries'
       },
       {
-        path: 'history',
-        loadComponent: () => import('./components/delivery-history/delivery-history.component').then(m => m.DeliveryHistoryComponent),
+        path: 'delivery-history',
+        loadComponent: () => import('./components/delivery-dashboard/pages/delivery-history/delivery-history.component').then(m => m.DeliveryHistoryComponent),
         title: 'Delivery History'
+      },
+      {
+        path: 'delivery-details/:id',
+        loadComponent: () => import('./components/delivery-dashboard/pages/delivery-details/delivery-details.component').then(m => m.DeliveryDetailsComponent),
+        title: 'Delivery Details'
+      },
+      
+      // Earnings & Performance
+      {
+        path: 'earnings',
+        loadComponent: () => import('./components/delivery-dashboard/pages/earnings/earnings.component').then(m => m.EarningsComponent),
+        title: 'My Earnings'
+      },
+      {
+        path: 'performance',
+        loadComponent: () => import('./components/delivery-dashboard/pages/performance/performance.component').then(m => m.PerformanceComponent),
+        title: 'Performance Stats'
+      },
+      
+      // Profile & Settings
+      {
+        path: 'profile',
+        loadComponent: () => import('./components/delivery-dashboard/pages/profile/profile.component').then(m => m.ProfileComponent),
+        title: 'Profile'
+      },
+      {
+        path: 'profile-settings',
+        loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
+        title: 'Profile Settings'
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./components/delivery-dashboard/pages/settings/settings.component').then(m => m.SettingsComponent),
+        title: 'Settings'
       }
     ]
   },
 
-  // Customer Routes
+  // Customer Dashboard Routes - Comprehensive
   {
     path: 'customer',
     canActivate: [authGuard, customerGuard],
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./components/customer-dashboard/customer-dashboard.component').then(m => m.CustomerDashboardComponent),
+        title: 'Customer Dashboard'
+      },
+      
+      // Orders
       {
         path: 'orders',
-        loadComponent: () => import('./components/customer-orders/customer-orders.component').then(m => m.CustomerOrdersComponent),
+        loadComponent: () => import('./components/customer-dashboard/pages/orders/orders.component').then(m => m.OrdersComponent),
         title: 'My Orders'
       },
       {
-        path: 'maintenance',
-        loadComponent: () => import('./components/customer-maintenance/customer-maintenance.component').then(m => m.CustomerMaintenanceComponent),
+        path: 'order-details/:id',
+        loadComponent: () => import('./components/customer-dashboard/pages/order-details/order-details.component').then(m => m.OrderDetailsComponent),
+        title: 'Order Details'
+      },
+      {
+        path: 'order-history',
+        loadComponent: () => import('./components/customer-dashboard/pages/order-history/order-history.component').then(m => m.OrderHistoryComponent),
+        title: 'Order History'
+      },
+      
+      // Services
+      {
+        path: 'maintenance-requests',
+        loadComponent: () => import('./components/customer-dashboard/pages/maintenance-requests/maintenance-requests.component').then(m => m.MaintenanceRequestsComponent),
         title: 'Maintenance Requests'
+      },
+      {
+        path: 'create-maintenance',
+        loadComponent: () => import('./components/customer-dashboard/pages/create-maintenance/create-maintenance.component').then(m => m.CreateMaintenanceComponent),
+        title: 'Create Maintenance Request'
+      },
+      {
+        path: 'pc-assemblies',
+        loadComponent: () => import('./components/customer-dashboard/pages/pc-assemblies/pc-assemblies.component').then(m => m.PcAssembliesComponent),
+        title: 'PC Assemblies'
+      },
+      {
+        path: 'create-pc-assembly',
+        loadComponent: () => import('./components/customer-dashboard/pages/create-pc-assembly/create-pc-assembly.component').then(m => m.CreatePcAssemblyComponent),
+        title: 'Create PC Assembly'
+      },
+      
+      // Shopping
+      {
+        path: 'wishlist',
+        loadComponent: () => import('./components/customer-dashboard/pages/wishlist/wishlist.component').then(m => m.WishlistComponent),
+        title: 'My Wishlist'
+      },
+      {
+        path: 'cart',
+        loadComponent: () => import('./components/customer-dashboard/pages/cart/cart.component').then(m => m.CartComponent),
+        title: 'My Cart'
+      },
+      
+      // Profile & Settings
+      {
+        path: 'profile',
+        loadComponent: () => import('./components/customer-dashboard/pages/profile/profile.component').then(m => m.ProfileComponent),
+        title: 'Profile'
+      },
+      {
+        path: 'profile-settings',
+        loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
+        title: 'Profile Settings'
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./components/customer-dashboard/pages/settings/settings.component').then(m => m.SettingsComponent),
+        title: 'Settings'
+      },
+      {
+        path: 'notifications',
+        loadComponent: () => import('./components/customer-dashboard/pages/notifications/notifications.component').then(m => m.NotificationsComponent),
+        title: 'Notifications'
       }
     ]
   },
 
-  // Maintenance Routes
+  // Public Service Pages
   {
-    path: 'maintenance',
-    canActivate: [authGuard],
+    path: 'services',
     children: [
       {
-        path: 'create',
-        loadComponent: () => import('./components/maintenance-create/maintenance-create.component').then(m => m.MaintenanceCreateComponent),
-        title: 'Create Maintenance Request'
+        path: 'maintenance',
+        loadComponent: () => import('./components/services/maintenance/maintenance.component').then(m => m.MaintenanceComponent),
+        title: 'Maintenance Services'
       },
       {
-        path: 'history',
-        loadComponent: () => import('./components/maintenance-history/maintenance-history.component').then(m => m.MaintenanceHistoryComponent),
-        title: 'Maintenance History'
+        path: 'pc-assembly',
+        loadComponent: () => import('./components/services/pc-assembly/pc-assembly.component').then(m => m.PcAssemblyComponent),
+        title: 'PC Assembly Services'
+      },
+      {
+        path: 'delivery',
+        loadComponent: () => import('./components/services/delivery/delivery.component').then(m => m.DeliveryComponent),
+        title: 'Delivery Services'
       }
     ]
   },

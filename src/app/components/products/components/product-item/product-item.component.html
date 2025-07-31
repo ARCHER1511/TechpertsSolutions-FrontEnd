@@ -12,7 +12,7 @@
 
     <!-- Product Image -->
     <img
-      [src]="productC.imageUrl || ('https://picsum.photos/seed/' + productC.id + '/300/200')"
+      [src]="getProductImageUrl()"
       class="card-img-top object-fit-cover"
       [alt]="productC.name"
       (error)="onImgError($event)"
