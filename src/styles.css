@@ -206,6 +206,8 @@ p {
   animation: glowBar 2s ease-in-out infinite alternate;
 }
 
+
+
 @keyframes glowBar {
   0% {
     opacity: 0.9;
