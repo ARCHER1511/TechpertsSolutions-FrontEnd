@@ -30,7 +30,7 @@ export interface SingleCustomerResponse {
   providedIn: 'root'
 })
 export class CustomerService {
-  private apiUrl = `${Environment.baseUrl}/Customers`;
+  private apiUrl = `${Environment.baseUrl}/Customer`;
 
   constructor(private http: HttpClient) {}
 

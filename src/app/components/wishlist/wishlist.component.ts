@@ -54,7 +54,7 @@ export class WishlistComponent implements OnInit {
   }
 
   onAddToCart(productId: string): void {
-    this._cartService.addItem({ productId, quantity: 1 }).subscribe({
+    this._cartService.addItem(productId).subscribe({
       next: () => {
         this._toastr.success('Added to cart');
         this._cartService.initializeCartState();

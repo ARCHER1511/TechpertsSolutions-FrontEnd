@@ -73,17 +73,17 @@ export const routes: Routes = [
       // Product Management
       {
         path: 'products',
-        loadComponent: () => import('./components/dashboard/pages/products/products.component').then(m => m.ProductsComponent),
+        loadComponent: () => import('./components/dashboard/components/all-products/all-products.component').then(m => m.AllProductsComponent),
         title: 'All Products'
       },
       {
         path: 'pending-products',
-        loadComponent: () => import('./components/dashboard/pages/pending-products/pending-products.component').then(m => m.PendingProductsComponent),
+        loadComponent: () => import('./components/dashboard/components/pending-products/pending-products.component').then(m => m.PendingProductsComponent),
         title: 'Pending Products'
       },
       {
         path: 'create-product',
-        loadComponent: () => import('./components/dashboard/pages/create-product/create-product.component').then(m => m.CreateProductComponent),
+        loadComponent: () => import('./components/dashboard/components/create-product/create-product.component').then(m => m.CreateProductComponent),
         title: 'Create Product'
       },
       {
@@ -95,7 +95,7 @@ export const routes: Routes = [
       // Order Management
       {
         path: 'orders',
-        loadComponent: () => import('./components/dashboard/pages/orders/orders.component').then(m => m.OrdersComponent),
+        loadComponent: () => import('./components/dashboard/components/dashboard-order/dashboard-order.component').then(m => m.DashboardOrderComponent),
         title: 'All Orders'
       },
       {
@@ -107,7 +107,7 @@ export const routes: Routes = [
       // User Management
       {
         path: 'customers',
-        loadComponent: () => import('./components/dashboard/pages/customers/customers.component').then(m => m.CustomersComponent),
+        loadComponent: () => import('./components/dashboard/components/customers/customers.component').then(m => m.CustomersComponent),
         title: 'All Customers'
       },
       {

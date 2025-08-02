@@ -95,7 +95,7 @@ export class ProductListComponent implements OnInit {
       return;
     }
 
-    this.cartService.addItem({ productId, quantity: 1 }).subscribe({
+    this.cartService.addItem(productId).subscribe({
       next: () => {
         this._toastr.success('Added to cart');
         this.cartService.initializeCartState();

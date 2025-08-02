@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartItem, CartService } from '../../Services/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -16,7 +17,8 @@ export class CartComponent implements OnInit {
 
   constructor(
     private CartService: CartService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private _router: Router
   ) {}
 
   ngOnInit(): void {
@@ -36,9 +38,8 @@ export class CartComponent implements OnInit {
     });
   }
 
-  addToCart(productId: string, quantity: number): void {
-    const item: CartItem = { productId, quantity };
-    this.CartService.addItem(item).subscribe(() => this.loadCart());
+  addToCart(productId: string): void {
+    this.CartService.addItem(productId).subscribe(() => this.loadCart());
   }
 
   updateItem(item: CartItem): void {
@@ -107,6 +108,7 @@ export class CartComponent implements OnInit {
         }
       }
     });
+    this._router.navigate(['/order'])
   }
 
   getTotal(): number {

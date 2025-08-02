@@ -3,13 +3,29 @@
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     <!-- Basic Fields -->
-    @for (field of ['name','price','stock','discountPrice','imageUrl','subCategoryName','techCompanyId']; track $index) {
-        <div class="form-group">
-      <label [for]="field">{{ field | titlecase }}</label>
-      <input [formControlName]="field" [type]="field.includes('price') || field === 'stock' ? 'number' : 'text'" />
+    <div *ngFor="let field of ['name','price','discountPrice','stock','subCategoryName']; let i = index">
+      <div class="form-group">
+        <label [for]="field">{{ field | titlecase }}</label>
+        <input
+          [formControlName]="field"
+          [id]="field"
+          [type]="field.includes('price') || field === 'stock' ? 'number' : 'text'"
+        />
+      </div>
     </div>
-    }
 
+    <!-- Image Picker (fills image1Url as base64) -->
+    <div class="form-group">
+      <label for="imageFile">Product Image</label>
+      <input type="file" id="imageFile" (change)="onImageSelected($event)" accept="image/*" />
+      <div class="image-preview" *ngIf="selectedImagePreview">
+        <p>Preview:</p>
+        <img [src]="selectedImagePreview" alt="Selected image preview" style="max-width:200px; max-height:200px;" />
+        <button type="button" (click)="clearImage()">Remove</button>
+      </div>
+    </div>
+
+    <!-- Description -->
     <div class="form-group">
       <label>Description</label>
       <textarea formControlName="description"></textarea>
@@ -25,17 +41,21 @@
 
     <div class="form-group">
       <label>Status</label>
-      <select formControlName="statusSelect">
+      <select formControlName="status">
         <option [value]="status.Pending">Pending</option>
         <option [value]="status.Approved">Approved</option>
         <option [value]="status.Rejected">Rejected</option>
       </select>
     </div>
 
-<!-- Specifications -->
+    <!-- Specifications -->
     <div formArrayName="specifications" class="nested-group">
       <h3>Specifications</h3>
-      <div *ngFor="let spec of specifications.controls; let i = index" [formGroupName]="i" class="nested-item">
+      <div
+        *ngFor="let spec of specifications.controls; let i = index"
+        [formGroupName]="i"
+        class="nested-item"
+      >
         <input formControlName="key" placeholder="Key" />
         <input formControlName="value" placeholder="Value" />
         <button type="button" (click)="removeSpecification(i)">Remove</button>
@@ -46,13 +66,25 @@
     <!-- Warranties -->
     <div formArrayName="warranties" class="nested-group">
       <h3>Warranties</h3>
-      <div *ngFor="let war of warranties.controls; let i = index" [formGroupName]="i" class="nested-item">
-        <input formControlName="durationInMonths" placeholder="Months" type="number" />
+      <div
+        *ngFor="let war of warranties.controls; let i = index"
+        [formGroupName]="i"
+        class="nested-item"
+      >
+        <input formControlName="type" placeholder="Type" />
+        <input formControlName="duration" placeholder="Duration" />
         <input formControlName="description" placeholder="Description" />
+        <label>Start Date</label>
+        <input formControlName="startDate" type="date" />
+        <label>End Date</label>
+        <input formControlName="endDate" type="date" />
         <button type="button" (click)="removeWarranty(i)">Remove</button>
       </div>
       <button type="button" class="add-btn" (click)="addWarranty()">Add Warranty</button>
     </div>
-<button class="submit-btn" type="submit" [disabled]="submitting || form.invalid">Create Product</button>
+
+    <button class="submit-btn" type="submit" [disabled]="submitting || form.invalid">
+      Create Product
+    </button>
   </form>
 </div>

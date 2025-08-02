@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Environment } from '../Environment/environment';
+import { GeneralResponse, OrderReadDTO } from './api.service';
 
 export interface Admin {
   id: string;
@@ -153,4 +154,13 @@ export class AdminService {
   getDashboardStats(): Observable<AdminStatsResponse> {
     return this.http.get<AdminStatsResponse>(`${this.apiUrl}/dashboard/stats`);
   }
+
+  getOrders(): Observable<GeneralResponse<OrderReadDTO[]>> {
+      return this.http.get<GeneralResponse<OrderReadDTO[]>>(`${this.apiUrl}/orders`).pipe(
+        catchError((error) => {
+          console.error('Failed to fetch orders by customer ID', error);
+          return throwError(() => error);
+        })
+      );
+    }
 }

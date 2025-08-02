@@ -71,15 +71,16 @@ export interface WarrantyDTO {
 
 export enum ProductCategory {
   Laptop = 'Laptop',
+  Processor = 'Processor',
   Desktop = 'Desktop',
   Motherboard = 'Motherboard',
-  CPUCooler = 'CPU Cooler',
+  CPUCooler = 'CPUCooler',
   Case = 'Case',
-  GraphicsCard = 'Graphics Card',
+  GraphicsCard = 'GraphicsCard',
   RAM = 'RAM',
   Storage = 'Storage',
-  CaseCooler = 'Case Cooler',
-  PowerSupply = 'Power Supply',
+  CaseCooler = 'CaseCooler',
+  PowerSupply = 'PowerSupply',
   Monitor = 'Monitor',
   Accessories = 'Accessories',
   // Add more if needed

@@ -43,7 +43,7 @@ export class HomeProductsComponent {
 
   onAddToCart(productId: string): void {
     const cartItem = { productId, quantity: 1 };
-    this.cartService.addItem(cartItem).subscribe({
+    this.cartService.addItem(productId).subscribe({
       next: () => {
         this.cartService.updateCartState([cartItem]);
         alert(`Product added to cart`);

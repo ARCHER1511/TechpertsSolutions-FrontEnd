@@ -172,10 +172,10 @@ export class ProductService {
     status: ProductPendingStatus
   ): Observable<GeneralResponse<string>> {
     const params = new HttpParams()
-      .set('categorySelect', category) // ← sends value like 'Motherboard'
-      .set('statusSelect', status.toString());
+      .set('category', category) // ← sends value like 'Motherboard'
+      .set('status', status.toString());
   
-    return this._httpClient.post<GeneralResponse<string>>(this._baseUrl, dto, { params });
+    return this._httpClient.post<GeneralResponse<string>>(`${this._baseUrl}/Product`, dto, { params });
   }
   
   updateProduct(
@@ -185,8 +185,8 @@ export class ProductService {
       status: ProductPendingStatus
     ): Observable<GeneralResponse<string>> {
       const params = new HttpParams()
-        .set('categorySelect', category)
-        .set('statusSelect', status);
+        .set('category', category)
+        .set('status', status);
   
       return this._httpClient.put<GeneralResponse<string>>(`${this._baseUrl}/${id}`, dto, { params });
     }

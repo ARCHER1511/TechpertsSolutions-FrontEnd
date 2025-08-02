@@ -38,10 +38,15 @@ export class ProductItemComponent implements OnInit {
   }
 
   onImgError(event: Event) {
-    // Use the new image utility service to construct the correct image URL
-    const imageUrl = this._imageUtility.getProductImageUrl(this.productC.id);
-    (event.target as HTMLImageElement).src = imageUrl;
+  const img = event.target as HTMLImageElement;
+  if (img.dataset['attempt'] === '1') {
+    img.src = '/assets/Images/icon1.jpg'; // fallback placeholder you control
+    return;
   }
+  img.dataset['attempt'] = '1';
+  img.src = this._imageUtility.getProductImageUrl(this.productC.id);
+}
+
 
   /**
    * Get the correct image URL for the product

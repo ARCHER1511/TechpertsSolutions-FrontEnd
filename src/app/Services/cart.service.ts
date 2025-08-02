@@ -62,15 +62,15 @@ export class CartService {
       );
   }
 
-  addItem(item: CartItem): Observable<any> {
+  addItem(id: string): Observable<any> {
     if (!this.isBrowser) return throwError(() => new Error('Cannot add item on server.'));
     const userId = this.getCustomerId();
     if (!userId) return throwError(() => new Error('Customer ID not found. Please log in.'));
 
     // Send JSON data instead of FormData for [FromBody] binding
     const requestBody = {
-      productId: item.productId,
-      quantity: item.quantity
+      productId: id,
+      quantity: 1
     };
 
     return this.http.post(`${this._baseUrl}/Cart/${userId}/items`, requestBody);

@@ -52,19 +52,11 @@ const priceToUse =
         : this.product.price;
 
     this.cartService
-      .addItem({
-        productId: this.product.id,
-        quantity: 1,
-        product: {
-          id: this.product.id,
-          name: this.product.name,
-          price: priceToUse,
-          imageUrl: this.product.imageUrl,
-          discountPrice: this.product.discountPrice
-        }
-      })
+      .addItem(this.product.id)
       .subscribe({
-        next: () => {
+        next: (res) => {
+          console.log(this.product.id);
+          console.log(res, this.product.id);
           this.cartService.initializeCartState();
           this.toastr.success(`${this.product.name} added to cart!`);
           this.isAddingToCart = false;

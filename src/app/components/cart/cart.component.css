@@ -245,3 +245,13 @@ body.dark-theme .cart-summary {
     width: 60px;
   }
 }
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  /* Line clamping */
+  -webkit-line-clamp: 2;
+  line-clamp: 2; /* Standard syntax (future support) */
+}
