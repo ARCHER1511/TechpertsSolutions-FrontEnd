@@ -34,6 +34,7 @@ export const routes: Routes = [
   { path: 'selector', loadComponent: () => import('./components/pc-build/selector/selector.component').then(m => m.SelectorComponent), title: 'Component Selector' },
   { path: 'categories', loadComponent: () => import('./components/categories/categories.component').then(m => m.CategoriesComponent), title: 'Product Categories' },
   { path: 'category-details/:id', loadComponent: () => import('./components/categories/category-details/category-details.component').then(m => m.CategoryDetailsComponent), title: 'Category Products' },
+  { path: 'selector-category-details/:name', loadComponent: () => import('./components/pc-build/selector/components/selector-category-details/selector-category-details.component').then(m => m.SelectorCategoryDetailsComponent), title: 'Category Products For Build' },
   { path: 'order', loadComponent: () => import('./components/order/order.component').then(m => m.OrderComponent), title: 'Order', canActivate: [authGuard] },
   { path: 'wish-list', loadComponent: () => import('./components/wishlist/wishlist.component').then(m => m.WishlistComponent), title: 'Wish List', canActivate: [authGuard] },
 

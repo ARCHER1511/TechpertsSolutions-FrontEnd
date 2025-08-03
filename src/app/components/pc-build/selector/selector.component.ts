@@ -19,20 +19,20 @@ export class SelectorComponent {
   }[] = [
     {
       name: 'Processor',
-      id: 'cpu',
+      id: 'Processor',
       selected: true,
       selectedProduct: null
     },
-    { name: 'Motherboard', id: 'motherboard', selected: false, selectedProduct: null },
-    { name: 'CPU Cooler', id: 'cpu-cooler', selected: false, selectedProduct: null },
-    { name: 'Case', id: 'case', selected: false, selectedProduct: null },
-    { name: 'Graphics Card', id: 'gpu', selected: false, selectedProduct: null },
-    { name: 'RAM', id: 'ram', selected: false, selectedProduct: null },
-    { name: 'Storage', id: 'storage', selected: false, selectedProduct: null },
-    { name: 'Case Cooler', id: 'case-cooler', selected: false, selectedProduct: null },
-    { name: 'Power Supply', id: 'power-supply', selected: false, selectedProduct: null },
-    { name: 'Monitor', id: 'monitor', selected: false, selectedProduct: null },
-    { name: 'Accessories', id: 'accessories', selected: false, selectedProduct: null }
+    { name: 'Motherboard', id: 'Motherboard', selected: false, selectedProduct: null },
+    { name: 'CPU Cooler', id: 'CPUCooler', selected: false, selectedProduct: null },
+    { name: 'Case', id: 'Case', selected: false, selectedProduct: null },
+    { name: 'Graphics Card', id: 'GraphicsCard', selected: false, selectedProduct: null },
+    { name: 'RAM', id: 'RAM', selected: false, selectedProduct: null },
+    { name: 'Storage', id: 'Storage', selected: false, selectedProduct: null },
+    { name: 'Case Cooler', id: 'CaseCooler', selected: false, selectedProduct: null },
+    { name: 'Power Supply', id: 'PowerSupply', selected: false, selectedProduct: null },
+    { name: 'Monitor', id: 'Monitor', selected: false, selectedProduct: null },
+    { name: 'Accessories', id: 'Accessories', selected: false, selectedProduct: null }
   ];
 
   constructor(private router: Router) {
@@ -45,7 +45,7 @@ export class SelectorComponent {
   }
 
   navigateToCategory(componentId: string) {
-    this.router.navigate(['/category-details', componentId]);
+    this.router.navigate(['/selector-category-details', componentId]);
   }
 
   chooseAnother(name: string) {

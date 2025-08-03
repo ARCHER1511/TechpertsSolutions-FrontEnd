@@ -92,6 +92,43 @@ export class CategoryService {
       })
     );
   }
+  getCategoryByName(name: string): Observable<IGeneralResponse<ICategoryWithProducts>> {
+    console.log(`🔍 Fetching category by Name: ${name} from: ${this.apiUrl}/GetByName/${name}`);
+    
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.get<IGeneralResponse<ICategoryWithProducts>>(`${this.apiUrl}/GetByName/${name}`, { headers }).pipe(
+      catchError((error) => {
+        console.error(`❌ Error fetching category by ID ${name}:`, error);
+        console.error('❌ Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          url: error.url,
+          message: error.message
+        });
+        
+        if (error && (error.code === 'ERR_SSL_WRONG_VERSION_NUMBER' || error.message?.includes('SSL'))) {
+          console.warn('🔒 SSL certificate error for category details');
+        }
+        
+        return of({
+          success: false,
+          message: 'Failed to load category details due to SSL certificate issue',
+          data: {
+            id: '',
+            name: '',
+            description: '',
+            image: null,
+            products: [],
+            subCategories: []
+          }
+        });
+      })
+    );
+  }
 
   getProductsByCategory(categoryId: string): Observable<IGeneralResponse<IProduct[]>> {
     console.log(`🔍 Fetching products by category ID: ${categoryId} from: ${this.apiUrl}/GetCategory/${categoryId}`);
