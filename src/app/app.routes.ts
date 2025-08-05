@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './Guards/auth.guard';
 import { adminGuard, techCompanyGuard, customerGuard, deliveryPersonGuard } from './Guards/role.guard';
+import { PcBuildGuard } from './Guards/pc-build.guard';
+import { buildGuardGuard } from './Guards/build-guard.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -31,10 +33,11 @@ export const routes: Routes = [
   { path: 'register', loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent), title: 'Register Page' },
   { path: 'cart', loadComponent: () => import('./components/cart/cart.component').then(m => m.CartComponent), title: 'Cart', canActivate: [authGuard] },
 
-  { path: 'selector', loadComponent: () => import('./components/pc-build/selector/selector.component').then(m => m.SelectorComponent), title: 'Component Selector' },
+  { path: 'pc-build', loadComponent: () => import('./components/pc-build/pc-build.component').then(m => m.PcBuildComponent), title: 'Creat PC Build', canActivate: [PcBuildGuard] },
+  { path: 'selector', loadComponent: () => import('./components/pc-build/selector/selector.component').then(m => m.SelectorComponent), title: 'Component Selector', canActivate: [buildGuardGuard] },
   { path: 'categories', loadComponent: () => import('./components/categories/categories.component').then(m => m.CategoriesComponent), title: 'Product Categories' },
   { path: 'category-details/:id', loadComponent: () => import('./components/categories/category-details/category-details.component').then(m => m.CategoryDetailsComponent), title: 'Category Products' },
-  { path: 'selector-category-details/:name', loadComponent: () => import('./components/pc-build/selector/components/selector-category-details/selector-category-details.component').then(m => m.SelectorCategoryDetailsComponent), title: 'Category Products For Build' },
+  { path: 'selector-category-details/:name', loadComponent: () => import('./components/pc-build/selector/components/selector-category-details/selector-category-details.component').then(m => m.SelectorCategoryDetailsComponent), title: 'Category Products For Build', canActivate: [buildGuardGuard] },
   { path: 'order', loadComponent: () => import('./components/order/order.component').then(m => m.OrderComponent), title: 'Order', canActivate: [authGuard] },
   { path: 'wish-list', loadComponent: () => import('./components/wishlist/wishlist.component').then(m => m.WishlistComponent), title: 'Wish List', canActivate: [authGuard] },
 

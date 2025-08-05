@@ -1,1 +1,28 @@
-<p>pc-build works!</p>
+<form [formGroup]="buildForm" (ngSubmit)="onSubmit()" class="form-container">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input id="name" type="text" formControlName="name" />
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description</label>
+    <input id="description" type="text" formControlName="description" />
+  </div>
+
+  <div class="form-group">
+    <label for="budget">Budget</label>
+    <input id="budget" type="number" formControlName="budget" />
+  </div>
+
+  <div class="form-group">
+    <label for="serviceUsageId">Service Usage ID</label>
+    <input id="serviceUsageId" type="text" formControlName="serviceUsageId" />
+  </div>
+
+  <button type="submit" [disabled]="isSubmitting || buildForm.invalid" routerLink="/selector" class="submit-button">
+    {{ isSubmitting ? 'Submitting...' : 'Submit Build' }}
+  </button>
+
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</form>

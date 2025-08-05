@@ -152,7 +152,7 @@ export class AuthService {
     localStorage.removeItem('userToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('userName');
-    localStorage.removeItem('userRoles');
+    localStorage.removeItem('userRole');
     localStorage.removeItem('customerId');
     localStorage.removeItem('techCompanyId');
     localStorage.removeItem('deliveryPersonId');
@@ -161,6 +161,7 @@ export class AuthService {
     localStorage.removeItem('wishListId');
     localStorage.removeItem('pcAssemblyId');
     localStorage.removeItem('profilePhotoUrl');
+    localStorage.removeItem('pcAssemblyId');
 
     this.userData = null;
     this.customerId = null;
