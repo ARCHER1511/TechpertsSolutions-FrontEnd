@@ -31,48 +31,47 @@ export class SelectorCategoryDetailsComponent {
   ngOnInit(): void {
     const name = this.route.snapshot.paramMap.get('name') ?? '';
     console.log(`🏷️ Category Details Component - Category Name: ${name}`);
-    this.loadProductsByCategory(name);
+    const buildId = typeof window !== 'undefined' ? localStorage.getItem('pcAssemblyId') : null;
+    if (buildId) {
+      this.loadProductsByCategory(buildId, name);
+    }
+
   }
 
-  loadProductsByCategory(categoryName: string): void {
-    console.log(`🔄 Loading products for category: ${categoryName}`);
-    this.loading = true;
-    this.error = '';
+  loadProductsByCategory(buildId: string, categoryName: string): void {
+  console.log(`🔄 Loading products for category: ${categoryName}`);
+  this.loading = true;
+  this.error = '';
 
-    this.categoryService.getCategoryByName(categoryName).subscribe({
-      next: (response) => {
-        console.log(`📦 Category API Response:`, response);
-        if (response.success && response.data) {
-          this.categoryName = response.data.name;
-          this.products = response.data.products?.map(catProduct => ({
-            id: catProduct.id,
-            name: catProduct.name,
-            price: catProduct.price,
-            discountPrice: catProduct.discountPrice ?? catProduct.price,
-            imageUrl: catProduct.imageUrl || '',
-            category: response.data.name,
-            categoryName: response.data.name,
-            subCategoryId: catProduct.subCategoryId ?? '',
-            subCategoryName: catProduct.subCategoryName ?? '',
-            status: catProduct.status ?? 'Approved',
-            specifications: catProduct.specifications || []
-          })) || [];
-        } else {
-          this.error = response.message || 'Failed to load products';
-        }
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('❌ Error loading category products:', err);
-        this.error = 'Failed to load products. Please try again later.';
-        this.loading = false;
+  this.pcAssemblyService.getCompatibleComponents(buildId, categoryName).subscribe({
+    next: (response) => {
+      console.log(`📦 Category API Response:`, response);
+      if (response.success && response.data) {
+        this.categoryName = categoryName; // set it directly
+        this.products = response.data.map(product => ({
+          ...product,
+          discountPrice: product.discountPrice ?? product.price,
+          title: product.name,
+          link: `https://example.com/products/${product.id}`
+        }));
+      } else {
+        this.error = response.message || 'Failed to load products';
       }
-    });
-  }
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('❌ Error loading category products:', err);
+      this.error = 'Failed to load products. Please try again later.';
+      this.loading = false;
+    }
+  });
+}
 
-  selectProduct(product: IProduct): void {
+
+  selectProduct(product: any): void {
     const pcAssemblyId = localStorage.getItem('pcAssemblyId');
-
+    console.log(product);
+    
     if (!pcAssemblyId) {
       this.error = 'No PC build found. Please start a new build.';
       return;
@@ -81,13 +80,15 @@ export class SelectorCategoryDetailsComponent {
     this.adding = true;
 
     const dto: AddComponentToBuildDTO = {
-  productId: product.id,
-  category: product.categoryName as ProductCategory // or product.category if you prefer
+  productId: product.productId,
+  category: product.category
 };
-
+    console.log(`🛠️ Adding product to build:`, dto);
 
     this.pcAssemblyService.addComponentToBuild(pcAssemblyId, dto).subscribe({
       next: (response) => {
+        console.log(`✅ Add Component Response:`, response);
+        
         this.adding = false;
         if (response.success) {
           const enriched = {
@@ -108,4 +109,8 @@ export class SelectorCategoryDetailsComponent {
       }
     });
   }
+  trackByProductId(index: number, product: IProduct): string {
+  return product.id;
+}
+
 }

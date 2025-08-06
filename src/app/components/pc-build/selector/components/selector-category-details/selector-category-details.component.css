@@ -1,5 +1,8 @@
 .category-title {
-  color: var(--text-primary);
+  font-size: 2rem;
+  font-family: 'Orbitron', sans-serif;
+  color: var(--primary-color);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   font-weight: 700;
 }
 
@@ -17,12 +20,22 @@
 }
 
 .product-name {
-  font-weight: bold;
-  font-size: 1.2rem;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 .product-description {
-  color: var(--text-secondary);
+  color: var(--text-secondary, #6c757d);
+  font-size: 0.9rem;
+}
+
+.btn-outline-primary {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--accent-blue);
+  color: #fff;
 }
 
 .price-badge {
@@ -56,19 +69,20 @@
 }
 
 .product-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--card-bg, #fff);
   border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
 
 .product-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .card-img-top {
   max-height: 180px;
   object-fit: contain;
   padding: 1rem;
-  background-color: var(--card-bg, #f9f9f9);
+  background-color: #f8f9fa;
 }

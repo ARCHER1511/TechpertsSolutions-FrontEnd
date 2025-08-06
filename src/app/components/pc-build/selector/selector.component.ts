@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DecimalPipe, NgClass, NgIf } from '@angular/common';
 import { IProduct } from '../../../Interfaces/iproduct';
 import { PCAssemblyService } from '../../../Services/pcassembly.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-selector',
@@ -35,7 +36,9 @@ export class SelectorComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private pcAssemblyService: PCAssemblyService
+    private pcAssemblyService: PCAssemblyService,
+    private toastr: ToastrService
+    
   ) {}
 
   ngOnInit(): void {
@@ -176,6 +179,37 @@ export class SelectorComponent implements OnInit {
 
 
   addToCart() {
-    console.log('Adding to cart...', this.components);
+  if (!this.build?.assemblyId || this.build.assemblyFee == null) {
+    console.error('Missing build information. Cannot add to cart.');
+    return;
   }
+
+  const assemblyId = this.build.assemblyId;
+  const assemblyFee = this.build.assemblyFee;
+
+  // TODO: Replace this with the actual logged-in customer ID logic
+  const customerId = localStorage.getItem('customerId') || '';
+  if (!customerId) {
+    console.error('No customer ID found. Cannot add to cart.');
+    return;
+  }
+
+  this.pcAssemblyService.addBuildToCart(assemblyId, assemblyFee, customerId).subscribe({
+    next: (response) => {
+      if (response.success) {
+        console.log('✅ Build added to cart:', response);
+        // Optionally navigate or show a toast/snackbar
+        this.toastr.success('Build added to cart successfully!');
+      } else {
+        console.warn('⚠️ Failed to add build to cart:', response.message);
+        this.toastr.error('Failed to add build to cart: ' + response.message);
+      }
+    },
+    error: (err) => {
+      console.error('❌ Error while adding build to cart:', err);
+      this.toastr.error('Something went wrong while adding to cart.');
+    }
+  });
+}
+
 }

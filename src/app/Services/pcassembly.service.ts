@@ -240,17 +240,22 @@ getPcAssemblyDetails(buildId: string): Observable<GeneralResponse<PcAssemblyDeta
     );
   }
 
-  getCompatibleComponents(productId: string): Observable<GeneralResponse<CompatibleComponentDTO[]>> {
-    return this._httpClient.get<GeneralResponse<CompatibleComponentDTO[]>>(
-      `${this._baseUrl}/PCAssembly/build/compatible/${productId}`,
-      { headers: this.getHeaders() }
-    ).pipe(
-      catchError(error => {
-        console.error('Error getting compatible components:', error);
-        return of({ success: false, message: 'Failed to get compatible components', data: [] });
-      })
-    );
-  }
+  getCompatibleComponents(assemblyId: string, categoryName: string): Observable<GeneralResponse<IProduct[]>> {
+  return this._httpClient.get<GeneralResponse<IProduct[]>>(
+    `${this._baseUrl}/PCAssembly/${assemblyId}/compatible-products/${categoryName}`,
+    { headers: this.getHeaders() }
+  ).pipe(
+    catchError(error => {
+      console.error('Error getting compatible components:', error);
+      return of({
+        success: false,
+        message: 'Failed to get compatible components',
+        data: []
+      });
+    })
+  );
+}
+
 
   addBuildToCart(assemblyId: string, assemblyFee: number, customerId: string): Observable<GeneralResponse<string>> {
     const params = new HttpParams()
