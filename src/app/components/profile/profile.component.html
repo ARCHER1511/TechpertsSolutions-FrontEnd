@@ -75,7 +75,7 @@
           <!-- Role Badges -->
           <div class="role-section">
             <h3 class="role-title">Your Roles</h3>
-            <div class="role-badges">
+            <div class="role-badges w-75 m-auto">
               @for (role of userRoles; track role) {
                 <span class="role-badge" [ngClass]="getRoleBadgeClass(role)">
                   <i class="bi me-1" [ngClass]="getRoleIcon(role)"></i>
@@ -127,7 +127,7 @@
             <i class="bi bi-grid-3x3-gap me-2"></i>
             Your Available Dashboards
           </h3>
-          <p class="section-subtitle">Access dashboards based on your roles and permissions</p>
+          <p class="section-subtitle text-center w-100">Access dashboards based on your roles and permissions</p>
         </div>
         
         <div class="dashboards-grid">

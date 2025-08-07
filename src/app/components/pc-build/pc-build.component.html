@@ -19,10 +19,11 @@
     <input id="serviceUsageId" type="text" formControlName="serviceUsageId" />
   </div>
 
-  <button type="submit" [disabled]="isSubmitting || buildForm.invalid" routerLink="/selector" class="submit-button">
+  <button type="submit" [disabled]="isSubmitting || buildForm.invalid" class="submit-button">
     {{ isSubmitting ? 'Submitting...' : 'Submit Build' }}
   </button>
 
   <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
   <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </form>
+
