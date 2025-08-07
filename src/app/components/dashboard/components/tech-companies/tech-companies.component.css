@@ -1,12 +1,27 @@
-/* Card with Gradient Border */
+:root {
+  --card-bg: #121212;
+  --text-primary: #ffffff;
+  --text-secondary: #bbbbbb;
+  --accent-blue: #3ea6ff; /* Modern rich blue */
+  --badge-active-bg: #28a745;
+  --badge-inactive-bg: #6c757d;
+  --badge-text-color: #fff;
+  --border-color: #333;
+  --button-bg: #6c757d;
+  --button-text: #fff;
+  --button-hover: #5a6268;
+}
+
+/* Card with Glow and Smooth Hover */
 .customer-card {
   position: relative;
   background: var(--card-bg);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
   overflow: hidden;
+  border: 1px solid transparent;
 }
 
 .customer-card::before {
@@ -17,200 +32,172 @@
   right: -2px;
   bottom: -2px;
   z-index: -1;
-  background: linear-gradient(135deg, #00c6ff, #0072ff); /* Blue gradient */
+  background: linear-gradient(135deg, #3ea6ff, #1e90ff);
   border-radius: inherit;
+  filter: blur(15px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.customer-card:hover::before {
+  opacity: 0.25;
 }
 
 .customer-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 20px 45px rgba(62, 166, 255, 0.3);
+  border-color: rgba(62, 166, 255, 0.3);
 }
 
-/* Header */
-.customer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.2rem;
-  flex-wrap: wrap;
-}
-
-.customer-header h5 {
-  margin: 0;
-  font-size: 1.2rem;
+/* Card Header */
+.customer-card h5 {
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--text-primary);
+  margin-bottom: 0.25rem;
 }
 
-/* Status Badge */
-.status-badge {
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--badge-text-color);
-  white-space: nowrap;
-  background: var(--badge-inactive-bg);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-.status-badge.active {
-  background: var(--badge-active-bg);
-}
-
-.status-badge.inactive {
-  background: var(--badge-inactive-bg);
-}
-
-/* Details */
-.customer-details p {
-  margin: 0.4rem 0;
-  color: var(--text-secondary);
+/* Text & Icons */
+.customer-card p {
+  margin-bottom: 0.4rem;
   font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  word-break: break-word;
+  color: var(--text-secondary);
 }
 
-.customer-details i {
+.customer-card i {
   margin-right: 0.5rem;
   color: var(--accent-blue);
 }
 
-/* Action Buttons with Icons */
-.customer-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.customer-actions .btn {
+/* Buttons */
+.customer-card .btn {
   font-size: 0.85rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 0.4rem 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: var(--accent-blue);
+  margin-right: 0.4rem;
+  box-shadow: 0 3px 12px rgba(62, 166, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.customer-card .btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Primary Button (Blue) */
+.btn-outline-primary {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  background: transparent;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--accent-blue);
   color: white;
-  transition: background 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-  border: none;
-  cursor: pointer;
 }
 
-.customer-actions .btn i {
-  font-size: 1rem;
+/* Warning Button (Yellow) */
+.btn-outline-warning {
+  color: #ffc107;
+  border-color: #ffc107;
 }
 
-.customer-actions .btn:hover {
-  background: #005fc1;
-  transform: translateY(-2px);
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #000;
 }
 
-/* Example icons (Font Awesome or similar) */
-.btn-view i::before {
-  content: "\f06e"; /* fa-eye */
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-}
-
-.btn-edit i::before {
-  content: "\f044"; /* fa-pen */
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-}
-
-.btn-delete i::before {
-  content: "\f1f8"; /* fa-trash */
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-}
-
-/* Responsive Improvements */
+/* Responsive */
 @media (max-width: 576px) {
   .customer-card {
     padding: 1.25rem;
   }
-
-  .customer-header h5 {
-    font-size: 1rem;
-  }
-
-  .customer-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .customer-actions .btn {
-    justify-content: center;
+  .customer-card h5 {
+    font-size: 1.1rem;
   }
 }
 
-
+/* Modal Styles */
 .modal-content {
-  background-color: var(--card-bg, #1f1f1f); /* fallback dark background */
-  color: var(--text-primary, #ffffff);       /* fallback white text */
-  border-radius: 10px;
-  border: 1px solid var(--border-color, #333);
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
   padding: 1.5rem;
-  max-width: 700px;
-  width: 90%;
 }
 
-/* Modal Header */
 .modal-header {
-  border-bottom: 1px solid var(--border-color, #333);
-  font-weight: bold;
+  border-bottom: 1px solid var(--border-color);
   font-size: 1.25rem;
-  color: var(--text-primary, #ffffff);
+  font-weight: 600;
 }
 
-/* Modal Body Grid */
 .modal-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  color: var(--text-primary, #ffffff);
   font-size: 0.95rem;
 }
 
-/* Label and Value */
 .modal-body p {
-  margin: 0.25rem 0;
-  color: var(--text-secondary, #cccccc);
+  margin: 0;
+  color: var(--text-secondary);
 }
 
 .modal-body p strong {
-  color: var(--text-primary, #ffffff);
+  color: var(--text-primary);
 }
 
-/* Modal Footer */
 .modal-footer {
-  border-top: 1px solid var(--border-color, #333);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
   padding-top: 1rem;
 }
 
-/* Close Button */
 .modal-footer .btn,
 .modal-header .btn-close {
-  background-color: var(--button-bg, #6c757d);
-  color: var(--button-text, #fff);
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border: none;
   border-radius: 6px;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.25s ease;
 }
 
 .modal-footer .btn:hover,
 .modal-header .btn-close:hover {
-  background-color: var(--button-hover, #5a6268);
+  background-color: var(--button-hover);
+}
+
+/* Form */
+form .form-control {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 6px;
+}
+
+form .form-control::placeholder {
+  color: #888;
+}
+
+form .btn-success {
+  background-color: #28a745;
+  border: none;
+}
+
+form .btn-success:hover {
+  background-color: #218838;
+}
+
+form .btn-secondary {
+  background-color: #6c757d;
+  border: none;
+}
+
+form .btn-secondary:hover {
+  background-color: #5a6268;
 }

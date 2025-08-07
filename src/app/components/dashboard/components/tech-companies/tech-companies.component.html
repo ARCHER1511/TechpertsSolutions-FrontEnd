@@ -1,87 +1,108 @@
-<div class="customers-container">
+<!-- Tech Companies Grid -->
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-6 col-lg-4 mb-4" *ngFor="let company of techCompanies">
+      <div class="card customer-card">
+        <div class="card-body">
+          <h5>{{ company.userName }}</h5>
+          <p>Role: {{ company.roleName }}</p>
+          <p><i class="bi bi-geo-alt"></i>{{ company.city }}, {{ company.country }}</p>
 
+          <button
+            class="btn btn-outline-primary btn-sm mt-2"
+            (click)="showDetails(company)"
+          >
+            View Details
+          </button>
 
-  <div class="customers-header">
-    <h2>Tech Company Management</h2>
-    <p>Manage and view all registered tech companies in the system.</p>
-  </div>
-
-  @if (loading) {
-    <div class="text-center py-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mt-3">Loading tech companies...</p>
-    </div>
-  } @else if (error) {
-    <div class="alert alert-danger">
-      <i class="bi bi-exclamation-triangle me-2"></i>
-      {{ error }}
-    </div>
-  } @else if (techCompanies.length > 0) {
-    <div class="customers-grid">
-      <div class="row g-4">
-        @for (company of techCompanies; track company.id) {
-          <div class="col-lg-4 col-md-6">
-            <div class="customer-card">
-              <div class="customer-header">
-                <h5>{{ company.userName }}</h5>
-                <span class="status-badge active">
-                  Tech Company
-                </span>
-              </div>
-              <div class="customer-details">
-                <p><i class="bi bi-person-badge me-2"></i>User ID: {{ company.userId }}</p>
-                <p><i class="bi bi-geo-alt me-2"></i>{{ company.city }}, {{ company.country }}</p>
-                @if (company.mapLocation) {
-                  <p><i class="bi bi-map me-2"></i>Map Location: {{ company.mapLocation }}</p>
-                }
-              </div>
-              <div class="customer-actions">
-                <!-- View Details Button -->
-                <button class="btn btn-primary btn-sm" (click)="openDetails(company)">View Details</button>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  } @else {
-    <div class="text-center py-5">
-      <i class="bi bi-building display-1 text-muted"></i>
-      <h3 class="mt-3">No Tech Companies Found</h3>
-      <p class="text-muted">There are no tech companies registered in the system yet.</p>
-    </div>
-  }
-</div>
-<!-- Modal -->
-<div class="modal fade show d-block" tabindex="-1" *ngIf="selectedCompany" style="background: rgba(0,0,0,0.5)">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Tech Company Details</h5>
-        <button type="button" class="btn-close" (click)="closeDetails()"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-6">
-            <p><strong>User ID:</strong> {{ selectedCompany.userId }}</p>
-            <p><strong>User Name:</strong> {{ selectedCompany.userName }}</p>
-            <p><strong>City:</strong> {{ selectedCompany.city }}</p>
-            <p><strong>Country:</strong> {{ selectedCompany.country }}</p>
-          </div>
-          <div class="col-md-6">
-            <p><strong>Map Location:</strong> {{ selectedCompany.mapLocation }}</p>
-            <p><strong>Role:</strong> {{ selectedCompany.roleName }}</p>
-            <p><strong>Email Confirmed:</strong> {{ selectedCompany.emailConfirmed ? 'Yes' : 'No' }}</p>
-          </div>
+          <button
+            class="btn btn-outline-warning btn-sm mt-2"
+            (click)="startEdit(company)"
+          >
+            Edit
+          </button>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
-      </div>
     </div>
   </div>
 </div>
 
+<!-- Edit Form -->
+<div class="container mt-4" *ngIf="editingCompany">
+  <h4>Edit Tech Company</h4>
+  <form (ngSubmit)="submitEdit()">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <input
+          class="form-control"
+          placeholder="Username"
+          [(ngModel)]="editData.userName"
+          name="userName"
+          required
+        />
+      </div>
+      <div class="col-md-6 mb-3">
+        <input
+          class="form-control"
+          placeholder="City"
+          [(ngModel)]="editData.city"
+          name="city"
+        />
+      </div>
+      <div class="col-md-6 mb-3">
+        <input
+          class="form-control"
+          placeholder="Country"
+          [(ngModel)]="editData.country"
+          name="country"
+        />
+      </div>
+      <div class="col-md-6 mb-3">
+        <input
+          class="form-control"
+          placeholder="Map Location"
+          [(ngModel)]="editData.mapLocation"
+          name="mapLocation"
+        />
+      </div>
+    </div>
+    <button class="btn btn-success me-2" type="submit">Save</button>
+    <button class="btn btn-secondary" type="button" (click)="cancelEdit()">
+      Cancel
+    </button>
+  </form>
+</div>
+
+<!-- View Details Modal -->
+<div
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="techCompanyDetailsModalLabel"
+  aria-hidden="true"
+  #detailsModal
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" *ngIf="selectedCompany">
+      <div class="modal-header">
+        <h4 class="mb-0">Tech Company Details</h4>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeDetails()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>User ID:</strong> {{ selectedCompany.userId }}</p>
+        <p><strong>Username:</strong> {{ selectedCompany.userName }}</p>
+        <p><strong>City:</strong> {{ selectedCompany.city }}</p>
+        <p><strong>Country:</strong> {{ selectedCompany.country }}</p>
+        <p><strong>Map Location:</strong> {{ selectedCompany.mapLocation || 'N/A' }}</p>
+        <p><strong>Role:</strong> {{ selectedCompany.roleName }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" (click)="closeDetails()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
