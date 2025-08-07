@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 interface DashboardStats {
   totalCustomers: number;
@@ -12,7 +12,7 @@ interface DashboardStats {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, DatePipe, NgClass],
+  imports: [RouterOutlet, RouterLink, DatePipe ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

@@ -86,11 +86,6 @@ export const routes: Routes = [
         title: 'Pending Products'
       },
       {
-        path: 'create-product',
-        loadComponent: () => import('./components/dashboard/components/create-product/create-product.component').then(m => m.CreateProductComponent),
-        title: 'Create Product'
-      },
-      {
         path: 'edit-product/:id',
         loadComponent: () => import('./components/dashboard/pages/edit-product/edit-product.component').then(m => m.EditProductComponent),
         title: 'Edit Product'
@@ -209,24 +204,25 @@ export const routes: Routes = [
   // Tech Company Dashboard Routes - Comprehensive
   {
     path: 'tech-company',
+    loadComponent: () => import('./components/tech-company-dashboard/tech-company-dashboard.component').then(m => m.TechCompanyDashboardComponent),
     canActivate: [authGuard, techCompanyGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
       {
-        path: 'dashboard',
-        loadComponent: () => import('./components/tech-company-dashboard/tech-company-dashboard.component').then(m => m.TechCompanyDashboardComponent),
+        path: 'overview',
+        loadComponent: () => import('./components/tech-company-dashboard/components/main/main.component').then(m => m.MainComponent),
         title: 'Tech Company Dashboard'
       },
       
       // Product Management
       {
         path: 'products',
-        loadComponent: () => import('./components/tech-company-dashboard/pages/products/products.component').then(m => m.ProductsComponent),
+        loadComponent: () => import('./components/tech-company-dashboard/components/my-products/my-products.component').then(m => m.MyProductsComponent),
         title: 'My Products'
       },
       {
         path: 'create-product',
-        loadComponent: () => import('./components/tech-company-dashboard/pages/create-product/create-product.component').then(m => m.CreateProductComponent),
+        loadComponent: () => import('./components/tech-company-dashboard/components/create-product/create-product.component').then(m => m.CreateProductComponent),
         title: 'Create Product'
       },
       {

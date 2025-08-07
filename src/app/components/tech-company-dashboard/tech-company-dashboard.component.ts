@@ -1,117 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+
+interface DashboardStats {
+  totalCustomers: number;
+  pendingProducts: number;
+  totalOrders: number;
+  revenue: number;
+}
 
 @Component({
   selector: 'app-tech-company-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [RouterOutlet, RouterLink, DatePipe ],
   templateUrl: './tech-company-dashboard.component.html',
   styleUrls: ['./tech-company-dashboard.component.css']
 })
-export class TechCompanyDashboardComponent implements OnInit {
-  loading = true;
-  error: string | null = null;
-  currentDate: Date = new Date();
+export class TechCompanyDashboardComponent {
+  isDarkMode = false;
+  currentDate = new Date();
 
-  techCompanyData: any = null;
-
-  stats = {
-    totalRequests: 0,
-    pendingRequests: 0,
-    completedRequests: 0,
-    activeProducts: 0
+  stats: DashboardStats = {
+    totalCustomers: 1250,
+    pendingProducts: 23,
+    totalOrders: 847,
+    revenue: 125000
   };
 
-  maintenanceRequests: any[] = [];
-
   ngOnInit(): void {
-    this.loadDashboardData();
+    this.isDarkMode = document.body.classList.contains('dark-mode');
   }
 
-  loadDashboardData(): void {
-    this.loading = true;
-    this.error = null;
-
-    // Simulate async data fetch (replace with actual HTTP call)
-    setTimeout(() => {
-      try {
-        // Dummy data
-        this.techCompanyData = {
-          name: 'Tech Solutions Co.',
-          description: 'Expert maintenance and product solutions',
-          location: 'Cairo, Egypt',
-          phone: '+20 123 456 789'
-        };
-
-        this.stats = {
-          totalRequests: 42,
-          pendingRequests: 8,
-          completedRequests: 30,
-          activeProducts: 16
-        };
-
-        this.maintenanceRequests = [
-          { id: 1, customerName: 'Ahmed Ali', serviceType: 'Repair', status: 'Pending', priority: 'High' },
-          { id: 2, customerName: 'Sara Nabil', serviceType: 'Installation', status: 'InProgress', priority: 'Medium' },
-          { id: 3, customerName: 'Mohamed Youssef', serviceType: 'Inspection', status: 'Completed', priority: 'Low' },
-          { id: 4, customerName: 'Nora Adel', serviceType: 'Maintenance', status: 'Pending', priority: 'Medium' },
-          { id: 5, customerName: 'Khaled Samir', serviceType: 'Repair', status: 'InProgress', priority: 'High' }
-        ];
-
-        this.loading = false;
-      } catch (e) {
-        this.error = 'Failed to load dashboard data.';
-        this.loading = false;
-      }
-    }, 1000);
-  }
-
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'Pending':
-        return 'warning';
-      case 'InProgress':
-        return 'info';
-      case 'Completed':
-        return 'success';
-      default:
-        return 'secondary';
-    }
-  }
-
-  getStatusIcon(status: string): string {
-    switch (status) {
-      case 'Pending':
-        return 'bi-exclamation-triangle';
-      case 'InProgress':
-        return 'bi-clock';
-      case 'Completed':
-        return 'bi-check-circle';
-      default:
-        return 'bi-question-circle';
-    }
-  }
-
-  getPriorityClass(priority: string): string {
-    switch (priority) {
-      case 'High':
-        return 'high';
-      case 'Medium':
-        return 'medium';
-      case 'Low':
-        return 'low';
-      default:
-        return 'secondary';
-    }
-  }
-
-  acceptMaintenanceRequest(id: number): void {
-    console.log('Accepted request ID:', id);
-    // TODO: Call backend API to mark as accepted
-  }
-
-  completeMaintenanceRequest(id: number): void {
-    console.log('Completed request ID:', id);
-    // TODO: Call backend API to mark as completed
+  toggleDarkMode(): void {
+    this.isDarkMode = !this.isDarkMode;
+    document.body.classList.toggle('dark-mode', this.isDarkMode);
   }
 }
