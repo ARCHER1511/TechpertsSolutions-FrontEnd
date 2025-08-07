@@ -70,7 +70,7 @@ export class PcBuildComponent implements OnInit {
           this.buildForm.reset();
 
           if (this.isBrowser) {
-            localStorage.setItem('pcBuildId', res.data); // ✅ save new build ID
+            localStorage.setItem('pcAssemblyId', res.data); // ✅ save new build ID
             const storedCustomerId = localStorage.getItem('customerId');
             if (storedCustomerId) {
               this.buildForm.patchValue({ customerId: storedCustomerId });

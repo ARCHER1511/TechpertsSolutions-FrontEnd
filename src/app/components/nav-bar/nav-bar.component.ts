@@ -206,9 +206,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   onImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    if (img) {
-      img.src = 'assets/Images/default-profile.jpg';
-    }
+  const img = event.target;
+  if (img instanceof HTMLImageElement) {
+    img.src = 'assets/Images/default-profile.jpg';
   }
+}
+
 }
