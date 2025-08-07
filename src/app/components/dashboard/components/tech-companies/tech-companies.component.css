@@ -1,144 +1,140 @@
-/* Container */
-.customers-container {
-  padding: 2rem;
-  background: var(--content-bg);
-  color: var(--text-primary);
-}
-
-/* Header */
-.customers-header {
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.customers-header h2 {
-  color: var(--text-primary);
-  font-size: 1.8rem;
-}
-
-.customers-header p {
-  color: var(--text-secondary);
-  font-size: 1rem;
-}
-
-/* Grid Container */
-.customers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-/* Card */
+/* Card with Gradient Border */
 .customer-card {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 8px var(--shadow-color);
-  transition: transform 0.2s ease-in-out;
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.customer-card::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  background: linear-gradient(135deg, #00c6ff, #0072ff); /* Blue gradient */
+  border-radius: inherit;
 }
 
 .customer-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
 }
 
-/* Card Header */
+/* Header */
 .customer-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
   flex-wrap: wrap;
 }
 
 .customer-header h5 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 /* Status Badge */
 .status-badge {
-  padding: 0.25rem 0.6rem;
-  border-radius: 50px;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
   color: var(--badge-text-color);
   white-space: nowrap;
+  background: var(--badge-inactive-bg);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .status-badge.active {
-  background-color: var(--badge-active-bg);
+  background: var(--badge-active-bg);
 }
 
 .status-badge.inactive {
-  background-color: var(--badge-inactive-bg);
+  background: var(--badge-inactive-bg);
 }
 
 /* Details */
 .customer-details p {
-  margin-bottom: 0.4rem;
+  margin: 0.4rem 0;
   color: var(--text-secondary);
   font-size: 0.95rem;
-  word-wrap: break-word;
+  display: flex;
+  align-items: center;
+  word-break: break-word;
 }
 
 .customer-details i {
+  margin-right: 0.5rem;
   color: var(--accent-blue);
-  margin-right: 0.4rem;
 }
 
-/* Action Buttons */
+/* Action Buttons with Icons */
 .customer-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .customer-actions .btn {
   font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--accent-blue);
+  color: white;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  border: none;
+  cursor: pointer;
 }
 
-/* Modal Styling */
-.modal-content {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
+.customer-actions .btn i {
+  font-size: 1rem;
 }
 
-.modal-header {
-  border-bottom: 1px solid var(--border-color);
+.customer-actions .btn:hover {
+  background: #005fc1;
+  transform: translateY(-2px);
 }
 
-.modal-footer {
-  border-top: 1px solid var(--border-color);
+/* Example icons (Font Awesome or similar) */
+.btn-view i::before {
+  content: "\f06e"; /* fa-eye */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
 }
 
-.modal-body p {
-  margin-bottom: 0.5rem;
-  color: var(--text-secondary);
+.btn-edit i::before {
+  content: "\f044"; /* fa-pen */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
 }
 
-/* Loading and Empty States */
-.text-center {
-  text-align: center;
+.btn-delete i::before {
+  content: "\f1f8"; /* fa-trash */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
 }
 
-.py-5 {
-  padding: 3rem 0;
-}
-
-/* RESPONSIVE IMPROVEMENTS */
+/* Responsive Improvements */
 @media (max-width: 576px) {
-  .customers-header h2 {
-    font-size: 1.5rem;
-  }
-
   .customer-card {
-    padding: 1rem;
+    padding: 1.25rem;
   }
 
   .customer-header h5 {
@@ -150,7 +146,71 @@
     align-items: stretch;
   }
 
-  .modal-dialog {
-    margin: 1rem;
+  .customer-actions .btn {
+    justify-content: center;
   }
+}
+
+
+.modal-content {
+  background-color: var(--card-bg, #1f1f1f); /* fallback dark background */
+  color: var(--text-primary, #ffffff);       /* fallback white text */
+  border-radius: 10px;
+  border: 1px solid var(--border-color, #333);
+  padding: 1.5rem;
+  max-width: 700px;
+  width: 90%;
+}
+
+/* Modal Header */
+.modal-header {
+  border-bottom: 1px solid var(--border-color, #333);
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: var(--text-primary, #ffffff);
+}
+
+/* Modal Body Grid */
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.95rem;
+}
+
+/* Label and Value */
+.modal-body p {
+  margin: 0.25rem 0;
+  color: var(--text-secondary, #cccccc);
+}
+
+.modal-body p strong {
+  color: var(--text-primary, #ffffff);
+}
+
+/* Modal Footer */
+.modal-footer {
+  border-top: 1px solid var(--border-color, #333);
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+}
+
+/* Close Button */
+.modal-footer .btn,
+.modal-header .btn-close {
+  background-color: var(--button-bg, #6c757d);
+  color: var(--button-text, #fff);
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-footer .btn:hover,
+.modal-header .btn-close:hover {
+  background-color: var(--button-hover, #5a6268);
 }
