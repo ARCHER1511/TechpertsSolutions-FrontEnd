@@ -257,13 +257,11 @@ getPcAssemblyDetails(buildId: string): Observable<GeneralResponse<PcAssemblyDeta
 }
 
 
-  addBuildToCart(assemblyId: string, assemblyFee: number, customerId: string): Observable<GeneralResponse<string>> {
+  addBuildToCart(assemblyId: string): Observable<GeneralResponse<string>> {
     const params = new HttpParams()
-      .set('assemblyFee', assemblyFee.toString())
-      .set('customerId', customerId);
 
     return this._httpClient.post<GeneralResponse<string>>(
-      `${this._baseUrl}/PCAssembly/build/${assemblyId}/add-to-cart`,
+      `${this._baseUrl}/PCAssembly/${assemblyId}/move-to-cart`,
       null,
       { params, headers: this.getHeaders() }
     ).pipe(

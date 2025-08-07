@@ -194,7 +194,7 @@ export class SelectorComponent implements OnInit {
     return;
   }
 
-  this.pcAssemblyService.addBuildToCart(assemblyId, assemblyFee, customerId).subscribe({
+  this.pcAssemblyService.addBuildToCart(assemblyId).subscribe({
     next: (response) => {
       if (response.success) {
         console.log('✅ Build added to cart:', response);
