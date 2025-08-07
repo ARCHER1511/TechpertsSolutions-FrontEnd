@@ -1,0 +1,156 @@
+/* Container */
+.customers-container {
+  padding: 2rem;
+  background: var(--content-bg);
+  color: var(--text-primary);
+}
+
+/* Header */
+.customers-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.customers-header h2 {
+  color: var(--text-primary);
+  font-size: 1.8rem;
+}
+
+.customers-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Grid Container */
+.customers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card */
+.customer-card {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  transition: transform 0.2s ease-in-out;
+}
+
+.customer-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Card Header */
+.customer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.customer-header h5 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Status Badge */
+.status-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--badge-text-color);
+  white-space: nowrap;
+}
+
+.status-badge.active {
+  background-color: var(--badge-active-bg);
+}
+
+.status-badge.inactive {
+  background-color: var(--badge-inactive-bg);
+}
+
+/* Details */
+.customer-details p {
+  margin-bottom: 0.4rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  word-wrap: break-word;
+}
+
+.customer-details i {
+  color: var(--accent-blue);
+  margin-right: 0.4rem;
+}
+
+/* Action Buttons */
+.customer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.customer-actions .btn {
+  font-size: 0.85rem;
+}
+
+/* Modal Styling */
+.modal-content {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+.modal-body p {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/* Loading and Empty States */
+.text-center {
+  text-align: center;
+}
+
+.py-5 {
+  padding: 3rem 0;
+}
+
+/* RESPONSIVE IMPROVEMENTS */
+@media (max-width: 576px) {
+  .customers-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .customer-card {
+    padding: 1rem;
+  }
+
+  .customer-header h5 {
+    font-size: 1rem;
+  }
+
+  .customer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal-dialog {
+    margin: 1rem;
+  }
+}

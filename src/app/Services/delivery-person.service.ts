@@ -4,17 +4,18 @@ import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment';
 
 export interface DeliveryPerson {
+  city: string;
+  country: string;
   id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  vehicleType?: string;
-  vehicleNumber?: string;
-  active: boolean;
-  available: boolean;
-  currentLocation?: string;
-  registrationDate?: string;
+  isAvilable: boolean;
+  phoneNumber: string;
+  roleId: string;
+  roleName: string;
+  userFullName: string;
+  userId: string;
+  userName: string;
+  vehicleNumber: string;
+  vehicleType: string;
 }
 
 export interface DeliveryPersonResponse {

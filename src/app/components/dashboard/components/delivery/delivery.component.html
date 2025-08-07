@@ -1,0 +1,54 @@
+<div class="container py-4">
+  <div class="row">
+    <div
+      class="col-md-6 col-lg-4 mb-4"
+      *ngFor="let person of deliveryPersons"
+    >
+      <div class="card delivery-card">
+        <div class="card-body">
+          <h5 class="card-title">{{ person.userFullName }}</h5>
+          <p class="card-text text-muted">{{ person.userName }}</p>
+          
+          <p><strong>Phone:</strong> {{ person.phoneNumber }}</p>
+          <p><strong>City:</strong> {{ person.city }}</p>
+          <p><strong>Country:</strong> {{ person.country }}</p>
+          <p><strong>Vehicle Type:</strong> {{ person.vehicleType || 'N/A' }}</p>
+          <p><strong>Vehicle Number:</strong> {{ person.vehicleNumber || 'N/A' }}</p>
+          <p><strong>Role:</strong> {{ person.roleName }}</p>
+          
+          <p class="status-badge" [ngClass]="{ 'active': person.isAvilable, 'inactive': !person.isAvilable }">
+            {{ person.isAvilable ? 'Available' : 'Unavailable' }}
+          </p>
+          
+          <button class="btn btn-outline-primary mt-2 w-100" (click)="openDetails(person)">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close-btn" (click)="closeModal()">×</button>
+    <div class="modal-body">
+      <h4>{{ selectedPerson?.userFullName }}</h4>
+      <p><strong>Username:</strong> {{ selectedPerson?.userName }}</p>
+      <p><strong>Phone:</strong> {{ selectedPerson?.phoneNumber }}</p>
+      <p><strong>City:</strong> {{ selectedPerson?.city }}</p>
+      <p><strong>Country:</strong> {{ selectedPerson?.country }}</p>
+      <p><strong>Vehicle:</strong> {{ selectedPerson?.vehicleType || 'N/A' }}</p>
+      <p><strong>Number:</strong> {{ selectedPerson?.vehicleNumber || 'N/A' }}</p>
+      <p><strong>Status:</strong>
+        <span class="status-badge" [ngClass]="{ 'active': selectedPerson?.isAvilable, 'inactive': !selectedPerson?.isAvilable }">
+          {{ selectedPerson?.isAvilable ? 'Available' : 'Unavailable' }}
+        </span>
+      </p>
+      <p><strong>Role:</strong> {{ selectedPerson?.roleName }}</p>
+    </div>
+  </div>
+</div>
+

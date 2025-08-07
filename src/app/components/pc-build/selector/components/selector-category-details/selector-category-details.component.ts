@@ -16,7 +16,7 @@ import { AddComponentToBuildDTO } from '../../../../../Interfaces/ipc-assembly';
 })
 export class SelectorCategoryDetailsComponent {
   categoryName = '';
-  products: IProduct[] = [];
+  products: any[] = [];
   loading = false;
   error = '';
   adding = false;

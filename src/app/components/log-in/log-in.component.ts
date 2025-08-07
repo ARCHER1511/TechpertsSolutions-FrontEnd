@@ -60,7 +60,7 @@ export class LogInComponent {
               localStorage.setItem('userToken', token);
               if(customerId) localStorage.setItem('userId', customerId);
               if(userName) localStorage.setItem('userName', userName);
-              if(userRoles) localStorage.setItem('userRoles', JSON.stringify(userRoles));
+              if(userRoles) localStorage.setItem('userRole', JSON.stringify(userRoles));
               
               // Store role-specific IDs from the response
               if (res.data?.customerId) {
@@ -107,7 +107,7 @@ export class LogInComponent {
               console.log('adminId:', localStorage.getItem('adminId'));
               console.log('techCompanyId:', localStorage.getItem('techCompanyId'));
               console.log('deliveryPersonId:', localStorage.getItem('deliveryPersonId'));
-              console.log('userRoles:', localStorage.getItem('userRoles'));
+              console.log('userRole:', localStorage.getItem('userRole'));
             }
 
             this._authService.userData = { userName, customerId };

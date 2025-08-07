@@ -14,11 +14,27 @@ export interface TechCompany {
   registrationDate?: string;
   services?: string[];
 }
+export interface TechCompany2 {
+  id: string;
+  userId: string;
+  userName: string;
+  city: string;
+  country: string;
+  mapLocation?: string | null;
+  roleId: string;
+  roleName: string;
+}
+
 
 export interface TechCompanyResponse {
   success: boolean;
   message: string;
   data: TechCompany[];
+}
+export interface TechCompanyResponse2 {
+  success: boolean;
+  message: string;
+  data: TechCompany2[];
 }
 
 export interface SingleTechCompanyResponse {
@@ -41,8 +57,8 @@ export class TechCompanyService {
   }
 
   // Get all tech companies
-  getAllTechCompanies(): Observable<TechCompanyResponse> {
-    return this.http.get<TechCompanyResponse>(this.apiUrl);
+  getAllTechCompanies(): Observable<TechCompanyResponse2> {
+    return this.http.get<TechCompanyResponse2>(this.apiUrl);
   }
 
   // Get tech company by ID

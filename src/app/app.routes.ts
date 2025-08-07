@@ -116,12 +116,12 @@ export const routes: Routes = [
       },
       {
         path: 'tech-companies',
-        loadComponent: () => import('./components/dashboard/pages/tech-companies/tech-companies.component').then(m => m.TechCompaniesComponent),
+        loadComponent: () => import('./components/dashboard/components/tech-companies/tech-companies.component').then(m => m.TechCompaniesComponent),
         title: 'Tech Companies'
       },
       {
         path: 'delivery-persons',
-        loadComponent: () => import('./components/dashboard/pages/delivery-persons/delivery-persons.component').then(m => m.DeliveryPersonsComponent),
+        loadComponent: () => import('./components/dashboard/components/delivery/delivery.component').then(m => m.DeliveryComponent),
         title: 'Delivery Persons'
       },
       {

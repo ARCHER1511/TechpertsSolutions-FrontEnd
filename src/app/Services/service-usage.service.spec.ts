@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PCAssemblyService } from './pcassembly.service';
+import { ServiceUsageService } from './service-usage.service';
 
-describe('PCAssemblyService', () => {
-  let service: PCAssemblyService;
+describe('ServiceUsageService', () => {
+  let service: ServiceUsageService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PCAssemblyService);
+    service = TestBed.inject(ServiceUsageService);
   });
 
   it('should be created', () => {

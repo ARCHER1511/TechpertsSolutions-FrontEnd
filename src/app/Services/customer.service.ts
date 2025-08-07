@@ -4,16 +4,36 @@ import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment';
 
 export interface Customer {
-  id: string;
-  name: string;
+  address: string;
+  cartId: string;
+  city: string;
+  country: string;
+  deliveryId: string;
   email: string;
-  phone: string;
-  address?: string;
-  active: boolean;
-  registrationDate?: string;
-  lastLoginDate?: string;
+  fullName: string;
+  id: string;
+  maintenanceIds:any[];
+  orderIds: any[];
+  pcAssemblyIds: any[];
+  phoneNumber: string;
+  userName: string;
+  wishListId: string;
+}
+export interface CustomerUpdate {
+  city: string;
+  country: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
+  fullName: string;
+  address: string;
 }
 
+export interface CustomerResponseUpdate {
+  success: boolean;
+  message: string;
+  data: CustomerUpdate[];
+}
 export interface CustomerResponse {
   success: boolean;
   message: string;
@@ -49,5 +69,8 @@ export class CustomerService {
 
   searchCustomers(query: string): Observable<CustomerResponse> {
     return this.http.get<CustomerResponse>(`${this.apiUrl}/Search?query=${encodeURIComponent(query)}`);
+  }
+  updateCustomer(id: string, customer: CustomerUpdate): Observable<CustomerResponseUpdate> {
+    return this.http.put<CustomerResponseUpdate>(`${this.apiUrl}/update/${id}`, customer);
   }
 } 
