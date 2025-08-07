@@ -73,7 +73,8 @@ export class CartComponent implements OnInit {
       items: this.CartItems.map(item => ({
         productId: item.productId,
         quantity: item.quantity,
-        price: item.product?.price || 0
+        price: item.product?.price || 0,
+        UnitPrice: item.product?.UnitPrice || 0
       }))
     };
 
@@ -113,7 +114,7 @@ export class CartComponent implements OnInit {
 
   getTotal(): number {
     return this.CartItems.reduce(
-      (sum, item) => sum + (item.product?.price ?? 0) * item.quantity,
+      (sum, item) => sum + (item.product?.UnitPrice ?? 0) * item.quantity,
       0
     );
   }
@@ -121,8 +122,8 @@ export class CartComponent implements OnInit {
   hasDiscount(item: CartItem): boolean {
     return (
       item.product?.discountPrice !== undefined &&
-      item.product?.price !== undefined &&
-      item.product.discountPrice < item.product.price
+      item.product?.UnitPrice !== undefined &&
+      item.product.discountPrice < item.product.UnitPrice
     );
   }
 }

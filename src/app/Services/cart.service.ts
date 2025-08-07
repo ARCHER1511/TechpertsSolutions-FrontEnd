@@ -11,6 +11,7 @@ export interface Product {
   price: number;
   imageUrl?: string;
   discountPrice?: number;
+  UnitPrice?: number;
 }
 
 export interface CartItem {
@@ -55,7 +56,8 @@ export class CartService {
               name: item.productName,
               price: item.price,
               imageUrl: item.imageUrl,
-              discountPrice: item.discountPrice
+              discountPrice: item.discountPrice,
+              UnitPrice: item.UnitPrice
             }
           }));
         })
