@@ -158,9 +158,12 @@
   margin-bottom: 0.5rem;
   line-height: 1.2;
 }
+strong{
+  color: rgb(49, 168, 236);
+}
 
 .text-tertiary {
-  color: var(--text-secondary);
+  color: rgb(49, 168, 236);
   font-size: 1.1rem;
   font-weight: 400;
 }

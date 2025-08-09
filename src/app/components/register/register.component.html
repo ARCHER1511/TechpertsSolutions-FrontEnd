@@ -31,9 +31,9 @@
           <form [formGroup]="registerForm" (ngSubmit)="registerSubmit()" class="space-y-6">
             <!-- Full Name -->
             <div>
-              <label for="fullName" class="block text-sm font-medium mb-2">Full Name</label>
+              <label for="fullName" class="block text-sm font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-person absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-person  text-tertiary"> Full Name</i>
                 <input 
                   type="text" 
                   id="fullName" 
@@ -46,9 +46,9 @@
 
             <!-- Username -->
             <div>
-              <label for="userName" class="block text-sm font-medium mb-2">Username</label>
+              <label for="userName" class="block text-sm font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-at absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-at text-tertiary"> Username</i>
                 <input 
                   type="text" 
                   id="userName" 
@@ -61,9 +61,9 @@
 
             <!-- Email -->
             <div>
-              <label for="email" class="block text-sm font-medium mb-2">Email Address</label>
+              <label for="email" class="block text-sm  font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-envelope text-tertiary"> Email Address</i>
                 <input 
                   type="email" 
                   id="email" 
@@ -76,9 +76,9 @@
 
             <!-- Address -->
             <div>
-              <label for="address" class="block text-sm font-medium mb-2">Address</label>
+              <label for="address" class="block text-sm font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-geo-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-geo-alt text-tertiary"> Address</i>
                 <input 
                   type="text" 
                   id="address" 
@@ -92,9 +92,9 @@
             <!-- City and Country -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label for="city" class="block text-sm font-medium mb-2">City (Optional)</label>
+                <label for="city" class="block text-sm font-medium mb-2"></label>
                 <div class="relative">
-                  <i class="bi bi-building absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                  <i class="bi bi-building text-tertiary"> City (Optional)</i>
                   <input 
                     type="text" 
                     id="city" 
@@ -106,9 +106,9 @@
               </div>
 
               <div>
-                <label for="country" class="block text-sm font-medium mb-2">Country (Optional)</label>
+                <label for="country" class="block text-sm font-medium mb-2"></label>
                 <div class="relative">
-                  <i class="bi bi-globe absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                  <i class="bi bi-globe text-tertiary"> Country (Optional)</i>
                   <input 
                     type="text" 
                     id="country" 
@@ -122,9 +122,9 @@
 
             <!-- Profile Photo -->
             <div>
-              <label for="profilePhoto" class="block text-sm font-medium mb-2">Profile Photo (Optional)</label>
+              <label for="profilePhoto" class="block text-sm font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-camera absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-camera"> Profile Photo (Optional)</i>
                 <input 
                   type="file" 
                   id="profilePhoto" 
@@ -138,9 +138,9 @@
 
             <!-- Password -->
             <div>
-              <label for="password" class="block text-sm font-medium mb-2">Password</label>
+              <label for="password" class="block text-sm font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-lock  text-tertiary"> Password</i>
                 <input 
                   type="password" 
                   id="password" 
@@ -153,9 +153,9 @@
 
             <!-- Confirm Password -->
             <div>
-              <label for="confirmPassword" class="block text-sm font-medium mb-2">Confirm Password</label>
+              <label for="confirmPassword" class="block text-sm font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-check-circle absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-check-circle text-tertiary"> Confirm Password</i>
                 <input 
                   type="password" 
                   id="confirmPassword" 
@@ -168,9 +168,9 @@
 
             <!-- Phone -->
             <div>
-              <label for="phone" class="block text-sm font-medium mb-2">Phone Number</label>
+              <label for="phone" class="block text-sm font-medium mb-2"></label>
               <div class="relative">
-                <i class="bi bi-telephone absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <i class="bi bi-telephone  text-tertiary"> Phone Number</i>
                 <input 
                   type="text" 
                   id="phone" 
@@ -183,7 +183,7 @@
 
             <!-- Role Selection -->
             <div>
-              <label class="block text-sm font-medium mb-3">Select Role</label>
+              <label class="block text-sm font-medium mb-3 text-tertiary">Select Role</label>
               <p class="text-sm text-tertiary mb-3">Choose your role to determine your access level and permissions.</p>
               @if (loadingRoles) {
                 <div class="text-center py-4">
@@ -213,7 +213,7 @@
                     <div class="d-flex align-items-center">
                       <i class="bi bi-shield-check text-primary me-2"></i>
                       <div>
-                        <strong>Selected Role:</strong> {{ getSelectedRoleName() }}
+                        <strong>Selected Role: {{ getSelectedRoleName() }}</strong>
                       </div>
                     </div>
                   </div>
