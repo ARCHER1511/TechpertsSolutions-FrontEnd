@@ -62,7 +62,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // For testing purposes - if no roles are detected, set default roles
     if (this.userRoles.length === 0) {
       console.log('No roles detected, setting default roles for testing');
-      this.setDefaultRoles();
     }
   }
 
@@ -71,12 +70,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  private setDefaultRoles(): void {
-    // For testing - set all four roles
-    this.userRoles = ['Admin', 'TechCompany', 'Customer', 'DeliveryPerson'];
-    localStorage.setItem('userRoles', JSON.stringify(this.userRoles));
-    console.log('Default roles set:', this.userRoles);
-  }
 
   loadUserProfile(): void {
     this.loading = true;
@@ -190,13 +183,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private loadRoleSpecificData(): void {
     // Load data based on user roles
-    if (this.hasRole('TechCompany')) {
+    if (this.hasRoleWithId('TechCompany')) {
       this.loadTechCompanyData();
     }
-    if (this.hasRole('DeliveryPerson')) {
+    if (this.hasRoleWithId('DeliveryPerson')) {
       this.loadDeliveryPersonData();
     }
-    if (this.hasRole('Admin')) {
+    if (this.hasRoleWithId('Admin')) {
       this.loadAdminData();
     }
   }
@@ -334,6 +327,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.maintenanceService.getMaintenanceByTechCompany(techCompanyId).subscribe({
           next: (response) => {
+            console.log(response);
             if (response.success) {
               this.quickStats.maintenanceRequests = response.data.length;
             }
@@ -385,25 +379,36 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  hasRole(role: string): boolean {
-    return this.userRoles.includes(role);
+  hasRoleWithId(role: string): boolean {
+  switch (role) {
+    case 'Admin':
+      return this.userRoles.includes('Admin') && !!localStorage.getItem('adminId');
+    case 'TechCompany':
+      return this.userRoles.includes('TechCompany') && !!localStorage.getItem('techCompanyId');
+    case 'Customer':
+      return this.userRoles.includes('Customer') && !!localStorage.getItem('customerId');
+    case 'DeliveryPerson':
+      return this.userRoles.includes('DeliveryPerson') && !!localStorage.getItem('deliveryPersonId');
+    default:
+      return false;
   }
+}
 
-  isAdmin(): boolean {
-    return this.hasRole('Admin');
-  }
+// Updated helper methods
+isAdmin(): boolean {
+  return !!localStorage.getItem('adminId');
+}
+isTechCompany(): boolean {
+  return !!localStorage.getItem('techCompanyId');
+}
+isCustomer(): boolean {
+  return !!localStorage.getItem('customerId');
+}
+isDeliveryPerson(): boolean {
+  return !!localStorage.getItem('deliveryPersonId');
+}
 
-  isTechCompany(): boolean {
-    return this.hasRole('TechCompany');
-  }
 
-  isCustomer(): boolean {
-    return this.hasRole('Customer');
-  }
-
-  isDeliveryPerson(): boolean {
-    return this.hasRole('DeliveryPerson');
-  }
 
   getDashboardRoute(): string {
     if (this.isAdmin()) {

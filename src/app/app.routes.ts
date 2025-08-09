@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './Guards/auth.guard';
-import { adminGuard, techCompanyGuard, customerGuard, deliveryPersonGuard } from './Guards/role.guard';
 import { PcBuildGuard } from './Guards/pc-build.guard';
 import { buildGuardGuard } from './Guards/build-guard.guard';
+import { techCompanyGuard } from './Guards/tech-company.guard';
+import { customerGuard } from './Guards/customer.guard';
+import { adminGuard } from './Guards/admin.guard';
+import { deliveryGuard } from './Guards/delivery.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -277,7 +280,7 @@ export const routes: Routes = [
   // Delivery Person Dashboard Routes - Comprehensive
   {
     path: 'delivery',
-    canActivate: [authGuard, deliveryPersonGuard],
+    canActivate: [authGuard, deliveryGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {

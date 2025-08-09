@@ -26,6 +26,5 @@ export class AppComponent {
 
   ngOnInit(): void {
     this._cartService.initializeCartState();
-    console.log("hi");
   }
 }

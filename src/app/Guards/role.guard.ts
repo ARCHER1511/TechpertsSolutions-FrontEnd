@@ -60,8 +60,8 @@ export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
   };
 };
 
-// Specific role guards
-export const adminGuard: CanActivateFn = roleGuard(['Admin']);
-export const techCompanyGuard: CanActivateFn = roleGuard(['TechCompany']);
-export const customerGuard: CanActivateFn = roleGuard(['Customer']);
-export const deliveryPersonGuard: CanActivateFn = roleGuard(['DeliveryPerson']); 
+// // Specific role guards
+// export const adminGuard: CanActivateFn = roleGuard(['Admin']);
+// export const techCompanyGuard: CanActivateFn = roleGuard(['TechCompany']);
+// export const customerGuard: CanActivateFn = roleGuard(['Customer']);
+// export const deliveryPersonGuard: CanActivateFn = roleGuard(['DeliveryPerson']); 

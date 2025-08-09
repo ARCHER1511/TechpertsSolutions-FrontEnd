@@ -79,56 +79,109 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   registerSubmit(): void {
-    if (this.registerForm.valid) {
-      this.isLoading = true;
-      this.errMassage = "";
+  if (this.registerForm.valid) {
+    this.isLoading = true;
+    this.errMassage = "";
 
-      // Prepare registration data using the proper interface
-      const registrationData: RegisterRequest = {
-        fullName: this.registerForm.value.fullName!,
-        userName: this.registerForm.value.userName!,
-        email: this.registerForm.value.email!,
-        address: this.registerForm.value.address!,
-        password: this.registerForm.value.password!,
-        confirmPassword: this.registerForm.value.confirmPassword!,
-        phoneNumber: this.registerForm.value.phoneNumber!,
-        city: this.registerForm.value.city || undefined,
-        country: this.registerForm.value.country || undefined,
-        profilePhoto: this.registerForm.value.profilePhoto || undefined
-      };
+    const registrationData: RegisterRequest = {
+      fullName: this.registerForm.value.fullName!,
+      userName: this.registerForm.value.userName!,
+      email: this.registerForm.value.email!,
+      address: this.registerForm.value.address!,
+      password: this.registerForm.value.password!,
+      confirmPassword: this.registerForm.value.confirmPassword!,
+      phoneNumber: this.registerForm.value.phoneNumber!,
+      city: this.registerForm.value.city || undefined,
+      country: this.registerForm.value.country || undefined,
+      profilePhoto: this.registerForm.value.profilePhoto || undefined
+    };
 
-      // Get the selected role
-      const selectedRole = this.registerForm.value.selectedRole!;
+    const selectedRole = this.registerForm.value.selectedRole!;
 
-      this.registSub = this._authService.register(registrationData, selectedRole).subscribe({
-        next: (res) => {
-          console.log(res);
+    this.registSub = this._authService.register(registrationData, selectedRole).subscribe({
+      next: (res) => {
+        console.log(res);
 
-          if (res.success) {
-            this.success = true;
-            // Store user roles if provided in response
-            if (res.data?.userRoles) {
-              localStorage.setItem('userRoles', JSON.stringify(res.data.userRoles));
+        if (res.success) {
+          this.success = true;
+
+          // Automatically login after successful registration
+          const loginPayload = {
+            email: registrationData.email,
+            password: registrationData.password,
+            rememberMe: true
+          };
+
+          this._authService.login(loginPayload).subscribe({
+            next: (loginRes) => {
+              const token = loginRes.data?.token;
+              const customerId = loginRes.data?.userId;
+              const userName = loginRes.data?.userName;
+              const userRoles = loginRes.data?.userRoles;
+
+              if (token) {
+                localStorage.setItem('userToken', token);
+                if (customerId) localStorage.setItem('userId', customerId);
+                if (userName) localStorage.setItem('userName', userName);
+                if (userRoles) localStorage.setItem('userRole', JSON.stringify(userRoles));
+
+                if (loginRes.data?.customerId) {
+                  localStorage.setItem('customerId', loginRes.data.customerId);
+                }
+                if (loginRes.data?.adminId) {
+                  localStorage.setItem('adminId', loginRes.data.adminId);
+                }
+                if (loginRes.data?.techCompanyId) {
+                  localStorage.setItem('techCompanyId', loginRes.data.techCompanyId);
+                }
+                if (loginRes.data?.deliveryPersonId) {
+                  localStorage.setItem('deliveryPersonId', loginRes.data.deliveryPersonId);
+                }
+                if (loginRes.data?.cartId) {
+                  localStorage.setItem('cartId', loginRes.data.cartId);
+                }
+                if (loginRes.data?.wishListId) {
+                  localStorage.setItem('wishListId', loginRes.data.wishListId);
+                }
+                if (loginRes.data?.pcAssemblyId) {
+                  localStorage.setItem('pcAssemblyId', loginRes.data.pcAssemblyId);
+                }
+                if (loginRes.data?.profilePhotoUrl) {
+                  localStorage.setItem('profilePhotoUrl', loginRes.data.profilePhotoUrl);
+                }
+
+                this._authService.userData = { userName, customerId };
+                this._authService.saveUserData();
+                this._router.navigate(['/home']);
+              } else {
+                this.errMassage = 'Automatic login failed: Token missing.';
+              }
+
+              this.isLoading = false;
+            },
+            error: (loginErr: HttpErrorResponse) => {
+              console.error('Auto-login failed:', loginErr);
+              this.errMassage = loginErr.error?.message || 'Automatic login failed';
+              this.isLoading = false;
             }
-            setTimeout(() => {
-              this._router.navigate(['/log-in'])
-            }, 1000);
-          } else {
-            this.errMassage = res.message || 'Registration failed';
-          }
+          });
 
-          this.isLoading = false;
-        },
-        error: (err: HttpErrorResponse) => {
-          this.errMassage = err.error?.message || 'Registration failed';
-          console.log(err);
+        } else {
+          this.errMassage = res.message || 'Registration failed';
           this.isLoading = false;
         }
-      })
-    } else {
-      this.registerForm.markAllAsTouched();
-    }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errMassage = err.error?.message || 'Registration failed';
+        console.log(err);
+        this.isLoading = false;
+      }
+    });
+  } else {
+    this.registerForm.markAllAsTouched();
   }
+}
+
 
   ngOnDestroy(): void {
     if (this.registSub) {
