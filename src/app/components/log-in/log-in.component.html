@@ -12,9 +12,9 @@
         <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()" class="space-y-6">
           <!-- Email Field -->
           <div>
-            <label for="loginEmail" class="block text-sm font-medium mb-2">Email Address</label>
+            <label for="loginEmail" class="block text-sm font-medium mb-2"></label>
             <div class="relative">
-              <i class="bi bi-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+              <i class="bi bi-envelope  text-tertiary"> Email Address</i>
               <input 
                 type="email" 
                 formControlName="email" 
@@ -28,9 +28,9 @@
           
           <!-- Password Field -->
           <div>
-            <label for="loginPassword" class="block text-sm font-medium mb-2">Password</label>
+            <label for="loginPassword" class="block text-sm font-medium mb-2"></label>
             <div class="relative">
-              <i class="bi bi-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+              <i class="bi bi-lock  text-tertiary"> Password</i>
               <input 
                 type="password" 
                 formControlName="password" 
