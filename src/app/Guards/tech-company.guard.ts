@@ -13,7 +13,7 @@ export class techCompanyGuard implements CanActivate {
     if (techCompanyId) {
       return true;
     } else {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/unauthorized']);
       return false;
     }
   }

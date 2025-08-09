@@ -5,6 +5,36 @@ import { BehaviorSubject, map, Observable, of, throwError } from 'rxjs';
 import { Environment } from './../Environment/environment';
 import { CheckoutRequestDTO } from '../Interfaces/iorder';
 
+export interface CartResponse {
+  success: boolean;
+  message: string;
+  data: CartData;
+}
+
+export interface CartData {
+  id: string;
+  customerId: string;
+  createdAt: string;
+  cartItems: CartItemDetail[];
+  subTotal: number;
+}
+
+export interface CartItemDetail {
+  id: string;
+  productId: string;
+  productName: string;
+  price: number;
+  quantity: number;
+  imageUrl: string | null;
+  stock: number;
+  itemTotal: number;
+  isCustomBuild: boolean;
+  assemblyFee: number | null;
+  productTotal: number;
+  unitPrice: number;
+}
+
+
 export interface Product {
   id: string;
   name: string;
@@ -19,6 +49,33 @@ export interface CartItem {
   quantity: number;
   product?: Product;
 }
+export interface CartReadDTO {
+  id: string;
+  customerId: string;
+  createdAt: string; // or Date
+  cartItems: CartItemReadDTO[];
+  subTotal: number;
+}
+export interface CartItemReadDTO {
+  id: string;
+  productId: string;
+  productName: string;
+  price: number;
+  quantity: number;
+  imageUrl: string | null;
+  stock: number;
+  itemTotal: number;
+  isCustomBuild: boolean;
+  assemblyFee: number | null;
+  productTotal: number;
+  unitPrice: number;
+}
+export interface GeneralResponse<T> {
+  success: boolean;
+  message: string;
+  data: T | null;
+}
+
 
 @Injectable({
   providedIn: 'root',
@@ -39,29 +96,27 @@ export class CartService {
     return localStorage.getItem('customerId');
   }
 
-  getCart(): Observable<CartItem[]> {
-    if (!this.isBrowser) return of([]);
+  getCart(): Observable<GeneralResponse<CartReadDTO>> {
+    if (!this.isBrowser) {
+      return of({
+        success: true,
+        message: 'Running in non-browser environment',
+        data: {
+          id: '',
+          customerId: '',
+          createdAt: new Date().toISOString(),  // <-- convert to string
+          cartItems: [],
+          subTotal: 0
+        }
+      });
+    }
+  
     const userId = this.getCustomerId();
-    if (!userId) return throwError(() => new Error('Customer ID not found. Please log in.'));
-
-    return this.http.get<{ data: { cartItems: any[] } }>(`${this._baseUrl}/Cart/${userId}`)
-      .pipe(
-        map(res => {
-          const rawItems = res?.data?.cartItems || [];
-          return rawItems.map(item => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            product: {
-              id: item.productId,
-              name: item.productName,
-              price: item.price,
-              imageUrl: item.imageUrl,
-              discountPrice: item.discountPrice,
-              UnitPrice: item.UnitPrice
-            }
-          }));
-        })
-      );
+    if (!userId) {
+      return throwError(() => new Error('Customer ID not found. Please log in.'));
+    }
+  
+    return this.http.get<GeneralResponse<CartReadDTO>>(`${this._baseUrl}/Cart/${userId}`);
   }
 
   addItem(id: string): Observable<any> {
@@ -153,30 +208,37 @@ export class CartService {
     return this.animateCartSubject.asObservable();
   }
 
-  updateCartState(cartItems: CartItem[]) {
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = this.calculateTotal(cartItems);
+  updateCartState(cartItems: CartItemReadDTO[]) {
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
-    this.itemsCountSubject.next(totalItems);
-    this.totalPriceSubject.next(totalPrice);
-    this.animateCartSubject.next(true);
+  this.itemsCountSubject.next(totalItems);
+  this.totalPriceSubject.next(totalPrice);
+  this.animateCartSubject.next(true);
 
-    setTimeout(() => this.animateCartSubject.next(false), 500);
-  }
+  setTimeout(() => this.animateCartSubject.next(false), 500);
+}
+
 
   initializeCartState(): void {
-    if (!this.isBrowser) return;
+  if (!this.isBrowser) return;
 
-    const userId = this.getCustomerId();
-    if (!userId) return;
+  const userId = this.getCustomerId();
+  if (!userId) return;
 
-    this.getCart().subscribe({
-      next: (items) => {
-        this.updateCartState(items);
-      },
-      error: (err) => {
-        console.error('Failed to initialize cart state:', err);
+  this.getCart().subscribe({
+    next: (response) => {
+      if (response.success && response.data) {
+        this.updateCartState(response.data.cartItems); // Pass the cartItems array only
+      } else {
+        this.updateCartState([]); // Empty array if no data or failure
       }
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Failed to initialize cart state:', err);
+      this.updateCartState([]); // Clear or reset on error
+    }
+  });
+}
+
 }

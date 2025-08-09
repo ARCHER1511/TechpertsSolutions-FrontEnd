@@ -127,6 +127,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/dashboard/pages/user-details/user-details.component').then(m => m.UserDetailsComponent),
         title: 'User Details'
       },
+      {
+        path: 'role-management',
+        loadComponent: () => import('./components/dashboard/components/role-management/role-management.component').then(m => m.RoleManagementComponent),
+        title: 'Role Management'
+      },
       
       // Service Management
       {

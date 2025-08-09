@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { Component } from '@angular/core';
 import { IProduct } from '../../../../Interfaces/iproduct';
 import { ProductService } from '../../../../Services/product.service';
@@ -20,7 +21,8 @@ export class HomeProductsComponent {
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private toaster: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -42,16 +44,29 @@ export class HomeProductsComponent {
   }
 
   onAddToCart(productId: string): void {
-    const cartItem = { productId, quantity: 1 };
-    this.cartService.addItem(productId).subscribe({
-      next: () => {
-        this.cartService.updateCartState([cartItem]);
-        alert(`Product added to cart`);
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Could not add product to cart');
-      }
-    });
-  }
+  this.cartService.addItem(productId).subscribe({
+    next: () => {
+      // After successful add, reload full cart data from server
+      this.cartService.getCart().subscribe({
+        next: (res) => {
+          if (res.success && res.data) {
+            this.cartService.updateCartState(res.data.cartItems);
+            this.toaster.success('Product added to cart');
+          } else {
+            alert('Failed to update cart after adding item');
+          }
+        },
+        error: (err) => {
+          console.error('Failed to reload cart:', err);
+          alert('Could not update cart after adding product');
+        }
+      });
+    },
+    error: (err) => {
+      console.error(err);
+      alert('Could not add product to cart');
+    }
+  });
+}
+
 }

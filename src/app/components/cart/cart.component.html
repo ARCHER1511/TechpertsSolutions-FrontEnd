@@ -7,7 +7,7 @@
     </div>
 
     <!-- Cart Content -->
-    @if (CartItems.length > 0) {
+    <ng-container *ngIf="CartItems.length > 0; else emptyCart">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Cart Items -->
         <div class="lg:col-span-2">
@@ -17,38 +17,80 @@
             </div>
             <div class="card-body">
               <div class="space-y-4">
-                @for (item of CartItems; track $index) {
-                  <div class="flex items-center gap-4 p-4 border border-border-primary rounded-lg">
+                <div *ngFor="let item of CartItems; let i = index" class="flex items-center gap-4 p-4 border border-border-primary rounded-lg">
+                  @if (!item.isCustomBuild) {
                     <!-- Product Image -->
-                    @if (item.product?.imageUrl) {
-                      <div class="w-20 h-20 bg-surface-secondary rounded-lg overflow-hidden flex-shrink-0">
-                        <img
-                          [src]="item.product?.imageUrl || 'assets/placeholder.jpg'"
-                          class="w-full h-full object-cover"
-                          [alt]="item.product?.name || 'Product Image'"
-                        />
-                      </div>
-                    }
-
-                    <!-- Product Info -->
-                    <div class="flex-1 min-w-0">
-                      <h3 class="font-semibold mb-2 line-clamp-2">{{ item.product?.name }}</h3>
-                      
-                      <div class="flex flex-wrap gap-4 text-sm text-tertiary mb-3">
-                        <span>Qty: <strong class="text-primary">{{ item.quantity }}</strong></span>
-                        <span>Price: <strong class="text-success">{{ item.product?.price | currency: 'EGP' }}</strong></span>
-                      </div>
-
-                      <button
-                        class="btn btn-sm btn-outline text-error border-error hover:bg-error hover:text-white"
-                        (click)="removeItem(item.productId)"
-                        [disabled]="isCheckingOut"
-                      >
-                        <i class="bi bi-trash me-1"></i> Remove
-                      </button>
-                    </div>
+                  <div class="w-20 h-20 bg-surface-secondary rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      [src]="item.imageUrl || 'assets/placeholder.jpg'"
+                      class="w-full h-full object-cover"
+                      [alt]="item.productName || 'Product Image'"
+                    />
                   </div>
-                }
+
+                  <!-- Product Info -->
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold mb-2 line-clamp-2">{{ item.productName }}</h3>
+                    
+                    <div class="flex flex-wrap gap-4 text-sm text-tertiary mb-3">
+                      <span>Qty: <strong class="text-primary">{{ item.quantity }}</strong></span>
+                      <span>Price: 
+                        <strong class="text-success">
+                          {{ item.productTotal | currency: 'EGP' }}
+                          @if(item.quantity > 1) {
+                            ,
+                            <span class="">({{ item.unitPrice | currency: 'EGP' }} <span class="text-secondary">each</span>)</span>
+                          }
+                        </strong>
+                      </span>
+                    </div>
+
+                    <button
+                      class="btn btn-sm btn-outline text-error border-error hover:bg-error hover:text-white"
+                      (click)="removeItem(item.productId)"
+                      [disabled]="isCheckingOut"
+                    >
+                      <i class="bi bi-trash me-1"></i> Remove
+                    </button>
+                  </div>
+                  } @else {
+                    <!-- Product Image -->
+                  <div class="w-20 h-20 bg-surface-secondary rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      [src]="item.imageUrl || 'assets/placeholder.jpg'"
+                      class="w-full h-full object-cover"
+                      [alt]="item.productName || 'Product Image'"
+                    />
+                  </div>
+
+                  <!-- Product Info -->
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold mb-2 line-clamp-2">{{ item.productName }}</h3>
+                    <div class="flex flex-wrap gap-4 text-sm text-tertiary mb-3">
+                      <span>Qty: <strong class="text-primary">{{ item.quantity }}</strong></span>
+                      <span>Price: 
+                        <strong class="text-success">
+                          {{ item.productTotal | currency: 'EGP' }}
+                          @if(item.quantity > 1) {
+                            ,
+                            <span class="">({{ item.unitPrice | currency: 'EGP' }} <span class="text-secondary">each</span>)</span>
+                          }
+                        </strong>
+                        <span class="text-danger"><i class="bi bi-tools"></i></span>
+                    <span class="text-danger">Custom Build</span>
+                      </span>
+                    </div>
+                    
+                    <button
+                      class="btn btn-sm btn-outline text-error border-error hover:bg-error hover:text-white"
+                      (click)="removeItem(item.productId)"
+                      [disabled]="isCheckingOut"
+                    >
+                      <i class="bi bi-trash me-1"></i> Remove
+                    </button>
+                  </div>
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -90,12 +132,13 @@
                     (click)="checkout()"
                     [disabled]="isCheckingOut"
                   >
-                    @if (isCheckingOut) {
-                      <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin me-2"></div>
+                    <ng-container *ngIf="isCheckingOut; else checkoutLabel">
+                      <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin me-2 inline-block"></div>
                       Processing...
-                    } @else {
+                    </ng-container>
+                    <ng-template #checkoutLabel>
                       <i class="bi bi-credit-card me-2"></i> Proceed to Checkout
-                    }
+                    </ng-template>
                   </button>
                   
                   <button 
@@ -111,8 +154,10 @@
           </div>
         </div>
       </div>
-    } @else {
-      <!-- Empty Cart -->
+    </ng-container>
+
+    <!-- Empty Cart Template -->
+    <ng-template #emptyCart>
       <div class="card">
         <div class="card-body text-center py-16">
           <div class="w-24 h-24 mx-auto mb-6 bg-surface-secondary rounded-full flex items-center justify-center">
@@ -125,6 +170,6 @@
           </button>
         </div>
       </div>
-    }
+    </ng-template>
   </div>
 </div>

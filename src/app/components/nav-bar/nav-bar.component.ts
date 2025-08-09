@@ -84,16 +84,23 @@ export class NavBarComponent implements OnInit, OnDestroy {
         })
       );
 
-      // Cart count
       this.subscriptions.push(
-        this.cartService.getCart().subscribe(items => {
-          const newCount = items.reduce((sum, i) => sum + i.quantity, 0);
-          if (newCount !== this.cartCount) {
-            this.cartCount = newCount;
-            this.triggerCartAnimation();
-          }
-        })
-      );
+  this.cartService.getCart().subscribe(response => {
+    if (response.success && response.data) {
+      const newCount = response.data.cartItems.reduce((sum, i) => sum + i.quantity, 0);
+      if (newCount !== this.cartCount) {
+        this.cartCount = newCount;
+        this.triggerCartAnimation();
+      }
+    } else {
+      // No data or failure — reset count if needed
+      if (this.cartCount !== 0) {
+        this.cartCount = 0;
+      }
+    }
+  })
+);
+
 
       // Wishlist count
       this.subscriptions.push(

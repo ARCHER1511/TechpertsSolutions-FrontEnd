@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartItem, CartService } from '../../Services/cart.service';
+import { CartItem, CartItemReadDTO, CartService } from '../../Services/cart.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
@@ -12,13 +12,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
-  CartItems: CartItem[] = [];
+  CartItems: CartItemReadDTO[] = [];
   isCheckingOut = false;
 
   constructor(
-    private CartService: CartService,
+    private cartService: CartService,  // use camelCase by convention
     private toastr: ToastrService,
-    private _router: Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -26,33 +26,40 @@ export class CartComponent implements OnInit {
   }
 
   loadCart(): void {
-    this.CartService.getCart().subscribe({
-      next: (items: CartItem[]) => {
-        console.log('📦 Cart items loaded:', items);
-        this.CartItems = items;
-        this.CartService.updateCartState(this.CartItems);
-      },
-      error: (err: any) => {
-        console.error('❌ Failed to load cart:', err);
-        this.toastr.error('Failed to load cart items');
-      },
-    });
-  }
+  this.cartService.getCart().subscribe({
+    next: (res) => {
+      if (res.success && res.data) {
+        console.log(res);
+        this.CartItems = res.data.cartItems;  // <-- direct assign
+        this.cartService.updateCartState(this.CartItems); // You may need to adjust this method later to accept CartItemReadDTO[]
+      } else {
+        this.CartItems = [];
+        this.toastr.warning('Failed to load cart items: ' + res.message);
+      }
+    },
+    error: (err) => {
+      console.error('Failed to load cart:', err);
+      this.toastr.error('Failed to load cart items');
+      this.CartItems = [];
+    }
+  });
+}
+
 
   addToCart(productId: string): void {
-    this.CartService.addItem(productId).subscribe(() => this.loadCart());
+    this.cartService.addItem(productId).subscribe(() => this.loadCart());
   }
 
   updateItem(item: CartItem): void {
-    this.CartService.updateItem(item).subscribe(() => this.loadCart());
+    this.cartService.updateItem(item).subscribe(() => this.loadCart());
   }
 
   removeItem(productId: string): void {
-    this.CartService.removeItem(productId).subscribe(() => this.loadCart());
+    this.cartService.removeItem(productId).subscribe(() => this.loadCart());
   }
 
   clearCart(): void {
-    this.CartService.clearCart().subscribe(() => this.loadCart());
+    this.cartService.clearCart().subscribe(() => this.loadCart());
   }
 
   checkout(): void {
@@ -62,47 +69,41 @@ export class CartComponent implements OnInit {
     }
 
     this.isCheckingOut = true;
-    
+
     console.log('🛒 Starting checkout process...');
     console.log('📦 Cart items:', this.CartItems);
     console.log('💰 Total amount:', this.getTotal());
-    
-    // For now, we'll send basic checkout data
-    // You can extend this to include shipping address, payment method, etc.
+
     const checkoutData = {
-      notes: `Order total: ${this.getTotal()} EGP`,
-      items: this.CartItems.map(item => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        price: item.product?.price || 0,
-        UnitPrice: item.product?.UnitPrice || 0
-      }))
-    };
+  notes: `Order total: ${this.getTotal()} EGP`,
+  items: this.CartItems.map(item => ({
+    productId: item.productId,
+    quantity: item.quantity,
+    price: item.price,      // directly from CartItemReadDTO
+    UnitPrice: item.unitPrice // directly from CartItemReadDTO
+  }))
+};
+
 
     console.log('📤 Sending checkout data:', checkoutData);
 
-    this.CartService.checkout(checkoutData).subscribe({
+    this.cartService.checkout(checkoutData).subscribe({
       next: (res) => {
         console.log('✅ Checkout successful:', res);
         this.toastr.success('Order placed successfully!');
         this.isCheckingOut = false;
-        
+
         // Clear cart after successful checkout
-        this.CartService.clearCart().subscribe(() => {
+        this.cartService.clearCart().subscribe(() => {
           this.loadCart();
         });
+
+        this.router.navigate(['/order']);
       },
       error: (err) => {
         console.error('❌ Checkout failed:', err);
-        console.error('❌ Error details:', {
-          status: err.status,
-          statusText: err.statusText,
-          error: err.error,
-          message: err.message
-        });
         this.isCheckingOut = false;
-        
-        // Show specific error message
+
         if (err.error?.message) {
           this.toastr.error(err.error.message);
         } else {
@@ -110,15 +111,15 @@ export class CartComponent implements OnInit {
         }
       }
     });
-    this._router.navigate(['/order'])
   }
 
   getTotal(): number {
-    return this.CartItems.reduce(
-      (sum, item) => sum + (item.product?.UnitPrice ?? 0) * item.quantity,
-      0
-    );
-  }
+  return this.CartItems.reduce(
+    (sum, item) => sum + (item.unitPrice ?? 0) * item.quantity,
+    0
+  );
+}
+
 
   hasDiscount(item: CartItem): boolean {
     return (

@@ -85,7 +85,7 @@ export class AdminService {
 
   // Get all users with their roles for role management
   getAllUsersWithRoles(): Observable<UserRoleResponse> {
-    return this.http.get<UserRoleResponse>(`${this.apiUrl}/users/roles`);
+    return this.http.get<UserRoleResponse>(`${this.apiUrl}/users`);
   }
 
   // Assign role to user
