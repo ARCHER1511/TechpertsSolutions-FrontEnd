@@ -5,74 +5,71 @@ import { Environment } from '../Environment/environment';
 
 export interface TechCompany {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  description?: string;
-  active: boolean;
-  registrationDate?: string;
-  services?: string[];
-}
-export interface TechCompany2 {
-  id: string;
-  userId: string;
   userName: string;
+  email: string;
   city: string;
   country: string;
   mapLocation?: string | null;
-  roleId: string;
-  roleName: string;
+  fullName: string;
+  phoneNumber: string;
+  address: string;
 }
 
+export interface TechCompanyUpdate {
+  city: string;
+  country: string;
+  email: string;
+  userName: string;
+  phoneNumber: string;
+  fullName: string;
+  address: string;
+  mapLocation?: string | null;
+}
 
 export interface TechCompanyResponse {
   success: boolean;
   message: string;
   data: TechCompany[];
 }
-export interface TechCompanyResponse2 {
+
+export interface TechCompanyUpdateResponse {
   success: boolean;
   message: string;
-  data: TechCompany2[];
+  data: TechCompanyUpdate[];
 }
 
+// Response for single company
 export interface SingleTechCompanyResponse {
   success: boolean;
   message: string;
   data: TechCompany;
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class TechCompanyService {
-  private apiUrl = `${Environment.baseUrl}/TechCompany`;
+ private apiUrl = `${Environment.baseUrl}/TechCompany`;
 
   constructor(private http: HttpClient) {}
 
-  // Create new tech company
-  createTechCompany(techCompany: Partial<TechCompany>): Observable<any> {
-    return this.http.post(this.apiUrl, techCompany);
+  getAllTechCompanies(): Observable<TechCompanyResponse> {
+    return this.http.get<TechCompanyResponse>(`${this.apiUrl}`);
   }
 
-  // Get all tech companies
-  getAllTechCompanies(): Observable<TechCompanyResponse2> {
-    return this.http.get<TechCompanyResponse2>(this.apiUrl);
-  }
 
-  // Get tech company by ID
   getTechCompanyById(id: string): Observable<SingleTechCompanyResponse> {
     return this.http.get<SingleTechCompanyResponse>(`${this.apiUrl}/${id}`);
   }
 
-  // Update tech company
-  updateTechCompany(id: string, techCompany: Partial<TechCompany>): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, techCompany);
+
+  updateTechCompany(id: string, company: TechCompanyUpdate): Observable<TechCompanyUpdateResponse> {
+    return this.http.put<TechCompanyUpdateResponse>(`${this.apiUrl}/${id}`, company);
   }
 
-  // Delete tech company
-  deleteTechCompany(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+
+  deleteTechCompany(id: string): Observable<{ success: boolean; message: string }> {
+    return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${id}`);
   }
-} 
+}
