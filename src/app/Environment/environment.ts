@@ -5,6 +5,9 @@ export class Environment {
   static httpBaseImageUrl: string = 'http://localhost:7230/';
   static httpsBaseImageUrl: string = 'https://localhost:7230/';
 
+  static googleMapsApiKey: string = 'AIzaSyCIxRhuQT2XCwuNH9cpBMtUq8a5kbzc9LE'
+
+
   static get baseUrl(): string {
     return this.useHttps ? this.httpsBaseUrl : this.httpBaseUrl;
   }

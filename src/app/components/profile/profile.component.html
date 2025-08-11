@@ -467,15 +467,20 @@
     </div>
   </div>
     <div class="map-container">
-      <google-map
-        height="300px"
-        width="100%"
-        [center]="center"
-        [zoom]="zoom"
-        (mapClick)="setMarker($event)"
-      >
-        <map-marker *ngIf="markerPosition" [position]="markerPosition"></map-marker>
-      </google-map>
+  <google-map
+  height="400px"
+  width="100%"
+  [center]="center"
+  [zoom]="zoom"
+  (mapClick)="setMarker($event)">
+  
+  <map-marker
+    *ngIf="markerPosition"
+    [position]="markerPosition"
+    [options]="{ draggable: true }"
+    (mapDragend)="setMarker($event)">
+  </map-marker>
+</google-map>
     </div>
   <!-- Submit Button -->
   <div class="button-row">
