@@ -1,20 +1,24 @@
-import { Component, inject } from '@angular/core';
+import { Component, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { IPagedProducts, IProduct } from '../../../../../../Interfaces/iproduct';
 import { CartService } from '../../../../../../Services/cart.service';
 import { ProductService } from '../../../../../../Services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProductItemComponent } from "../../../../../products/components/product-item/product-item.component";
+import { FormsModule } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [ProductItemComponent],
+  imports: [ProductItemComponent, FormsModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })
 export class ProductListComponent {
   pagedProducts: IProduct[] = [];
-    
+  techCompanyId: string = '';
+  isBrowser: boolean;
+  
       searchQuery: string = '';
       sortOrder: string = ''; // '', 'low', 'high'
     
@@ -28,44 +32,58 @@ export class ProductListComponent {
     
       constructor(
         private productService: ProductService,
-        private cartService: CartService
-      ) {}
+        private cartService: CartService,
+        @Inject(PLATFORM_ID) platformId: object
+      ) {
+        this.isBrowser = isPlatformBrowser(platformId);
+      }
     
       ngOnInit(): void {
-        this.loadProducts();
-      }
+  if (this.isBrowser) {
+    this.techCompanyId = localStorage.getItem('techCompanyId') || '';
+  }
+  console.log(this.techCompanyId);
+  this.loadProducts();
+}
+
     
       loadProducts(): void {
-        this.loading = true;
-        this.error = '';
-        
-        const sortBy = 'price';
-        const sortDesc = this.sortOrder === 'high';
-    
-        this.productService
-          .getAllProducts(this.currentPage, this.pageSize, sortBy, sortDesc, this.searchQuery)
-          .subscribe({
-            next: (response) => {
-              if (response.success) {
-                const pagedData: IPagedProducts = response.data;
-                this.pagedProducts = pagedData.items;
-                this.totalPages = pagedData.totalPages;
-              } else {
-                this.error = response.message || 'Failed to load products';
-                this.pagedProducts = [];
-                this.totalPages = 0;
-              }
-              this.loading = false;
-            },
-            error: (err) => {
-              console.error('Error loading products:', err);
-              this.error = 'Failed to load products. Please try again later.';
-              this.pagedProducts = [];
-              this.totalPages = 0;
-              this.loading = false;
-            }
-          });
+  this.loading = true;
+  this.error = '';
+
+  const sortBy = 'price';
+  const sortDesc = this.sortOrder === 'high';
+
+  this.productService
+    .getAllProductsTechDashboard(this.currentPage, this.pageSize, sortBy, sortDesc, this.searchQuery)
+    .subscribe({
+      next: (response) => {
+        if (response.success) {
+          const pagedData: IPagedProducts = response.data;
+
+          // ✅ Filter products here
+          this.pagedProducts = pagedData.items.filter(
+            p => p.techCompanyId === this.techCompanyId
+          );
+
+          this.totalPages = pagedData.totalPages;
+        } else {
+          this.error = response.message || 'Failed to load products';
+          this.pagedProducts = [];
+          this.totalPages = 0;
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading products:', err);
+        this.error = 'Failed to load products. Please try again later.';
+        this.pagedProducts = [];
+        this.totalPages = 0;
+        this.loading = false;
       }
+    });
+}
+
     
       filterProducts(): void {
         this.currentPage = 1;

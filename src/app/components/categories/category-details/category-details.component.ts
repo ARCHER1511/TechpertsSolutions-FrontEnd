@@ -49,6 +49,8 @@ export class CategoryDetailsComponent implements OnInit {
             categoryName: response.data.name,
             subCategoryId: '',
             subCategoryName: '',
+            techCompanyId: catProduct.techCompanyId || '',
+            techCompanyName: catProduct.techCompanyName || '',
             status: 'Approved', // Default status
             specifications: catProduct.specifications || []
           })) || [];

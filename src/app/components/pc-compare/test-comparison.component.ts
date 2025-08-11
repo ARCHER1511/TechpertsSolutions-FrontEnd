@@ -69,6 +69,8 @@ export class TestComparisonComponent {
       subCategoryId: '1',
       subCategoryName: 'Test',
       status: 'Approved',
+      techCompanyId: '123',
+      techCompanyName: 'Tech Company',
       specifications: [
         {
           id: '1',
@@ -98,6 +100,8 @@ export class TestComparisonComponent {
       subCategoryId: '1',
       subCategoryName: 'Test',
       status: 'Approved',
+      techCompanyId: '123',
+      techCompanyName: 'Tech Company',
       specifications: [
         {
           id: '4',

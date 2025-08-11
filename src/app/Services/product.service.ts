@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { Environment } from '../Environment/environment';
 import { GeneralResponce, IPagedProducts, IProduct, ProductCategory, ProductPendingStatus, ProductCreateDTO, ProductUpdateDTO } from '../Interfaces/iproduct';
 import { GeneralResponse } from '../Interfaces/iorder';
@@ -70,6 +70,79 @@ export class ProductService {
       })
     );
   }
+  getAllProductsTechDashboard(
+  pageNumber: number,
+  pageSize: number,
+  sortBy: string,
+  sortDesc: boolean,
+  searchQuery: string = '',
+  categoryId?: string
+): Observable<{ success: boolean; message: string; data: IPagedProducts }> {
+  
+  let params = new HttpParams()
+    .set('pageNumber', pageNumber.toString())
+    .set('pageSize', pageSize.toString())
+    .set('sortBy', sortBy)
+    .set('sortDesc', sortDesc.toString());
+
+  if (searchQuery.trim()) {
+    params = params.set('search', searchQuery.trim());
+  }
+
+  if (categoryId) {
+    params = params.set('categoryId', categoryId);
+  }
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  });
+
+  // ✅ Read companyId from localStorage only if in browser
+  let techCompanyId = '';
+  if (typeof window !== 'undefined') {
+    techCompanyId = localStorage.getItem('techCompanyId') || '';
+  }
+
+  return this._httpClient.get<{ success: boolean; message: string; data: IPagedProducts }>(
+    `${this._baseUrl}/Product/all`,
+    { params, headers }
+  ).pipe(
+    map(response => {
+      if (response.success && techCompanyId) {
+        const filteredItems = response.data.items.filter(
+          p => p.techCompanyId?.trim() === techCompanyId.trim()
+        );
+
+        return {
+          ...response,
+          data: {
+            ...response.data,
+            items: filteredItems,
+            totalItems: filteredItems.length,
+            totalPages: Math.ceil(filteredItems.length / pageSize)
+          }
+        };
+      }
+      return response;
+    }),
+    catchError((error) => {
+      console.error('Error loading products:', error);
+      return of({
+        success: false,
+        message: 'Failed to load products.',
+        data: { 
+          pageNumber: 1,
+          pageSize: pageSize,
+          totalItems: 0,
+          totalPages: 0,
+          items: []
+        }
+      });
+    })
+  );
+}
+
 
   getProductById(id: string): Observable<GeneralResponce> {
     // Add headers to help with SSL certificate issues in development
@@ -96,6 +169,8 @@ export class ProductService {
           categoryName: null,
           subCategoryId: '',
           subCategoryName: '',
+          techCompanyId: '',
+          techCompanyName: '',
           status: 'None'
         };
         

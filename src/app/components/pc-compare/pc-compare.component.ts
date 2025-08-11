@@ -66,6 +66,8 @@ export class PcCompareComponent implements OnInit {
                   categoryName: category.name, // Also set categoryName for compatibility
                   subCategoryId: '',
                   subCategoryName: '',
+                  techCompanyId: catProduct.techCompanyId || '',
+                  techCompanyName: catProduct.techCompanyName || '',
                   status: 'Approved', // Default status
                   specifications: [] // Will be loaded when product is selected
                 };

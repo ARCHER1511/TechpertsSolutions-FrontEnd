@@ -35,6 +35,8 @@ export interface ICategoryProduct {
     subCategoryName: string;
     status: ProductStatus;
     stock?: number;
+    techCompanyId: string;
+    techCompanyName?: string;
     specifications?: ProductSpecification[]; // <-- Add this
     warranties?: Warranty[]; 
 }

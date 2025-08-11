@@ -52,7 +52,9 @@
   @if (pagedProducts.length > 0 && !loading) {
     <div class="row row-cols-1 row-cols-md-3 g-4">
       @for (product of pagedProducts; track $index) {
-        <app-product-item [productC]="product"></app-product-item>
+        @if (product.techCompanyId === techCompanyId) {
+          <app-product-item [productC]="product"></app-product-item>
+        }
       }
     </div>
   } @else if (!loading && !error) {
