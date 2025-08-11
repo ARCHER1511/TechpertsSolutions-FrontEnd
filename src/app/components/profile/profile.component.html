@@ -429,22 +429,25 @@
                 </div>
               </div>
             }
-            <form [formGroup]="form" (ngSubmit)="submit()" class="form-card">
+           <form [formGroup]="form" (ngSubmit)="submit()" class="form-card">
   <h2 class="form-title">Add Location</h2>
 
-  <div class="form-row">
-    <mat-form-field appearance="outline" class="form-field">
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="form-field">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" rows="3"></textarea>
-    </mat-form-field>
+  <!-- Name -->
+  <div class="form-group floating-label">
+    <input type="text" id="name" formControlName="name" required placeholder=" " />
+    <label for="name">Name</label>
+    <div class="form-line"></div>
   </div>
 
-  <div class="form-row map-row">
+  <!-- Description -->
+  <div class="form-group floating-label">
+    <textarea id="description" formControlName="description" rows="3" placeholder=" "></textarea>
+    <label for="description">Description</label>
+    <div class="form-line"></div>
+  </div>
+
+  <!-- Map + Coordinates -->
+  <div class="map-row">
     <div class="map-container">
       <google-map
         height="300px"
@@ -458,20 +461,28 @@
     </div>
 
     <div class="coords-container">
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Latitude</mat-label>
-        <input matInput formControlName="latitude" readonly />
-      </mat-form-field>
+      <!-- Latitude -->
+      <div class="form-group floating-label">
+        <input type="text" id="latitude" formControlName="latitude" readonly placeholder=" " />
+        <label for="latitude">Latitude</label>
+        <div class="form-line"></div>
+      </div>
 
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Longitude</mat-label>
-        <input matInput formControlName="longitude" readonly />
-      </mat-form-field>
+      <!-- Longitude -->
+      <div class="form-group floating-label">
+        <input type="text" id="longitude" formControlName="longitude" readonly placeholder=" " />
+        <label for="longitude">Longitude</label>
+        <div class="form-line"></div>
+      </div>
     </div>
   </div>
 
+  <!-- Submit Button -->
   <div class="button-row">
-    <button mat-raised-button color="primary" type="submit">Submit</button>
+    <button type="submit" class="btn btn-primary px-4 py-2 pulse-effect">
+      <span class="submit-text">Submit</span>
+      <i class="bi bi-send-fill ms-2 submit-icon"></i>
+    </button>
   </div>
 </form>
           </div>

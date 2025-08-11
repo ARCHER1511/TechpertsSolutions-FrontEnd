@@ -104,7 +104,9 @@ export class TechCompaniesComponent implements OnInit {
           if (index !== -1) {
             this.techCompanies[index] = {
               ...this.techCompanies[index],
-              ...this.editData
+              ...this.editData,
+               userName: this.editData.userName
+            
             };
           }
           this.cancelEdit();
