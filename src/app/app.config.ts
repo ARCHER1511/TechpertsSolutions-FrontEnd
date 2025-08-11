@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -10,6 +10,8 @@ import { routes } from './app.routes';
 
 // HTTP interceptor to handle SSL issues in development
 import { HttpInterceptorFn } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 const sslBypassInterceptor: HttpInterceptorFn = (req, next) => {
   // Only apply in development and for HTTPS URLs
@@ -35,6 +37,7 @@ export const appConfig: ApplicationConfig = {
       progressBar: true,
       closeButton: true,
       preventDuplicates: true,
-    })
+    }), provideAnimationsAsync(),
+    importProvidersFrom(GoogleMapsModule)
   ]
 };

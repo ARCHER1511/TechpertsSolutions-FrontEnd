@@ -63,3 +63,18 @@
     transform: scale(1);
   }
 }
+.short-modal {
+  max-width: 600px;
+  max-height: 80vh; /* Keeps it under navbar height */
+  overflow-y: auto; /* Scroll if still too tall */
+}
+
+.edit-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.edit-form-grid .full-width {
+  grid-column: span 2;
+}

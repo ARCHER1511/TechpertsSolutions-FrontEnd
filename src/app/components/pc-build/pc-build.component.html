@@ -14,11 +14,6 @@
     <input id="budget" type="number" formControlName="budget" />
   </div>
 
-  <div class="form-group">
-    <label for="serviceUsageId">Service Usage ID</label>
-    <input id="serviceUsageId" type="text" formControlName="serviceUsageId" />
-  </div>
-
   <button type="submit" [disabled]="isSubmitting || buildForm.invalid" class="submit-button">
     {{ isSubmitting ? 'Submitting...' : 'Submit Build' }}
   </button>

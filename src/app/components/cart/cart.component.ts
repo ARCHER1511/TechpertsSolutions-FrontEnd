@@ -115,7 +115,7 @@ export class CartComponent implements OnInit {
 
   getTotal(): number {
   return this.CartItems.reduce(
-    (sum, item) => sum + (item.unitPrice ?? 0) * item.quantity,
+    (sum, item) => sum + (item.price ?? 0) * item.quantity,
     0
   );
 }

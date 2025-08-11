@@ -51,7 +51,7 @@ export class LogInComponent {
           const token = res.data?.token;
           const customerId = res.data?.userId;
           const userName = res.data?.userName;
-          const userRoles = res.data?.userRoles;
+          const userRoles = res.data?.roleName ? res.data.roleName : [];
 
           if (token) {
             console.log(token);

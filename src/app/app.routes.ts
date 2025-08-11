@@ -47,6 +47,7 @@ export const routes: Routes = [
   { path: 'pc-compare', loadComponent: () => import('./components/pc-compare/pc-compare.component').then(m => m.PcCompareComponent), title: 'Pc Compare' },
   { path: 'test-comparison', loadComponent: () => import('./components/pc-compare/test-comparison.component').then(m => m.TestComparisonComponent), title: 'Test Comparison' },
   { path: 'debug-specifications', loadComponent: () => import('./components/pc-compare/debug-specifications.component').then(m => m.DebugSpecificationsComponent), title: 'Debug Specifications' },
+  { path: 'notifications', loadComponent: () => import('./components/notifications/notifications.component').then(m => m.NotificationsComponent), title: 'Notifications', canActivate: [authGuard] },
 
   // Image URL Demo Route
   { path: 'image-url-demo', loadComponent: () => import('./components/image-url-demo/image-url-demo.component').then(m => m.ImageUrlDemoComponent), title: 'Image URL Demo' },

@@ -1041,3 +1041,84 @@
     justify-content: center;
   }
 } 
+.form-card {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px 30px;
+  background: var(--card-bg);
+  box-shadow: 0 8px 20px var(--shadow-color);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--text-primary);
+  font-family: 'Roboto', sans-serif;
+}
+
+.form-title {
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-field {
+  flex: 1 1 250px;
+}
+
+/* Override Angular Material form-field to use theme colors */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: var(--border-color);
+  border-color: var(--input-border) !important;
+}
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline {
+  border-color: var(--primary-color) !important;
+}
+::ng-deep .mat-form-field-label {
+  color: var(--text-secondary) !important;
+}
+::ng-deep .mat-input-element {
+  background: var(--input-bg);
+  color: var(--input-text);
+}
+
+/* Map and coordinates container */
+.map-row {
+  align-items: flex-start;
+}
+
+.map-container {
+  flex: 2 1 400px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.coords-container {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+button.mat-raised-button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  transition: background-color 0.3s ease;
+}
+button.mat-raised-button:hover {
+  background-color: var(--button-hover-bg);
+}

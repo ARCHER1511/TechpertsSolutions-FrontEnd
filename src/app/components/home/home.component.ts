@@ -15,5 +15,5 @@ import { HeroComponent } from './components/hero/hero.component';
   styleUrl: './home.component.css'
 })
 export class HomeComponent  {
-
+  
 }

@@ -127,7 +127,7 @@
             <i class="bi bi-grid-3x3-gap me-2"></i>
             Your Available Dashboards
           </h3>
-          <p class="section-subtitle text-center w-100">Access dashboards based on your roles and permissions</p>
+          <p class="section-subtitle text-center w-100 mx-auto">Access dashboards based on your roles and permissions</p>
         </div>
         
         <div class="dashboards-grid">
@@ -193,7 +193,7 @@
               </a>
             </div>
           }
-
+          
           <!-- Customer Dashboard - Only show if user has Customer role -->
           @if (isCustomer()) {
             <div class="dashboard-card available">
@@ -242,7 +242,7 @@
           <div class="stat-card">
             <div class="stat-content">
               <div class="stat-info">
-                <h3 class="stat-number">{{ quickStats.totalOrders || 0 }}</h3>
+                <h3 class="stat-number">{{ totalOrders || 0 }}</h3>
                 <p class="stat-label">Total Orders</p>
                 <div class="stat-change positive">
                   <i class="bi bi-arrow-up"></i>
@@ -267,7 +267,7 @@
           <div class="stat-card">
             <div class="stat-content">
               <div class="stat-info">
-                <h3 class="stat-number">{{ quickStats.activeOrders || 0 }}</h3>
+                <h3 class="stat-number">{{ activeOrders || 0 }}</h3>
                 <p class="stat-label">Active Orders</p>
                 <div class="stat-change info">
                   <i class="bi bi-clock"></i>
@@ -292,7 +292,7 @@
           <div class="stat-card">
             <div class="stat-content">
               <div class="stat-info">
-                <h3 class="stat-number">{{ quickStats.wishlistItems || 0 }}</h3>
+                <h3 class="stat-number">{{ totalWishlist || 0 }}</h3>
                 <p class="stat-label">Wishlist Items</p>
                 <div class="stat-change positive">
                   <i class="bi bi-heart"></i>
@@ -317,7 +317,7 @@
           <div class="stat-card">
             <div class="stat-content">
               <div class="stat-info">
-                <h3 class="stat-number">{{ quickStats.maintenanceRequests || 0 }}</h3>
+                <h3 class="stat-number">{{ maintenanceRequests || 0 }}</h3>
                 <p class="stat-label">Maintenance Requests</p>
                 <div class="stat-change warning">
                   <i class="bi bi-tools"></i>
@@ -429,6 +429,51 @@
                 </div>
               </div>
             }
+            <form [formGroup]="form" (ngSubmit)="submit()" class="form-card">
+  <h2 class="form-title">Add Location</h2>
+
+  <div class="form-row">
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="form-row map-row">
+    <div class="map-container">
+      <google-map
+        height="300px"
+        width="100%"
+        [center]="center"
+        [zoom]="zoom"
+        (mapClick)="setMarker($event)"
+      >
+        <map-marker *ngIf="markerPosition" [position]="markerPosition"></map-marker>
+      </google-map>
+    </div>
+
+    <div class="coords-container">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Latitude</mat-label>
+        <input matInput formControlName="latitude" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Longitude</mat-label>
+        <input matInput formControlName="longitude" readonly />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button mat-raised-button color="primary" type="submit">Submit</button>
+  </div>
+</form>
           </div>
 
           <!-- Quick Actions Sidebar -->
@@ -468,29 +513,17 @@
                       <i class="bi bi-box me-2"></i>
                       Pending Products
                     </a>
-                    <a routerLink="/dashboard/create-product" class="action-btn secondary">
-                      <i class="bi bi-plus-circle me-2"></i>
-                      Create Product
-                    </a>
                     <a routerLink="/dashboard/orders" class="action-btn secondary">
                       <i class="bi bi-cart me-2"></i>
                       All Orders
                     </a>
-                    <a routerLink="/dashboard/maintenance-requests" class="action-btn secondary">
-                      <i class="bi bi-wrench me-2"></i>
-                      Maintenance Requests
+                    <a routerLink="/notifications" class="action-btn secondary">
+                      <i class="bi bi-bell me-2"></i>
+                      Notifications
                     </a>
-                    <a routerLink="/dashboard/deliveries" class="action-btn secondary">
-                      <i class="bi bi-box-seam me-2"></i>
-                      All Deliveries
-                    </a>
-                    <a routerLink="/dashboard/analytics" class="action-btn secondary">
-                      <i class="bi bi-bar-chart me-2"></i>
-                      Analytics
-                    </a>
-                    <a routerLink="/dashboard/reports" class="action-btn secondary">
-                      <i class="bi bi-file-earmark-text me-2"></i>
-                      Reports
+                    <a routerLink="/settings" class="action-btn secondary">
+                      <i class="bi bi-gear me-2"></i>
+                      Settings
                     </a>
                   </div>
                 </div>
@@ -528,19 +561,11 @@
                       <i class="bi bi-cpu me-2"></i>
                       PC Assembly Requests
                     </a>
-                    <a routerLink="/tech-company/commissions" class="action-btn secondary">
-                      <i class="bi bi-cash-coin me-2"></i>
-                      My Commissions
+                    <a routerLink="/notifications" class="action-btn secondary">
+                      <i class="bi bi-bell me-2"></i>
+                      Notifications
                     </a>
-                    <a routerLink="/tech-company/earnings" class="action-btn secondary">
-                      <i class="bi bi-graph-up me-2"></i>
-                      Earnings Report
-                    </a>
-                    <a routerLink="/tech-company/profile" class="action-btn secondary">
-                      <i class="bi bi-building me-2"></i>
-                      Company Profile
-                    </a>
-                    <a routerLink="/tech-company/settings" class="action-btn secondary">
+                    <a routerLink="/settings" class="action-btn secondary">
                       <i class="bi bi-gear me-2"></i>
                       Settings
                     </a>
@@ -572,19 +597,11 @@
                       <i class="bi bi-clock-history me-2"></i>
                       Delivery History
                     </a>
-                    <a routerLink="/delivery/earnings" class="action-btn secondary">
-                      <i class="bi bi-cash-coin me-2"></i>
-                      My Earnings
+                    <a routerLink="/notifications" class="action-btn secondary">
+                      <i class="bi bi-bell me-2"></i>
+                      Notifications
                     </a>
-                    <a routerLink="/delivery/performance" class="action-btn secondary">
-                      <i class="bi bi-graph-up me-2"></i>
-                      Performance Stats
-                    </a>
-                    <a routerLink="/delivery/profile" class="action-btn secondary">
-                      <i class="bi bi-person me-2"></i>
-                      Profile
-                    </a>
-                    <a routerLink="/delivery/settings" class="action-btn secondary">
+                    <a routerLink="/settings" class="action-btn secondary">
                       <i class="bi bi-gear me-2"></i>
                       Settings
                     </a>
@@ -608,7 +625,7 @@
                       <i class="bi bi-speedometer2 me-2"></i>
                       Customer Dashboard
                     </a>
-                    <a routerLink="/customer/orders" class="action-btn secondary">
+                    <a routerLink="/order" class="action-btn secondary">
                       <i class="bi bi-cart me-2"></i>
                       My Orders
                     </a>
@@ -616,11 +633,11 @@
                       <i class="bi bi-clock-history me-2"></i>
                       Order History
                     </a>
-                    <a routerLink="/customer/wishlist" class="action-btn secondary">
+                    <a routerLink="/wishlist" class="action-btn secondary">
                       <i class="bi bi-heart me-2"></i>
                       My Wishlist
                     </a>
-                    <a routerLink="/customer/cart" class="action-btn secondary">
+                    <a routerLink="/cart" class="action-btn secondary">
                       <i class="bi bi-cart-check me-2"></i>
                       My Cart
                     </a>
@@ -632,25 +649,17 @@
                       <i class="bi bi-plus-circle me-2"></i>
                       Create Maintenance
                     </a>
-                    <a routerLink="/customer/pc-assemblies" class="action-btn secondary">
-                      <i class="bi bi-cpu me-2"></i>
-                      PC Assemblies
-                    </a>
-                    <a routerLink="/customer/create-pc-assembly" class="action-btn secondary">
+                    <a routerLink="/pc-build" class="action-btn secondary">
                       <i class="bi bi-plus-circle me-2"></i>
                       Create PC Assembly
                     </a>
-                    <a routerLink="/customer/profile" class="action-btn secondary">
-                      <i class="bi bi-person me-2"></i>
-                      Profile
+                    <a routerLink="/notifications" class="action-btn secondary">
+                      <i class="bi bi-bell me-2"></i>
+                      Notifications
                     </a>
                     <a routerLink="/customer/settings" class="action-btn secondary">
                       <i class="bi bi-gear me-2"></i>
                       Settings
-                    </a>
-                    <a routerLink="/customer/notifications" class="action-btn secondary">
-                      <i class="bi bi-bell me-2"></i>
-                      Notifications
                     </a>
                   </div>
                 </div>

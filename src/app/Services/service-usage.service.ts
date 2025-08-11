@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { ServiceUsageCreateDTO, ServiceUsageResponse, ServiceUsageUpdateDTO } from '../Interfaces/iservice-usage';
 import { Observable } from 'rxjs';
 import { GeneralResponse } from './api.service';
+import { Environment } from '../Environment/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceUsageService {
-  private readonly baseUrl = 'http://localhost:7230/api/ServiceUsage';
+  private readonly baseUrl = `${Environment.baseUrl}/ServiceUsage`;
 
   constructor(private http: HttpClient) {}
 

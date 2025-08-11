@@ -120,6 +120,18 @@ html {
   scroll-padding-top: 4.5rem;
 }
 
+html, body, app-root, .map-container {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.map-container {
+  height: 400px;
+  width: 100%;
+}
+
+
 body {
   background-color: var(--bg-color);
   color: var(--text-primary);
@@ -791,3 +803,5 @@ a{
   list-style:  none!important;
   text-decoration: none!important;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -36,10 +36,10 @@
                       <span>Qty: <strong class="text-primary">{{ item.quantity }}</strong></span>
                       <span>Price: 
                         <strong class="text-success">
-                          {{ item.productTotal | currency: 'EGP' }}
+                          {{ item.itemTotal | currency: 'EGP' }}
                           @if(item.quantity > 1) {
                             ,
-                            <span class="">({{ item.unitPrice | currency: 'EGP' }} <span class="text-secondary">each</span>)</span>
+                            <span class="">({{ item.price | currency: 'EGP' }} <span class="text-secondary">each</span>)</span>
                           }
                         </strong>
                       </span>
@@ -112,7 +112,7 @@
 
                 <!-- Shipping -->
                 <div class="flex justify-between items-center">
-                  <span class="text-tertiary">Shipping</span>
+                  <span class="text-success">Shipping</span>
                   <span class="font-semibold text-success">Free</span>
                 </div>
 
@@ -121,7 +121,7 @@
 
                 <!-- Total -->
                 <div class="flex justify-between items-center text-lg font-bold">
-                  <span>Total</span>
+                  <span class="text-primary">Total : </span>
                   <span class="text-primary">{{ getTotal() | currency: 'EGP' }}</span>
                 </div>
 

@@ -13,26 +13,44 @@ import { MaintenanceService } from '../../Services/maintenance.service';
 import { DeliveryService } from '../../Services/delivery.service';
 import { ImageUtilityService } from '../../Services/image-utility.service';
 import { Subscription } from 'rxjs';
+import { UserProfileService } from '../../Services/user-profile.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, 
+    RouterModule,
+    GoogleMapsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+
+  form: FormGroup;
+  center = { lat: 30.033333, lng: 31.233334 };
+  zoom = 6;
+  markerPosition: google.maps.LatLngLiteral | null = null;
+
   userData: any = null;
   userRoles: string[] = [];
   roleSpecificData: any = {};
   profilePhotoUrl: string = 'assets/Images/default-profile.jpg';
-  quickStats: any = {
-    totalOrders: 0,
-    totalWishlist: 0,
-    maintenanceRequests: 0,
-    deliveries: 0,
-    pendingProducts: 0
-  };
+  totalOrders: number = 0;
+  activeOrders: number = 0;
+  totalWishlist: number = 0;
+  wishlistItems: number = 0;
+  maintenanceRequests: number = 0;
+  deliveries: number = 0;
+  pendingProducts: number = 0;
   loading = false;
   error = '';
   currentDate = new Date();
@@ -53,11 +71,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private wishlistService: WishlistService,
     private maintenanceService: MaintenanceService,
-    private deliveryService: DeliveryService
-  ) {}
+    private deliveryService: DeliveryService,
+    private UserProfileService: UserProfileService,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      name: [''],
+      description: [''],
+      latitude: [''],
+      longitude: [''],
+    });
+  }
+
+  setMarker(event: google.maps.MapMouseEvent) {
+    if (event.latLng) {
+      const coords = event.latLng.toJSON();
+      this.markerPosition = coords;
+
+      this.form.patchValue({
+        latitude: coords.lat,
+        longitude: coords.lng,
+      });
+    }
+  }
+
+  submit() {
+    console.log('Form data:', this.form.value);
+    // Here call your backend API service with this.form.value
+  }
 
   ngOnInit(): void {
     this.loadUserProfile();
+    this.loadWishListInfo();
     
     // For testing purposes - if no roles are detected, set default roles
     if (this.userRoles.length === 0) {
@@ -103,6 +148,50 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } else {
       this.error = 'User not authenticated';
       this.loading = false;
+    }
+
+    this.UserProfileService.getUserProfile().subscribe({
+      next: (profile) => {
+        console.log('User profile response:', profile);
+        if (profile.success) {
+          this.userData = profile.data;
+          console.log('User profile loaded:', this.userData);
+        } else {
+          console.error('Failed to load user profile:', profile.message);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading user profile:', err);
+        this.error = 'Failed to load user profile';
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    })
+
+  }
+
+  private loadWishListInfo(): void {
+    const customerId = localStorage.getItem('customerId');
+    if (customerId) {
+      this.subscriptions.push(
+        this.wishlistService.getWishListByCustomerId(customerId).subscribe({
+          next: (response: any) => {
+            console.log('Wishlist response:', response);
+            if (response.success) {
+              this.totalWishlist = response.data[0].items?.length || 0;
+              console.log('Wishlist items loaded:', this.totalWishlist);
+            } else {
+              console.error('Failed to load wishlist:', response.message);
+            }
+          },
+          error: (err: any) => {
+            console.error('Error loading wishlist:', err);
+          }
+        })
+      );
+    } else {
+      console.warn('No customer ID found for loading wishlist');
     }
   }
 
@@ -273,8 +362,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.orderService.getOrdersByCustomer(currentUserId).subscribe({
           next: (response) => {
             if (response.success) {
-              this.quickStats.totalOrders = response.data.length;
-              this.quickStats.activeOrders = response.data.filter((order: any) => 
+              this.totalOrders = response.data.length;
+              this.activeOrders = response.data.filter((order: any) => 
                 order.status !== 'Delivered' && order.status !== 'Cancelled'
               ).length;
             }
@@ -290,7 +379,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.wishlistService.getWishListByCustomerId(currentUserId).subscribe({
           next: (response: any) => {
             if (response.success) {
-              this.quickStats.wishlistItems = response.data.items?.length || 0;
+              this.wishlistItems = response.data[0].items?.length || 0;
             }
           },
           error: (err: any) => {
@@ -329,7 +418,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           next: (response) => {
             console.log(response);
             if (response.success) {
-              this.quickStats.maintenanceRequests = response.data.length;
+              this.maintenanceRequests = response.data.length;
             }
           },
           error: (err) => {
@@ -348,7 +437,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.deliveryService.getDeliveriesByDeliveryPerson(deliveryPersonId).subscribe({
           next: (response) => {
             if (response.success) {
-              this.quickStats.deliveries = response.data.length;
+              this.deliveries = response.data.length;
             }
           },
           error: (err) => {
@@ -367,8 +456,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.adminService.getDashboardStats().subscribe({
           next: (response) => {
             if (response.success) {
-              this.quickStats.pendingProducts = response.data.pendingProducts || 0;
-              this.quickStats.totalOrders = response.data.totalOrders || 0;
+              this.pendingProducts = response.data.pendingProducts || 0;
+              this.totalOrders = response.data.totalOrders || 0;
             }
           },
           error: (err) => {

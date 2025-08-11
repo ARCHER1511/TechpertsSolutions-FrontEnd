@@ -10,6 +10,7 @@
     >
       <img [src]="logo" alt="logo">
     </a>
+    
 
     <!-- Mobile toggle -->
     <button
@@ -28,6 +29,7 @@
       class="collapse navbar-collapse justify-content-between"
       id="navbarContent"
     >
+
       <!-- Center Links -->
       <ul class="navbar-nav mx-auto d-flex flex-row gap-3">
         <li class="nav-item">
@@ -41,7 +43,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/pc-build" routerLinkActive="active"
->Build</a
+            >Build</a
           >
         </li>
         <li class="nav-item">
@@ -116,6 +118,39 @@
             {{ userName }}
             }
           </button>
+
+          <div class="notification-dropdown" #notificationDropdown (click)="toggleDropdown()" tabindex="0" (blur)="closeDropdown()">
+    <button class="notification-button" aria-label="Toggle notifications dropdown">
+      <i class="bi bi-bell"></i>
+      <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+
+    <div class="dropdown-menu2" *ngIf="dropdownOpen">
+      <h4>Notifications</h4>
+      <ul *ngIf="notifications.length > 0; else noNotifications">
+        <li *ngFor="let notification of notifications; trackBy: trackById" [class.read]="notification.isRead">
+          <div class="message">{{ notification.message }}</div>
+          <div class="meta">
+            <span class="type">{{ notification.type }}</span> |
+            <span class="date">{{ notification.createdAt | date: 'short' }}</span>
+          </div>
+          <button
+            *ngIf="!notification.isRead"
+            (click)="markAsRead(notification.id); $event.stopPropagation()"
+            class="btn-mark-read"
+            aria-label="Mark notification as read"
+          >
+            Mark as Read
+          </button>
+        </li>
+      </ul>
+
+      <ng-template #noNotifications>
+        <p class="no-notifications">No notifications</p>
+      </ng-template>
+    </div>
+  </div>
+          
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
               <a class="dropdown-item" routerLink="/profile">

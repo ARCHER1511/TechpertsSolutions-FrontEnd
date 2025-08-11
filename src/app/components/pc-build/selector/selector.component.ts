@@ -4,6 +4,7 @@ import { DecimalPipe, NgClass, NgIf } from '@angular/common';
 import { IProduct } from '../../../Interfaces/iproduct';
 import { PCAssemblyService } from '../../../Services/pcassembly.service';
 import { ToastrService } from 'ngx-toastr';
+import { CartService } from '../../../Services/cart.service';
 
 @Component({
   selector: 'app-selector',
@@ -37,7 +38,8 @@ export class SelectorComponent implements OnInit {
   constructor(
     private router: Router,
     private pcAssemblyService: PCAssemblyService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cartService: CartService
     
   ) {}
 
@@ -199,6 +201,7 @@ export class SelectorComponent implements OnInit {
       if (response.success) {
         console.log('✅ Build added to cart:', response);
         // Optionally navigate or show a toast/snackbar
+        this.cartService.initializeCartState();
         this.toastr.success('Build added to cart successfully!');
       } else {
         console.warn('⚠️ Failed to add build to cart:', response.message);

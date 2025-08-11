@@ -1,11 +1,14 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, HostListener, inject, OnInit, PLATFORM_ID, OnDestroy } from "@angular/core";
+import { Component, HostListener, inject, OnInit, PLATFORM_ID, OnDestroy, ElementRef, ViewChild } from "@angular/core";
 import { Observable, Subscription } from "rxjs";
 import { AuthService } from "../../Services/auth.service";
 import { CartService } from "../../Services/cart.service";
 import { WishlistService } from "../../Services/wishlist.service";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ImageUtilityService } from "../../Services/image-utility.service";
+import { ToastrService } from "ngx-toastr";
+import { NotificationService } from "../../Services/notification.service";
+import { NotificationDTO } from "../../Interfaces/inotification";
 
 @Component({
   selector: 'app-nav-bar',
@@ -19,6 +22,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isLogedIn = false;
   isDarkMode = false;
   scrolled = false;
+  dropdownOpen = false;
+  notifications: NotificationDTO[] = [];
   logo = 'assets/Images/logo.png';
 
   cartItemCount$!: Observable<number>;
@@ -35,6 +40,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
   profilePhotoUrl: string = 'assets/Images/default-profile.jpg';
   userId: string | null = null;
 
+  @ViewChild('notificationDropdown') notificationDropdown!: ElementRef;
+
   private _platformId = inject(PLATFORM_ID);
   private _isBrowser = isPlatformBrowser(this._platformId);
   public _authService = inject(AuthService);
@@ -43,10 +50,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private toaster: ToastrService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
+    console.log(this.cartTotalPrice$);
+
+    this.loadNotifications();
     // Initialize states
     this.cartService.initializeCartState();
     this.wishlistService.initializeWishlistState();
@@ -61,7 +73,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
     // Observables
     this.cartItemCount$ = this.cartService.itemCount$;
-    this.cartTotalPrice$ = this.cartService.totalPrice$;
+    this.cartTotalPrice$ = this.cartService.totalPrice$;    
     this.animateCart$ = this.cartService.animateCart$;
     this.wishlistItemCount$ = this.wishlistService.itemCount$;
 
@@ -218,5 +230,69 @@ export class NavBarComponent implements OnInit, OnDestroy {
     img.src = 'assets/Images/default-profile.jpg';
   }
 }
+
+loadNotifications() {
+    this.notificationService.getMyNotifications(1, 20).subscribe({
+      next: (res) => {
+        this.notifications = res ?? [];
+      },
+      error: (err) => {
+        console.log(err);
+        // this.toaster.error('Failed to load notifications');
+      },
+    });
+  }
+
+get unreadCount(): number {
+  return this.notifications.filter(n => !n.isRead).length;
+}
+
+toggleDropdown() {
+  this.dropdownOpen = !this.dropdownOpen;
+
+  if (this.dropdownOpen) {
+    // When dropdown opens, wait 1 second then mark all unread notifications as read
+    setTimeout(() => {
+      const unreadNotifications = this.notifications.filter(n => !n.isRead);
+      unreadNotifications.forEach(notification => {
+        this.markAsRead(notification.id);
+      });
+    }, 2000);
+  }
+}
+
+
+closeDropdown() {
+  // close dropdown on blur (when user clicks outside)
+  this.dropdownOpen = false;
+}
+
+// markAsRead method from your current component
+markAsRead(notificationId: string) {
+  this.notificationService.markAsRead(notificationId).subscribe({
+    next: () => {
+      const notif = this.notifications.find((n) => n.id === notificationId);
+      if (notif) notif.isRead = true;
+    },
+    error: () => {
+      this.toaster.error('Failed to mark notification as read.');
+    },
+  });
+}
+
+trackById(index: number, item: NotificationDTO): string {
+  return item.id;
+}
+
+@HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (
+      this.dropdownOpen &&
+      this.notificationDropdown &&
+      !this.notificationDropdown.nativeElement.contains(event.target)
+    ) {
+      this.dropdownOpen = false;
+    }
+  }
 
 }

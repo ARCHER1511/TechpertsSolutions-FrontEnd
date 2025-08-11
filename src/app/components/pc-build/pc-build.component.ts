@@ -40,9 +40,11 @@ export class PcBuildComponent implements OnInit {
     if (this.isBrowser) {
       const storedCustomerId = localStorage.getItem('customerId');
       const storedBuildId = localStorage.getItem('pcBuildId');
+      const storedPCAssemblyService = localStorage.getItem('PCAssemblyService');
 
-      if (storedCustomerId) {
+      if (storedCustomerId && storedPCAssemblyService) {
         this.buildForm.patchValue({ customerId: storedCustomerId });
+        this.buildForm.patchValue({ serviceUsageId: JSON.parse(storedPCAssemblyService)[0]?.id });
       }
 
       if (storedBuildId) {

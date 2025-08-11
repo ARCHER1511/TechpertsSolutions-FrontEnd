@@ -210,7 +210,7 @@ export class CartService {
 
   updateCartState(cartItems: CartItemReadDTO[]) {
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   this.itemsCountSubject.next(totalItems);
   this.totalPriceSubject.next(totalPrice);
