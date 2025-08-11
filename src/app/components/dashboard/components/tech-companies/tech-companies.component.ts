@@ -1,15 +1,7 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {
-  TechCompany2,
-  TechCompanyService
-} from '../../../../Services/tech-company.service';
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { TechCompany, TechCompanyService, TechCompanyUpdate } from "../../../../Services/tech-company.service";
+import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-tech-companies',
@@ -19,13 +11,13 @@ import {
   styleUrl: './tech-companies.component.css'
 })
 export class TechCompaniesComponent implements OnInit {
-  techCompanies: TechCompany2[] = [];
+  techCompanies: TechCompany[] = [];
   loading = false;
   error = '';
-  selectedCompany: TechCompany2 | null = null;
-  editingCompany: TechCompany2 | null = null;
+  selectedCompany: TechCompany | null = null;
+  editingCompany: TechCompany | null = null;
 
-  editData = {
+  editData: TechCompanyUpdate = {
     userName: '',
     email: '',
     city: '',
@@ -62,16 +54,11 @@ export class TechCompaniesComponent implements OnInit {
         console.error('Error loading tech companies:', err);
         this.error = 'Failed to load tech companies.';
         this.loading = false;
-
-        if (err.status === 0 || err.status === 404) {
-          this.techCompanies = [];
-          this.error = '';
-        }
       }
     });
   }
 
-  showDetails(company: TechCompany2): void {
+  showDetails(company: TechCompany): void {
     this.selectedCompany = company;
 
     const bootstrap = (window as any).bootstrap;
@@ -88,17 +75,17 @@ export class TechCompaniesComponent implements OnInit {
     }
   }
 
-  startEdit(company: TechCompany2): void {
+  startEdit(company: TechCompany): void {
     this.editingCompany = company;
     this.editData = {
       userName: company.userName || '',
-      email: '',
+      email: company.email || '',
       city: company.city || '',
       country: company.country || '',
       mapLocation: company.mapLocation || '',
-      fullName: '',
-      phoneNumber: '',
-      address: ''
+      fullName: company.fullName || '',
+      phoneNumber: company.phoneNumber || '',
+      address: company.address || ''
     };
   }
 
