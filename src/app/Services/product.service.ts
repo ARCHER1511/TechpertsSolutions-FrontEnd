@@ -93,39 +93,23 @@ export class ProductService {
     params = params.set('categoryId', categoryId);
   }
 
+  // ✅ Read companyId from localStorage only if in browser
+  if (typeof window !== 'undefined') {
+    const techCompanyId = localStorage.getItem('techCompanyId');
+    if (techCompanyId) {
+      params = params.set('techCompanyId', techCompanyId);
+    }
+  }
+
   const headers = new HttpHeaders({
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   });
 
-  // ✅ Read companyId from localStorage only if in browser
-  let techCompanyId = '';
-  if (typeof window !== 'undefined') {
-    techCompanyId = localStorage.getItem('techCompanyId') || '';
-  }
-
   return this._httpClient.get<{ success: boolean; message: string; data: IPagedProducts }>(
-    `${this._baseUrl}/Product/all`,
+    `${this._baseUrl}/Product/tech-company`,
     { params, headers }
   ).pipe(
-    map(response => {
-      if (response.success && techCompanyId) {
-        const filteredItems = response.data.items.filter(
-          p => p.techCompanyId?.trim() === techCompanyId.trim()
-        );
-
-        return {
-          ...response,
-          data: {
-            ...response.data,
-            items: filteredItems,
-            totalItems: filteredItems.length,
-            totalPages: Math.ceil(filteredItems.length / pageSize)
-          }
-        };
-      }
-      return response;
-    }),
     catchError((error) => {
       console.error('Error loading products:', error);
       return of({
@@ -142,6 +126,7 @@ export class ProductService {
     })
   );
 }
+
 
 
   getProductById(id: string): Observable<GeneralResponce> {

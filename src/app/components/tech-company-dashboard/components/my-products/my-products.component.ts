@@ -30,7 +30,7 @@ export class MyProductsComponent {
         this.loading = true;
         this.error = '';
         
-        this.productService.getAllProducts(this.currentPage, this.pageSize, 'name', false).subscribe({
+        this.productService.getAllProductsTechDashboard(this.currentPage, this.pageSize, 'name', false).subscribe({
           next: (response) => {
             console.log('Products loaded:', response.data.items);
             if (response.success) {
