@@ -1,4 +1,4 @@
-import { Component, Inject, inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, inject, Input, PLATFORM_ID } from '@angular/core';
 import { IPagedProducts, IProduct } from '../../../../../../Interfaces/iproduct';
 import { CartService } from '../../../../../../Services/cart.service';
 import { ProductService } from '../../../../../../Services/product.service';
@@ -15,7 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrl: './product-list.component.css'
 })
 export class ProductListComponent {
-  pagedProducts: IProduct[] = [];
+  @Input() pagedProducts: IProduct[] = [];
   techCompanyId: string = '';
   isBrowser: boolean;
   

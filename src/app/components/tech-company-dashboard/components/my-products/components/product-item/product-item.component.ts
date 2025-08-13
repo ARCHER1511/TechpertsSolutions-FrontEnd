@@ -1,78 +1,130 @@
-import { Component, inject, Input } from '@angular/core';
-import { IProduct } from '../../../../../../Interfaces/iproduct';
-import { Router } from '@angular/router';
+import { Component, Inject, inject, Input, PLATFORM_ID } from '@angular/core';
+import { IPagedProducts, IProduct } from '../../../../../../Interfaces/iproduct';
 import { CartService } from '../../../../../../Services/cart.service';
-import { WishlistService } from '../../../../../../Services/wishlist.service';
+import { ProductService } from '../../../../../../Services/product.service';
 import { ToastrService } from 'ngx-toastr';
-import { ImageUtilityService } from '../../../../../../Services/image-utility.service';
+import { ProductItemComponent } from "../../../../../products/components/product-item/product-item.component";
+import { FormsModule } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
-  selector: 'app-product-item',
+  selector: 'app-product-list',
   standalone: true,
-  imports: [],
-  templateUrl: './product-item.component.html',
-  styleUrl: './product-item.component.css'
+  imports: [ProductItemComponent, FormsModule],
+  templateUrl: './product-list.component.html',
+  styleUrl: './product-list.component.css'
 })
-export class ProductItemComponent {
-  @Input() productC!: IProduct;
+export class ProductListComponent {
+  @Input() pagedProducts: IProduct[] = [];
+
+  techCompanyId: string = '';
+  isBrowser: boolean;
+  
+      searchQuery: string = '';
+      sortOrder: string = ''; // '', 'low', 'high'
     
-      _router = inject(Router);
-      _cartService = inject(CartService);
-      _wishlistService = inject(WishlistService);
+      currentPage: number = 1;
+      pageSize: number = 6;
+      totalPages: number = 0;
+      loading = false;
+      error = '';
+    
       _toastr = inject(ToastrService);
-      _imageUtility = inject(ImageUtilityService);
+    
+      constructor(
+        private productService: ProductService,
+        private cartService: CartService,
+        @Inject(PLATFORM_ID) platformId: object
+      ) {
+        this.isBrowser = isPlatformBrowser(platformId);
+      }
     
       ngOnInit(): void {
-        console.log('Product item initialized with:', this.productC);
-      }
-  
-      goToProduct(id: string) {
-        this._router.navigate(['/product-details', id]);
-      }
+  if (this.isBrowser) {
+    this.techCompanyId = localStorage.getItem('techCompanyId') || '';
+  }
+  console.log(this.techCompanyId);
+  // this.loadProducts();
+}
+
     
-      onImgError(event: Event) {
-      const img = event.target as HTMLImageElement;
-      if (img.dataset['attempt'] === '1') {
-        img.src = '/assets/Images/icon1.jpg'; // fallback placeholder you control
-        return;
-      }
-      img.dataset['attempt'] = '1';
-      img.src = this._imageUtility.getProductImageUrl(this.productC.id);
-    }
-    
-    
-      /**
-       * Get the correct image URL for the product
-       * @returns The formatted image URL
-       */
-      getProductImageUrl(): string {
-        // If the product already has a valid imageUrl, use it
-        if (this.productC.imageUrl && this._imageUtility.isValidImageUrl(this.productC.imageUrl)) {
-          return this.productC.imageUrl;
+      loadProducts(): void {
+  this.loading = true;
+  this.error = '';
+
+  const sortBy = 'price';
+  const sortDesc = this.sortOrder === 'high';
+
+  this.productService
+    .getAllProductsTechDashboard(this.currentPage, this.pageSize, sortBy, sortDesc, this.searchQuery)
+    .subscribe({
+      next: (response) => {
+        if (response.success) {
+          const pagedData: IPagedProducts = response.data;
+
+          // ✅ Removed the techCompanyId filter
+          this.pagedProducts = pagedData.items;
+
+          this.totalPages = pagedData.totalPages;
+        } else {
+          this.error = response.message || 'Failed to load products';
+          this.pagedProducts = [];
+          this.totalPages = 0;
         }
-        
-        // Otherwise, construct the URL using the new pattern
-        return this._imageUtility.getProductImageUrl(this.productC.id);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading products:', err);
+        this.error = 'Failed to load products. Please try again later.';
+        this.pagedProducts = [];
+        this.totalPages = 0;
+        this.loading = false;
+      }
+    });
+}
+
+
+    
+      filterProducts(): void {
+        this.currentPage = 1;
+        this.loadProducts();
       }
     
-      onAddToWishlist(product: IProduct) {
+      sortProducts(): void {
+        this.currentPage = 1;
+        this.loadProducts();
+      }
+    
+      changePage(page: number): void {
+        if (page < 1 || page > this.totalPages) return;
+        this.currentPage = page;
+        this.loadProducts();
+      }
+    
+      get totalPagesArray(): number[] {
+        return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      }
+    
+      handleAddToCart(productId: string): void {
         const customerId = localStorage.getItem('customerId');
         if (!customerId) {
           this._toastr.error('Please login first');
           return;
         }
     
-        console.log('💖 Adding to wishlist:', { productId: product.id, customerId });
-    
-        this._wishlistService.addItemToCustomerWishlist(customerId, product.id).subscribe({
+        this.cartService.addItem(productId).subscribe({
           next: () => {
-            this._toastr.success('Added to wishlist!');
-            this._wishlistService.initializeWishlistState();
+            this._toastr.success('Added to cart');
+            this.cartService.initializeCartState();
           },
           error: (err) => {
-            console.error('❌ Wishlist API error:', err);
-            this._toastr.error(`Item already in wishlist ${product.name}`);
+            console.error('❌ Add to cart failed:', err);
+            this._toastr.error('Could not add to cart');
           }
         });
+      }
+    
+      trackByIndex(index: number): number {
+        return index;
       }
 }
