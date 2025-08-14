@@ -34,6 +34,8 @@ export const routes: Routes = [
   { path: 'product-details/:id', loadComponent: () => import('./components/products/components/productdetails/productdetails.component').then(m => m.ProductdetailsComponent), title: 'Product Details' },
   { path: 'login', loadComponent: () => import('./components/log-in/log-in.component').then(m => m.LogInComponent), title: 'LogIn Page' },
   { path: 'register', loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent), title: 'Register Page' },
+  { path: 'forgot-password', loadComponent: () => import('./components/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent), title: 'Forgot Password' },
+{ path: 'reset-password', loadComponent: () => import('./components/reset-password/reset-password.component').then(m => m.ResetPasswordComponent), title: 'Reset Password' },
   { path: 'cart', loadComponent: () => import('./components/cart/cart.component').then(m => m.CartComponent), title: 'Cart', canActivate: [authGuard] },
 
   { path: 'pc-build', loadComponent: () => import('./components/pc-build/pc-build.component').then(m => m.PcBuildComponent), title: 'Creat PC Build', canActivate: [PcBuildGuard] },
@@ -451,6 +453,8 @@ export const routes: Routes = [
       }
     ]
   },
+
+ 
 
   // Error Routes
   { path: 'unauthorized', loadComponent: () => import('./components/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent), title: 'Unauthorized' },

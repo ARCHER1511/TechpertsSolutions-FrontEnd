@@ -71,19 +71,23 @@ export class AuthService {
     return this._HttpClient.post<AuthResponse>(`${Environment.baseUrl}/Authentication/login`, formData);
   }
 
-  // Forgot password with FormData
-  forgotPassword(data: ForgotPasswordRequest): Observable<any> {
-    const formData = this.objectToFormData(data);
-    
-    return this._HttpClient.post(`${Environment.baseUrl}/Authentication/forgot-password`, formData);
-  }
+ // Forgot password with FormData
+forgotPassword(data: ForgotPasswordRequest): Observable<AuthResponse> {
+  const formData = this.objectToFormData(data);
+  return this._HttpClient.post<AuthResponse>(
+    `${Environment.baseUrl}/Authentication/forgot-password`,
+    formData
+  );
+}
 
-  // Reset password with FormData
-  resetPassword(data: ResetPasswordRequest): Observable<any> {
-    const formData = this.objectToFormData(data);
-    
-    return this._HttpClient.post(`${Environment.baseUrl}/Authentication/reset-password`, formData);
-  }
+// Reset password with FormData
+resetPassword(data: ResetPasswordRequest): Observable<AuthResponse> {
+  const formData = this.objectToFormData(data);
+  return this._HttpClient.post<AuthResponse>(
+    `${Environment.baseUrl}/Authentication/reset-password`,
+    formData
+  );
+}
 
   // Delete account with FormData
   deleteAccount(data?: any): Observable<any> {
