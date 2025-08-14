@@ -30,7 +30,11 @@
                   <div class="cart-item-details">
                     <h3 class="cart-item-title">{{ item.productName }}</h3>
                     <div class="cart-item-meta">
-                      <span>Qty: <strong>{{ item.quantity }}</strong></span>
+                      <div class="quantity-controls d-flex align-items-center mb-2">
+                        <button class="btn btn-sm btn-outline-secondary me-2" (click)="decreaseQuantity(item)" [disabled]="isCheckingOut">-</button>
+                        <span class="quantity-number">{{ item.quantity }}</span>
+                        <button class="btn btn-sm btn-outline-secondary ms-2" (click)="increaseQuantity(item)" [disabled]="isCheckingOut">+</button>
+                      </div>
                       <span>Price: <strong class="price">{{ item.isCustomBuild ? item.productTotal : item.itemTotal | currency:'EGP' }}</strong></span>
                       <span *ngIf="item.quantity > 1" class="text-secondary">({{ item.isCustomBuild ? item.unitPrice : item.price | currency:'EGP' }} each)</span>
                     </div>

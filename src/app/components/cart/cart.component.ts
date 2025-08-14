@@ -147,4 +147,40 @@ onImageError(event: Event) {
   const img = event.target as HTMLImageElement;
   img.src = '../../../../../assets/Images/about.jpg';
 }
+
+ increaseQuantity(item: CartItemReadDTO): void {
+    const newQuantity = item.quantity + 1;
+
+    this.cartService.updateItem({ productId: item.productId, quantity: newQuantity }).subscribe({
+      next: () => this.loadCart(),
+      error: (err) => {
+        console.error('Failed to increase quantity', err);
+        this.toastr.error('Failed to increase quantity');
+      }
+    });
+  }
+
+  decreaseQuantity(item: CartItemReadDTO): void {
+    const newQuantity = item.quantity - 1;
+
+    if (newQuantity < 1) {
+      this.cartService.removeItem(item.productId).subscribe({
+        next: () => this.loadCart(),
+        error: (err) => {
+          console.error('Failed to remove item', err);
+          this.toastr.error('Failed to remove item');
+        }
+      });
+      return;
+    }
+
+    this.cartService.updateItem({ productId: item.productId, quantity: newQuantity }).subscribe({
+      next: () => this.loadCart(),
+      error: (err) => {
+        console.error('Failed to decrease quantity', err);
+        this.toastr.error('Failed to decrease quantity');
+      }
+    });
+  }
+
 }

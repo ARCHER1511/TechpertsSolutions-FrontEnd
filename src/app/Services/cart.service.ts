@@ -147,11 +147,39 @@ export class CartService {
     return this.http.put(`${this._baseUrl}/Cart/${userId}/items`, requestBody);
   }
 
-  removeItem(productId: string): Observable<any> {
+
+   removeItem(productId: string): Observable<any> {
     if (!this.isBrowser) return throwError(() => new Error('Cannot remove item on server.'));
     const userId = this.getCustomerId();
     if (!userId) return throwError(() => new Error('Customer ID not found. Please log in.'));
     return this.http.delete(`${this._baseUrl}/Cart/${userId}/items/${productId}`);
+  }
+
+
+ increaseQuantity(item: CartItemReadDTO): void {
+    const newQuantity = item.quantity + 1;
+
+    this.updateItem({ productId: item.productId, quantity: newQuantity }).subscribe({
+      next: () => this.initializeCartState(),
+      error: (err) => console.error('Failed to increase quantity', err)
+    });
+  }
+
+  decreaseQuantity(item: CartItemReadDTO): void {
+    const newQuantity = item.quantity - 1;
+
+    if (newQuantity < 1) {
+      this.removeItem(item.productId).subscribe({
+        next: () => this.initializeCartState(),
+        error: (err) => console.error('Failed to remove item', err)
+      });
+      return;
+    }
+
+    this.updateItem({ productId: item.productId, quantity: newQuantity }).subscribe({
+      next: () => this.initializeCartState(),
+      error: (err) => console.error('Failed to decrease quantity', err)
+    });
   }
 
   clearCart(): Observable<any> {
