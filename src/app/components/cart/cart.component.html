@@ -1,95 +1,46 @@
-<div class="section">
+<div class="section cart-page">
   <div class="container">
     <!-- Header -->
-    <div class="text-center mb-8">
+    <div class="text-center mb-12">
       <h1 class="section-title">Shopping Cart</h1>
-      <p class="section-subtitle">Review your items and proceed to checkout</p>
+      <p class="section-subtitle mx-auto">Review your items and proceed to checkout</p>
     </div>
 
     <!-- Cart Content -->
     <ng-container *ngIf="CartItems.length > 0; else emptyCart">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="cart-grid">
         <!-- Cart Items -->
-        <div class="lg:col-span-2">
-          <div class="card">
+        <div class="cart-items">
+          <div class="card cart-card">
             <div class="card-header">
               <h2 class="card-title">Cart Items ({{ CartItems.length }})</h2>
             </div>
             <div class="card-body">
-              <div class="space-y-4">
-                <div *ngFor="let item of CartItems; let i = index" class="flex items-center gap-4 p-4 border border-border-primary rounded-lg">
-                  @if (!item.isCustomBuild) {
-                    <!-- Product Image -->
-                  <div class="w-20 h-20 bg-surface-secondary rounded-lg overflow-hidden flex-shrink-0">
-                    <img
-                      [src]="item.imageUrl || 'assets/placeholder.jpg'"
-                      class="w-full h-full object-cover"
-                      [alt]="item.productName || 'Product Image'"
+              <div class="cart-item-list">
+                <div *ngFor="let item of CartItems; let i = index" class="cart-item">
+                  <div class="cart-item-image-wrapper">
+                    <img 
+                      [src]="item.isCustomBuild ? (item.imageUrl || 'assets/placeholder.jpg') : getCartItemImageUrl(item)"
+                      [alt]="item.productName || 'Product Image'" 
+                      (error)="onImageError($event)"
                     />
+                    <span *ngIf="item.isCustomBuild" class="badge custom-badge"><i class="bi bi-tools me-1"></i> Custom</span>
                   </div>
 
-                  <!-- Product Info -->
-                  <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold mb-2 line-clamp-2">{{ item.productName }}</h3>
-                    
-                    <div class="flex flex-wrap gap-4 text-sm text-tertiary mb-3">
-                      <span>Qty: <strong class="text-primary">{{ item.quantity }}</strong></span>
-                      <span>Price: 
-                        <strong class="text-success">
-                          {{ item.itemTotal | currency: 'EGP' }}
-                          @if(item.quantity > 1) {
-                            ,
-                            <span class="">({{ item.price | currency: 'EGP' }} <span class="text-secondary">each</span>)</span>
-                          }
-                        </strong>
-                      </span>
+                  <div class="cart-item-details">
+                    <h3 class="cart-item-title">{{ item.productName }}</h3>
+                    <div class="cart-item-meta">
+                      <span>Qty: <strong>{{ item.quantity }}</strong></span>
+                      <span>Price: <strong class="price">{{ item.isCustomBuild ? item.productTotal : item.itemTotal | currency:'EGP' }}</strong></span>
+                      <span *ngIf="item.quantity > 1" class="text-secondary">({{ item.isCustomBuild ? item.unitPrice : item.price | currency:'EGP' }} each)</span>
                     </div>
+                  </div>
 
-                    <button
-                      class="btn btn-sm btn-outline text-error border-error hover:bg-error hover:text-white"
-                      (click)="removeItem(item.productId)"
-                      [disabled]="isCheckingOut"
-                    >
+                  <div class="cart-item-actions">
+                    <button class="remove-btn" (click)="removeItem(item.productId)" [disabled]="isCheckingOut">
                       <i class="bi bi-trash me-1"></i> Remove
                     </button>
                   </div>
-                  } @else {
-                    <!-- Product Image -->
-                  <div class="w-20 h-20 bg-surface-secondary rounded-lg overflow-hidden flex-shrink-0">
-                    <img
-                      [src]="item.imageUrl || 'assets/placeholder.jpg'"
-                      class="w-full h-full object-cover"
-                      [alt]="item.productName || 'Product Image'"
-                    />
-                  </div>
-
-                  <!-- Product Info -->
-                  <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold mb-2 line-clamp-2">{{ item.productName }}</h3>
-                    <div class="flex flex-wrap gap-4 text-sm text-tertiary mb-3">
-                      <span>Qty: <strong class="text-primary">{{ item.quantity }}</strong></span>
-                      <span>Price: 
-                        <strong class="text-success">
-                          {{ item.productTotal | currency: 'EGP' }}
-                          @if(item.quantity > 1) {
-                            ,
-                            <span class="">({{ item.unitPrice | currency: 'EGP' }} <span class="text-secondary">each</span>)</span>
-                          }
-                        </strong>
-                        <span class="text-danger"><i class="bi bi-tools"></i></span>
-                    <span class="text-danger">Custom Build</span>
-                      </span>
-                    </div>
-                    
-                    <button
-                      class="btn btn-sm btn-outline text-error border-error hover:bg-error hover:text-white"
-                      (click)="removeItem(item.productId)"
-                      [disabled]="isCheckingOut"
-                    >
-                      <i class="bi bi-trash me-1"></i> Remove
-                    </button>
-                  </div>
-                  }
                 </div>
               </div>
             </div>
@@ -97,58 +48,37 @@
         </div>
 
         <!-- Cart Summary -->
-        <div class="lg:col-span-1">
+        <div class="cart-summary-card">
           <div class="card sticky top-4">
             <div class="card-header">
               <h2 class="card-title">Order Summary</h2>
             </div>
             <div class="card-body">
-              <div class="space-y-4">
-                <!-- Subtotal -->
-                <div class="flex justify-between items-center">
-                  <span class="text-tertiary">Subtotal</span>
-                  <span class="font-semibold">{{ getTotal() | currency: 'EGP' }}</span>
-                </div>
-
-                <!-- Shipping -->
-                <div class="flex justify-between items-center">
-                  <span class="text-success">Shipping</span>
-                  <span class="font-semibold text-success">Free</span>
-                </div>
-
-                <!-- Divider -->
-                <div class="border-t border-border-primary"></div>
-
-                <!-- Total -->
-                <div class="flex justify-between items-center text-lg font-bold">
-                  <span class="text-primary">Total : </span>
-                  <span class="text-primary">{{ getTotal() | currency: 'EGP' }}</span>
-                </div>
-
-                <!-- Actions -->
-                <div class="space-y-3 pt-4">
-                  <button 
-                    class="btn btn-primary w-full"
-                    (click)="checkout()"
-                    [disabled]="isCheckingOut"
-                  >
-                    <ng-container *ngIf="isCheckingOut; else checkoutLabel">
-                      <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin me-2 inline-block"></div>
-                      Processing...
-                    </ng-container>
-                    <ng-template #checkoutLabel>
-                      <i class="bi bi-credit-card me-2"></i> Proceed to Checkout
-                    </ng-template>
-                  </button>
-                  
-                  <button 
-                    class="btn btn-outline w-full"
-                    (click)="clearCart()"
-                    [disabled]="isCheckingOut"
-                  >
-                    <i class="bi bi-trash me-2"></i> Clear Cart
-                  </button>
-                </div>
+              <div class="summary-item">
+                <span>Subtotal</span>
+                <span>{{ getTotal() | currency:'EGP' }}</span>
+              </div>
+              <div class="summary-item">
+                <span>Shipping</span>
+                <span class="text-success">Free</span>
+              </div>
+              <div class="divider"></div>
+              <div class="summary-item total">
+                <span>Total</span>
+                <span>{{ getTotal() | currency:'EGP' }}</span>
+              </div>
+              <div class="checkout-actions">
+                <button class="checkout-btn" (click)="checkout()" [disabled]="isCheckingOut">
+                  <ng-container *ngIf="isCheckingOut; else checkoutLabel">
+                    <div class="spinner"></div> Processing...
+                  </ng-container>
+                  <ng-template #checkoutLabel>
+                    <i class="bi bi-credit-card me-2"></i> Proceed to Checkout
+                  </ng-template>
+                </button>
+                <button class="btn btn-outline w-full clear-btn" (click)="clearCart()" [disabled]="isCheckingOut">
+                  <i class="bi bi-trash me-2"></i> Clear Cart
+                </button>
               </div>
             </div>
           </div>
@@ -158,14 +88,14 @@
 
     <!-- Empty Cart Template -->
     <ng-template #emptyCart>
-      <div class="card">
-        <div class="card-body text-center py-16">
-          <div class="w-24 h-24 mx-auto mb-6 bg-surface-secondary rounded-full flex items-center justify-center">
-            <i class="bi bi-cart text-4xl text-tertiary"></i>
+      <div class="empty-cart-card">
+        <div class="empty-cart-body text-center">
+          <div class="empty-cart-icon">
+            <i class="bi bi-cart"></i>
           </div>
-          <h2 class="text-2xl font-semibold mb-4">Your cart is empty</h2>
-          <p class="text-tertiary mb-6">Looks like you haven't added any items to your cart yet.</p>
-          <button class="btn btn-primary" routerLink="/products">
+          <h2 class="empty-cart-title">Your cart is empty</h2>
+          <p class="empty-cart-text">Looks like you haven't added any items to your cart yet.</p>
+          <button class="continue-shopping-btn" routerLink="/products">
             <i class="bi bi-arrow-left me-2"></i> Continue Shopping
           </button>
         </div>

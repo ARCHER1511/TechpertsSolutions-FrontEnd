@@ -51,6 +51,7 @@ export class LogInComponent {
           const token = res.data?.token;
           const customerId = res.data?.userId;
           const userName = res.data?.userName;
+          const fullName = res.data?.fullName;
           const userRoles = res.data?.roleName ? res.data.roleName : [];
 
           if (token) {
@@ -61,6 +62,7 @@ export class LogInComponent {
               if(customerId) localStorage.setItem('userId', customerId);
               if(userName) localStorage.setItem('userName', userName);
               if(userRoles) localStorage.setItem('userRoles', JSON.stringify(userRoles));
+              if(fullName) localStorage.setItem('fullName', fullName)
               
               // Store role-specific IDs from the response
               if (res.data?.customerId) {

@@ -3,7 +3,7 @@ import { IPagedProducts, IProduct } from '../../../../../../Interfaces/iproduct'
 import { CartService } from '../../../../../../Services/cart.service';
 import { ProductService } from '../../../../../../Services/product.service';
 import { ToastrService } from 'ngx-toastr';
-import { ProductItemComponent } from "../../../../../products/components/product-item/product-item.component";
+import { ProductItemComponent } from "../product-item/product-item.component";
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 

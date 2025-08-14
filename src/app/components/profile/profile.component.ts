@@ -19,6 +19,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Environment } from '../../Environment/environment';
 
 @Component({
   selector: 'app-profile',
@@ -196,23 +197,42 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   private loadProfilePhoto(): void {
-    const userId = localStorage.getItem('customerId') || localStorage.getItem('userId');
+    const userId =
+      localStorage.getItem('customerId') || localStorage.getItem('userId');
     const storedPhotoName = localStorage.getItem('profilePhotoUrl') || 'photo';
-    
+
     if (userId) {
       // Try to get profile image from API first
       this.subscriptions.push(
-        this.imageUtilityService.getProfileImageUrlFromAPI(userId, storedPhotoName).subscribe({
-          next: (imageUrl) => {
-            this.profilePhotoUrl = imageUrl;
-          },
-          error: (error) => {
-            console.warn('Failed to load profile image from API, using static URL:', error);
-            // Fallback to static URL
-            this.profilePhotoUrl = this.imageUtilityService.getProfileImageUrl(userId, storedPhotoName);
-          }
-        })
+        this.imageUtilityService
+          .getProfileImageUrlFromAPI(userId, storedPhotoName)
+          .subscribe({
+            next: (imageUrl) => {
+              this.profilePhotoUrl = imageUrl;
+            },
+            error: (error) => {
+              console.warn(
+                'Failed to load profile image from API, using static URL:',
+                error
+              );
+              // Fallback to static URL
+              this.profilePhotoUrl =
+                this.imageUtilityService.getProfileImageUrl(
+                  userId,
+                  storedPhotoName
+                );
+              if (storedPhotoName) {
+                // Ensure clean URL building
+                const apiBaseUrl = Environment.baseImageUrl.replace(/\/+$/, '');
+                const cleanedPath = storedPhotoName.replace(/^\/+/, '');
+
+                this.profilePhotoUrl = `${apiBaseUrl}/${cleanedPath}`;
+                console.log('Profile photo URL:', this.profilePhotoUrl);
+              }
+            },
+          })
       );
+
     } else {
       // No user ID, use default profile image
       this.profilePhotoUrl = 'assets/Images/default-profile.jpg';

@@ -31,6 +31,7 @@ export class WishlistComponent implements OnInit {
   private loadWishlist(): void {
     this._wishList.getLoggedWishList().subscribe({
       next: (res: any) => {
+        console.log(res);
         this.wishList = res.data.items;
         this.wishlistId = res.data.id;
         this.isLoading = false;

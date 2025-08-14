@@ -8,20 +8,27 @@ import {
 } from '@angular/forms';
 import {
   ProductCategory,
-  ProductPendingStatus
+  ProductCreateAllDTO,
+  ProductPendingStatus,
+  SpecificationDTO,
+  WarrantyDTO
 } from '../../../../Interfaces/iproduct';
 import { ToastrService } from 'ngx-toastr';
 import { ProductService } from '../../../../Services/product.service';
 import { CommonModule, TitleCasePipe } from '@angular/common';
+import { AddImagesComponent } from "./components/add-images/add-images.component";
 
 @Component({
   selector: 'app-create-product',
   standalone: true,
-  imports: [ReactiveFormsModule, TitleCasePipe, CommonModule],
+  imports: [ReactiveFormsModule, TitleCasePipe, CommonModule, AddImagesComponent],
   templateUrl: './create-product.component.html',
   styleUrl: './create-product.component.css'
 })
 export class CreateProductComponent {
+
+  productIdForImages: string = '';
+  productCreated: boolean = false;
   form: FormGroup;
   categories = Object.values(ProductCategory);
   status = ProductPendingStatus;
@@ -44,7 +51,6 @@ export class CreateProductComponent {
       stock: [0, [Validators.required, Validators.min(0)]],
       subCategoryName: [''],
       discountPrice: [0],
-      image1Url: [''], // will receive base64
       techCompanyId: [techCompanyId || '', Validators.required],
       category: [ProductCategory.Motherboard, Validators.required],
       status: [ProductPendingStatus.Pending],
@@ -79,95 +85,82 @@ export class CreateProductComponent {
   }
 
   addWarranty() {
-    this.warranties.push(
-      this.fb.group({
-        type: ['', Validators.required],
-        duration: ['', Validators.required],
-        description: ['', Validators.required],
-        startDate: ['', Validators.required],
-        endDate: ['', Validators.required]
-      })
-    );
-  }
+  this.warranties.push(
+    this.fb.group({
+      type: [''],
+      description: [''],
+      durationInMonths: [''],
+      startDate: [''],
+      endDate: ['']
+    })
+  );
+}
+
 
   removeWarranty(index: number) {
     this.warranties.removeAt(index);
   }
 
-  onImageSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    if (!file.type.startsWith('image/')) {
-      this.toastr.error('Selected file is not an image.');
-      return;
-    }
-
-    this.selectedImageFile = file;
-
-    // Convert to base64 for embedding in DTO
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      this.selectedImagePreview = base64;
-      this.form.patchValue({ image1Url: base64 });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  clearImage() {
-    this.selectedImageFile = null;
-    this.selectedImagePreview = null;
-    this.form.patchValue({ image1Url: '' });
-    const fileInput = document.getElementById('imageFile') as HTMLInputElement | null;
-    if (fileInput) fileInput.value = '';
-  }
-
   onSubmit() {
     if (this.form.invalid) return;
 
-    // You can enforce presence if image is required:
-    if (!this.form.value.image1Url) {
-      this.toastr.error('Please pick a product image.'); 
-      return;
-    }
-
     this.submitting = true;
 
-    const { category, status, warranties, ...dto } = this.form.value;
+    const { category, status, specifications, warranties, ...productValues } = this.form.value;
 
-    const formattedWarranties = warranties.map((w: any) => ({
-      ...w,
-      startDate: new Date(w.startDate).toISOString(),
-      endDate: new Date(w.endDate).toISOString()
-    }));
-
-    const payload: any = {
-      ...dto,
-      warranties: formattedWarranties
+    const dto: ProductCreateAllDTO = {
+      product: { ...productValues, specifications: [], warranties: [] },
+      warrantiesSpecs: {
+        specifications: specifications.map((s: any) => ({ key: s.key, value: s.value })),
+        warranties: warranties.map((w: any) => ({
+          type: w.type,
+          duration: w.durationInMonths,
+          description: w.description,
+          startDate: new Date(w.startDate).toISOString(),
+          endDate: new Date(w.endDate).toISOString()
+        }))
+      }
     };
 
-    this.productService.addProduct(payload, category, status).subscribe({
+    this.productService.addProduct(dto, category, status).subscribe({
       next: (res) => {
-        console.log(res);
+        this.productIdForImages = res.data.id;
         this.toastr.success(res.message);
-        this.form.reset({
-          price: 0,
-          stock: 0,
-          discountPrice: 0,
-          category: ProductCategory.Motherboard,
-          status: ProductPendingStatus.Pending
-        });
-        this.specifications.clear();
-        this.warranties.clear();
-        this.clearImage();
+
+        // Hide the form and show the add-images component
+        this.productCreated = true;
       },
       error: (err) => {
-        console.log(err);
         this.toastr.error(err.error?.message || 'Something went wrong');
       },
       complete: () => (this.submitting = false)
     });
   }
+// Called from AddImagesComponent
+onResetForm() {
+  this.productCreated = false;
+  this.productIdForImages = '';
+
+  // Reset form values
+  this.form.reset({
+    name: '',
+    price: 0,
+    stock: 0,
+    discountPrice: 0,
+    subCategoryName: '',
+    description: '',
+    techCompanyId: localStorage.getItem('techCompanyId') || '',
+    category: ProductCategory.Motherboard,
+    status: ProductPendingStatus.Pending
+  });
+
+  // Clear FormArrays safely
+  while (this.specifications.length) this.specifications.removeAt(0);
+  while (this.warranties.length) this.warranties.removeAt(0);
+
+  // Ensure submitting flag is reset
+  this.submitting = false;
+}
+
+
 }

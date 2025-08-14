@@ -9,6 +9,7 @@ import { ImageUtilityService } from "../../Services/image-utility.service";
 import { ToastrService } from "ngx-toastr";
 import { NotificationService } from "../../Services/notification.service";
 import { NotificationDTO } from "../../Interfaces/inotification";
+import { Environment } from "../../Environment/environment";
 
 @Component({
   selector: 'app-nav-bar',
@@ -199,28 +200,16 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   loadProfilePhoto(): void {
-    if (this._isBrowser) {
-      this.userId = localStorage.getItem('customerId');
-      const storedPhotoName = localStorage.getItem('profilePhotoUrl') || 'photo';
-      
-      if (this.userId) {
-        // Try to get profile image from API first
-        this.subscriptions.push(
-          this._imageUtilityService.getProfileImageUrlFromAPI(this.userId, storedPhotoName).subscribe({
-            next: (imageUrl) => {
-              this.profilePhotoUrl = imageUrl;
-            },
-            error: (error) => {
-              console.warn('Failed to load profile image from API, using default:', error);
-              // Fallback to static URL
-              this.profilePhotoUrl = this._imageUtilityService.getProfileImageUrl(this.userId, storedPhotoName);
-            }
-          })
-        );
-      } else {
-        // No user ID, use default profile image
-        this.profilePhotoUrl = 'assets/Images/default-profile.jpg';
-      }
+    if (!this._isBrowser) return;
+
+    const storedPhotoPath = localStorage.getItem('profilePhotoUrl');
+
+    if (storedPhotoPath) {
+      const apiBaseUrl = Environment.baseImageUrl.replace(/\/+$/, '');
+      const cleanedPath = storedPhotoPath.replace(/^\/+/, '');
+      this.profilePhotoUrl = `${apiBaseUrl}/${cleanedPath}`;
+    } else {
+      this.profilePhotoUrl = 'assets/Images/default-profile.jpg';
     }
   }
 

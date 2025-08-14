@@ -13,7 +13,7 @@ export interface WishListItemReadDTO {
   id: string;
   productId: string;
   productName?: string;
-  productImage?: string;
+  productImageUrl?: string;
   createdAt: string;
 }
 

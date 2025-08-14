@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IProduct } from '../../../Interfaces/iproduct';
 import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../../Services/category.service';
+import { Environment } from '../../../Environment/environment';
 
 @Component({
   selector: 'app-category-details',
@@ -45,6 +46,7 @@ export class CategoryDetailsComponent implements OnInit {
             price: catProduct.price,
             discountPrice: catProduct.price, // Assuming no discount for now
             imageUrl: catProduct.imageUrl || '',
+            imageUrls: catProduct.imageUrls || [],
             category: response.data.name,
             categoryName: response.data.name,
             subCategoryId: '',
@@ -70,15 +72,24 @@ export class CategoryDetailsComponent implements OnInit {
     });
   }
 
-  selectProduct(product: IProduct) {
-    console.log(`🎯 Selected product:`, product);
-    const enriched = {
-      ...product,
-      title: product.name,
-      link: 'https://example.com/products/' + product.id,
-      category: this.categoryName
-    };
-    console.log(`🎯 Enriched product for selector:`, enriched);
-    this.router.navigate(['/selector'], { state: { selectedProduct: enriched } });
+  viewDetails(id : string){
+    this.router.navigate(['/product-details', id]);
   }
+
+  getProductImageUrl(product: IProduct): string {
+  if (product.imageUrl) {
+    const backendBase = Environment.baseImageUrl.replace(/\/+$/, '');
+    return product.imageUrl.startsWith('http')
+      ? product.imageUrl
+      : `${backendBase}/${product.imageUrl.replace(/^\/+/, '')}`;
+  }
+  // Fallback local image
+  return '/assets/Images/default-product.jpg';
+}
+
+// Handle broken images
+onImageError(event: Event) {
+  const img = event.target as HTMLImageElement;
+  img.src = '/assets/Images/default-product.jpg';
+}
 }

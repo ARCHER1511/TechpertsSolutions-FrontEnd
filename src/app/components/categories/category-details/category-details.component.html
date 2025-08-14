@@ -29,7 +29,13 @@
       @for (product of products; track product.id) {
         <div class="col-md-6 col-lg-4 mb-4">
           <div class="card product-card shadow-sm border-0 h-100">
-            <img [src]="product.imageUrl" class="card-img-top" alt="{{ product.name }}" />
+            <img 
+  [src]="getProductImageUrl(product)" 
+  class="card-img-top" 
+  [alt]="product.name" 
+  (error)="onImageError($event)"
+/>
+
 
             <div class="card-body d-flex flex-column text-center">
               <h5 class="product-name fw-bold">{{ product.name }}</h5>
@@ -53,8 +59,8 @@
 
               <button class="btn btn-outline-primary mt-auto"
                       [disabled]="product.status === 'Rejected'"
-                      (click)="selectProduct(product)">
-                Select Product
+                      (click)="viewDetails(product.id)">
+                View Details
               </button>
             </div>
           </div>

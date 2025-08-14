@@ -62,6 +62,7 @@ export class PcCompareComponent implements OnInit {
                   price: catProduct.price,
                   discountPrice: catProduct.price, // Assuming no discount for now
                   imageUrl: catProduct.imageUrl || '',
+                  imageUrls: catProduct.imageUrls || [],
                   category: category.name, // Use category name as the category field
                   categoryName: category.name, // Also set categoryName for compatibility
                   subCategoryId: '',

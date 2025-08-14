@@ -43,6 +43,7 @@ export interface AuthResponse {
     token: string;
     userId: string;
     userName: string;
+    fullName: string;
     userRoles: string[];
     roleName: string[];
     customerId?: string;
@@ -63,6 +64,11 @@ export interface UserProfile {
   userName: string;
   email: string;
   address: string;
+  city: string;
+  country: string;
+  profilePhotoUrl: string;
+  createdAt: string;
+  updatedAt: string;
   phoneNumber: string;
   registrationDate: string;
   lastLoginDate?: string;

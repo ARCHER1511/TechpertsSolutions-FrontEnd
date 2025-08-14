@@ -1,9 +1,10 @@
 ﻿<div class="create-product-container">
   <h2 class="section-title">Create New Product</h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <!-- Product Form: show only if product not created -->
+  <form *ngIf="!productCreated" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     <!-- Basic Fields -->
-    <div *ngFor="let field of ['name','price','discountPrice','stock','subCategoryName']; let i = index">
+    <div *ngFor="let field of ['name','price','discountPrice','stock','subCategoryName']">
       <div class="form-group">
         <label [for]="field">{{ field | titlecase }}</label>
         <input
@@ -14,37 +15,17 @@
       </div>
     </div>
 
-    <!-- Image Picker (fills image1Url as base64) -->
-    <div class="form-group">
-      <label for="imageFile">Product Image</label>
-      <input type="file" id="imageFile" (change)="onImageSelected($event)" accept="image/*" />
-      <div class="image-preview" *ngIf="selectedImagePreview">
-        <p>Preview:</p>
-        <img [src]="selectedImagePreview" alt="Selected image preview" style="max-width:200px; max-height:200px;" />
-        <button type="button" (click)="clearImage()">Remove</button>
-      </div>
-    </div>
-
     <!-- Description -->
     <div class="form-group">
-      <label>Description</label>
-      <textarea formControlName="description"></textarea>
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description"></textarea>
     </div>
 
-    <!-- Dropdowns -->
+    <!-- Category -->
     <div class="form-group">
-      <label>Category</label>
-      <select formControlName="category">
+      <label for="category">Category</label>
+      <select id="category" formControlName="category">
         <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Status</label>
-      <select formControlName="status">
-        <option [value]="status.Pending">Pending</option>
-        <option [value]="status.Approved">Approved</option>
-        <option [value]="status.Rejected">Rejected</option>
       </select>
     </div>
 
@@ -71,20 +52,58 @@
         [formGroupName]="i"
         class="nested-item"
       >
-        <input formControlName="type" placeholder="Type" />
-        <input formControlName="duration" placeholder="Duration" />
-        <input formControlName="description" placeholder="Description" />
-        <label>Start Date</label>
-        <input formControlName="startDate" type="date" />
-        <label>End Date</label>
-        <input formControlName="endDate" type="date" />
+        <!-- Warranty Type -->
+        <input 
+          formControlName="type" 
+          placeholder="Type (e.g., Manufacturer, Seller)" 
+          type="text"
+        />
+
+        <!-- Description -->
+        <input 
+          formControlName="description" 
+          placeholder="Description" 
+          type="text"
+        />
+
+        <!-- Duration -->
+        <input 
+          formControlName="durationInMonths" 
+          type="text" 
+          placeholder="Duration" 
+        />
+
+        <!-- Start Date -->
+        <input 
+          formControlName="startDate" 
+          type="date" 
+          placeholder="Start Date" 
+        />
+
+        <!-- End Date -->
+        <input 
+          formControlName="endDate" 
+          type="date" 
+          placeholder="End Date" 
+        />
+
         <button type="button" (click)="removeWarranty(i)">Remove</button>
       </div>
+
       <button type="button" class="add-btn" (click)="addWarranty()">Add Warranty</button>
     </div>
 
+    <!-- Submit -->
     <button class="submit-btn" type="submit" [disabled]="submitting || form.invalid">
       Create Product
     </button>
   </form>
+
+  <!-- Add images: show only after product is created -->
+<app-add-images
+  *ngIf="productCreated"
+  [productIdForImages]="productIdForImages"
+  (resetForm)="onResetForm()"
+></app-add-images>
+
 </div>

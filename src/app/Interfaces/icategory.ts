@@ -29,6 +29,7 @@ export interface ICategoryProduct {
     price: number;
     discountPrice: number;
     imageUrl: string;
+    imageUrls: string[];
     category?: string;
     categoryName: string | null;
     subCategoryId: string;

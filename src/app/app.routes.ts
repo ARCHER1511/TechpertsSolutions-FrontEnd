@@ -61,7 +61,7 @@ export const routes: Routes = [
   },
 
   // Profile Settings Route - Accessible to all authenticated users
-  { path: 'profile-settings', loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent), title: 'Profile Settings', canActivate: [authGuard] },
+  { path: 'profile-settings', loadComponent: () => import('./components/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent), title: 'Profile Settings', canActivate: [authGuard] },
 
   // Admin Dashboard Routes - Comprehensive
   {
@@ -272,7 +272,7 @@ export const routes: Routes = [
       },
       {
         path: 'profile-settings',
-        loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
+        loadComponent: () => import('./components/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
         title: 'Profile Settings'
       },
       {
@@ -332,7 +332,7 @@ export const routes: Routes = [
       },
       {
         path: 'profile-settings',
-        loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
+        loadComponent: () => import('./components/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
         title: 'Profile Settings'
       },
       {
@@ -414,7 +414,7 @@ export const routes: Routes = [
       },
       {
         path: 'profile-settings',
-        loadComponent: () => import('./components/customer-dashboard/pages/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
+        loadComponent: () => import('./components/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
         title: 'Profile Settings'
       },
       {

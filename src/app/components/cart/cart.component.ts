@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartItem, CartItemReadDTO, CartService } from '../../Services/cart.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Environment } from '../../Environment/environment';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
@@ -128,4 +129,22 @@ export class CartComponent implements OnInit {
       item.product.discountPrice < item.product.UnitPrice
     );
   }
+
+  getCartItemImageUrl(item: CartItemReadDTO): string {
+  if (item.imageUrl) {
+    const backendBase = Environment.baseImageUrl.replace(/\/+$/, '');
+    return item.imageUrl.startsWith('http')
+      ? item.imageUrl
+      : `${backendBase}/${item.imageUrl.replace(/^\/+/, '')}`;
+  }
+  return '/assets/placeholder.jpg'; // fallback
+}
+
+/**
+ * Handles broken images
+ */
+onImageError(event: Event) {
+  const img = event.target as HTMLImageElement;
+  img.src = '../../../../../assets/Images/about.jpg';
+}
 }

@@ -1,13 +1,13 @@
 export type ProductStatus = 'None' | 'Pending' | 'Approved' | 'Rejected';
 
 export interface ProductSpecification {
-  id: string;
+  id?: string;
   key: string;
   value: string;
 }
 
 export interface Warranty {
-  id: string;
+  id?: string;
   description: string;
   startDate: string;
   endDate: string;
@@ -22,6 +22,7 @@ export interface IProduct {
   price: number;
   discountPrice: number;
   imageUrl: string;
+  imageUrls:string[];
   category?: string;
   categoryName: string | null;
   subCategoryId: string;
@@ -30,14 +31,16 @@ export interface IProduct {
   stock?: number;
   techCompanyId: string;
   techCompanyName?: string;
-  specifications?: ProductSpecification[]; // <-- Add this
-  warranties?: Warranty[];                 // <-- Optional, for future use
+  specifications?: ProductSpecification[];
+  warranties?: Warranty[];
 }
+
 export interface GeneralResponce {
   data: IProduct;
-  message:string;
-  success:boolean;
+  message: string;
+  success: boolean;
 }
+
 export interface IPagedProducts {
   pageNumber: number;
   pageSize: number;
@@ -46,31 +49,21 @@ export interface IPagedProducts {
   items: IProduct[];
 }
 
-export interface ProductCreateDTO {
-  name: string;
-  price: number;
-  description?: string;
-  stock: number;
-  imageUrl?: string;
-  subCategoryName?: string;
-  discountPrice?: number;
-  techCompanyId: string;
-  specifications?: SpecificationDTO[];
-  warranties?: WarrantyDTO[];
-}
-
-export interface ProductUpdateDTO extends Omit<ProductCreateDTO, 'techCompanyId'> {}
-
 export interface SpecificationDTO {
   key: string;
   value: string;
 }
 
 export interface WarrantyDTO {
-  durationInMonths: number;
+  Type: string;
+  Duration: string;
   description: string;
+  StartDate: Date;
+  EndDate: Date;
+  durationInMonths: number;
 }
 
+// -------------------- CATEGORY + STATUS ENUMS --------------------
 export enum ProductCategory {
   Laptop = 'Laptop',
   Processor = 'Processor',
@@ -85,7 +78,6 @@ export enum ProductCategory {
   PowerSupply = 'PowerSupply',
   Monitor = 'Monitor',
   Accessories = 'Accessories',
-  // Add more if needed
 }
 
 export enum ProductPendingStatus {
@@ -98,4 +90,48 @@ export interface GeneralResponse<T> {
   success: boolean;
   message: string;
   data: T;
+}
+
+// -------------------- CREATE / UPDATE WRAPPERS --------------------
+// Matches backend's ProductCreateAllDTO
+export interface ProductCreateDTO {
+  name: string;
+  price: number;
+  description?: string;
+  stock: number;
+  imageUrl?: string;
+  subCategoryName?: string;
+  discountPrice?: number;
+  techCompanyId: string;
+  specifications: SpecificationDTO[];
+  warranties: WarrantyDTO[];
+}
+
+export interface ProductCreateWarSpecDTO {
+  specifications?: SpecificationDTO[];
+  warranties?: WarrantyDTO[];
+}
+
+export interface ProductCreateAllDTO {
+  product: ProductCreateDTO;
+  warrantiesSpecs: ProductCreateWarSpecDTO;
+}
+
+// Matches backend's ProductUpdateAllDTO
+export interface ProductUpdateDTO extends Omit<ProductCreateDTO, 'techCompanyId'> {}
+
+export interface ProductUpdateWarSpecDTO {
+  specifications?: SpecificationDTO[];
+  warranties?: WarrantyDTO[];
+}
+
+export interface ProductUpdateAllDTO {
+  product: ProductUpdateDTO;
+  warrantiesSpecs: ProductUpdateWarSpecDTO;
+}
+
+// -------------------- IMAGE UPLOAD / UPDATE --------------------
+export interface ProductCreateImageUploadDTO {
+  imageUrl?: File;      // Single image
+  imageUrls?: File[];   // Multiple images
 }

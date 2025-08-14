@@ -139,3 +139,100 @@
   background-size: 1rem;
   padding-right: 2.5rem;
 }
+/* Modal backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1040;
+}
+
+/* Modal container */
+.modal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+/* Adapted Product Details Styles */
+.product-details-wrapper {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow-color, rgba(0,0,0,0.2));
+  color: var(--text-primary, #333);
+  transition: all 0.3s ease-in-out;
+}
+
+.product-title {
+  font-size: 2.5rem;
+  font-family: 'Orbitron', sans-serif;
+  color: var(--primary-color, #0d6efd);
+  text-align: center;
+  text-shadow: 0 0 10px var(--primary-color, #0d6efd);
+}
+
+.product-image {
+  display: block;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-color, rgba(0,0,0,0.2));
+  transition: transform 0.3s ease;
+}
+.product-image:hover {
+  transform: scale(1.02);
+}
+
+.product-description {
+  text-align: center;
+  color: var(--text-secondary, #555);
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.product-meta {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-muted, #777);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.product-pricing {
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+.product-pricing .price-discount {
+  color: var(--danger, #198754);
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.product-pricing .price-original {
+  text-decoration: line-through;
+  color: var(--text-muted, #777);
+}
+
+.product-pricing .price-normal {
+  color: var(--primary-color, #0d6efd);
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .product-title {
+    font-size: 2rem;
+  }
+  .product-description {
+    font-size: 1rem;
+  }
+}

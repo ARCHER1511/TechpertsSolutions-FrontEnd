@@ -43,19 +43,27 @@ export class UserProfileService {
 
   /** Update user profile (supports file upload) */
   updateUserProfile(dto: UserProfileUpdateDTO): Observable<GeneralResponse<UserProfile>> {
-    const formData = new FormData();
-    if (dto.fullName) formData.append('FullName', dto.fullName);
-    if (dto.email) formData.append('Email', dto.email);
-    if (dto.phoneNumber) formData.append('PhoneNumber', dto.phoneNumber);
-    if (dto.address) formData.append('Address', dto.address);
-    if (dto.city) formData.append('City', dto.city);
-    if (dto.country) formData.append('Country', dto.country);
-    if (dto.profilePhoto) formData.append('ProfilePhoto', dto.profilePhoto);
+  const formData = new FormData();
 
-    return this.http.put<GeneralResponse<UserProfile>>(this.apiUrl, formData, {
-      headers: this.getAuthHeaders()
-    });
+  // Append only if provided
+  if (dto.fullName !== undefined) formData.append('FullName', dto.fullName);
+  if (dto.email !== undefined) formData.append('Email', dto.email);
+  if (dto.phoneNumber !== undefined) formData.append('PhoneNumber', dto.phoneNumber);
+  if (dto.address !== undefined) formData.append('Address', dto.address);
+  if (dto.city !== undefined) formData.append('City', dto.city);
+  if (dto.country !== undefined) formData.append('Country', dto.country);
+
+  // Append image if exists
+  if (dto.profilePhoto instanceof File) {
+    formData.append('ProfilePhoto', dto.profilePhoto);
   }
+
+  // Don’t set Content-Type manually, Angular will handle it
+  return this.http.put<GeneralResponse<UserProfile>>(this.apiUrl, formData, {
+    headers: this.getAuthHeaders()
+  });
+}
+
 
   /** Upload only profile photo */
   uploadProfilePhoto(dto: UserProfilePhotoUploadDTO): Observable<GeneralResponse<string>> {
@@ -65,6 +73,22 @@ export class UserProfileService {
     }
     return this.http.post<GeneralResponse<string>>(`${this.apiUrl}/upload-photo`, formData, {
       headers: this.getAuthHeaders()
+    });
+  }
+
+  getUserProfileImage(): Observable<string | null> {
+    return new Observable(observer => {
+      this.getUserProfile().subscribe({
+        next: res => {
+          const imageUrl = res.data?.profilePhotoUrl || null;
+          observer.next(imageUrl);
+          observer.complete();
+        },
+        error: () => {
+          observer.next(null);
+          observer.complete();
+        }
+      });
     });
   }
 }

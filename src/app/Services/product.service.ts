@@ -2,7 +2,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 import { Environment } from '../Environment/environment';
-import { GeneralResponce, IPagedProducts, IProduct, ProductCategory, ProductPendingStatus, ProductCreateDTO, ProductUpdateDTO } from '../Interfaces/iproduct';
+import { GeneralResponce, IPagedProducts, IProduct, ProductCategory, ProductPendingStatus, ProductCreateDTO, ProductUpdateDTO, ProductCreateAllDTO } from '../Interfaces/iproduct';
 import { GeneralResponse } from '../Interfaces/iorder';
 
 @Injectable({
@@ -151,6 +151,7 @@ export class ProductService {
           price: 0,
           discountPrice: 0,
           imageUrl: '',
+          imageUrls: [],
           categoryName: null,
           subCategoryId: '',
           subCategoryName: '',
@@ -227,31 +228,85 @@ export class ProductService {
     );
   }
   addProduct(
-    dto: ProductCreateDTO,
+  dto: ProductCreateAllDTO,
+  category: ProductCategory,
+  status: ProductPendingStatus
+): Observable<GeneralResponse<any>> {
+  const params = new HttpParams()
+    .set('category', category)
+    .set('status', status.toString());
+
+  return this._httpClient.post<GeneralResponse<any>>(
+    `${this._baseUrl}/Product`,
+    dto,
+    {
+      params,
+      headers: { 'Content-Type': 'application/json' }
+    }
+  );
+}
+
+
+
+  /**
+   * Update an existing product with optional image upload
+   */
+  updateProduct(
+    id: string,
+    dto: ProductUpdateDTO,
     category: ProductCategory,
-    status: ProductPendingStatus
+    status: ProductPendingStatus,
+    imageFile?: File
   ): Observable<GeneralResponse<string>> {
     const params = new HttpParams()
-      .set('category', category) // ← sends value like 'Motherboard'
+      .set('category', category)
       .set('status', status.toString());
-  
-    return this._httpClient.post<GeneralResponse<string>>(`${this._baseUrl}/Product`, dto, { params });
+
+    const formData = new FormData();
+    formData.append('name', dto.name);
+    formData.append('price', dto.price.toString());
+    formData.append('stock', dto.stock.toString());
+
+    if (dto.description) formData.append('description', dto.description);
+    if (dto.discountPrice !== undefined) formData.append('discountPrice', dto.discountPrice.toString());
+    if (dto.subCategoryName) formData.append('subCategoryName', dto.subCategoryName);
+    if (dto.specifications) formData.append('specifications', JSON.stringify(dto.specifications));
+    if (dto.warranties) formData.append('warranties', JSON.stringify(dto.warranties));
+    if (imageFile) formData.append('imageFile', imageFile);
+
+    return this._httpClient.put<GeneralResponse<string>>(
+      `${this._baseUrl}/Product/${id}`,
+      formData,
+      { params }
+    );
   }
-  
-  updateProduct(
-      id: string,
-      dto: ProductUpdateDTO,
-      category: ProductCategory,
-      status: ProductPendingStatus
-    ): Observable<GeneralResponse<string>> {
-      const params = new HttpParams()
-        .set('category', category)
-        .set('status', status);
-  
-      return this._httpClient.put<GeneralResponse<string>>(`${this._baseUrl}/${id}`, dto, { params });
-    }
-  
+
+  /**
+   * Delete a product
+   */
   deleteProduct(id: string): Observable<GeneralResponse<string>> {
-      return this._httpClient.delete<GeneralResponse<string>>(`${this._baseUrl}/${id}`);
-    }
+    return this._httpClient.delete<GeneralResponse<string>>(`${this._baseUrl}/Product/${id}`);
+  }
+
+  /**
+   * Upload an image for a specific product
+   */
+  // product.service.ts
+uploadImage(productId: string, formData: FormData) {
+  return this._httpClient.post(`${this._baseUrl}/product/${productId}/upload-image`, formData);
+}
+
+
+  /**
+   * Update (replace) a product's image
+   */
+  updateImage(productId: string, file: File): Observable<GeneralResponse<string>> {
+    const formData = new FormData();
+    formData.append('imageFile', file);
+
+    return this._httpClient.put<GeneralResponse<string>>(
+      `${this._baseUrl}/Product/${productId}/update-image`,
+      formData
+    );
+  }
 }
