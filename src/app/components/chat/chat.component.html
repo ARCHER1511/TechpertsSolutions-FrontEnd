@@ -1,0 +1,32 @@
+<div class="chat-container">
+  <!-- ✅ Connection status -->
+  <div class="status" [ngClass]="connectionState">
+    {{ connectionState | uppercase }}
+  </div>
+
+  <!-- ✅ Message list -->
+  <div class="messages">
+    <div *ngFor="let msg of messages" class="message">
+      <span class="sender">{{ msg.senderId }}:</span>
+      <span class="text">{{ msg.message }}</span>
+      <span class="time">{{ msg.sentAt | date:'shortTime' }}</span>
+    </div>
+  </div>
+
+  <!-- ✅ Typing indicator -->
+  <div *ngIf="typingUser" class="typing">
+    {{ typingUser }} is typing...
+  </div>
+
+  <!-- ✅ Input area -->
+  <div class="input-area">
+    <input
+      type="text"
+      [(ngModel)]="newMessage"
+      placeholder="Type a message..."
+      (keydown)="sendTyping()"
+      (keyup.enter)="sendMessage()"
+    />
+    <button type="button" (click)="sendMessage()">Send</button>
+  </div>
+</div>

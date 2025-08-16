@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../Services/auth.service';
 
@@ -24,7 +24,7 @@ function matchValidator(a: string, b: string): ValidatorFn {
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule,RouterLink],
   templateUrl: './reset-password.component.html'
 })
 export class ResetPasswordComponent implements OnInit {
@@ -32,6 +32,7 @@ export class ResetPasswordComponent implements OnInit {
   token: string | null = null;
   message: string | null = null;
   error: string | null = null;
+  isLoading: boolean = false; 
 
   constructor(
     private fb: FormBuilder,
@@ -80,6 +81,10 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true; // ✅ start loading
+    this.message = null;
+    this.error = null;
+
     const { newPassword, confirmPassword } = this.resetForm.value;
 
     const payload = {
@@ -92,11 +97,13 @@ export class ResetPasswordComponent implements OnInit {
       next: (res) => {
         this.message = res.message || 'Password reset successfully!';
         this.error = null;
+        this.isLoading = false; 
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err) => {
         this.error = err?.error?.message || 'Failed to reset password';
         this.message = null;
+        this.isLoading = false; 
       }
     });
   }
