@@ -254,3 +254,97 @@
   }
 }
 
+/* Tech Company Section */
+.product-tech-company {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.tech-title {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  text-shadow: 0 0 12px var(--primary-color), 0 0 24px rgba(76, 166, 255, 0.5);
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 1rem;
+}
+
+/* Tech Card */
+.tech-card {
+  background: linear-gradient(135deg, rgba(76,166,255,0.1), rgba(76,166,255,0.05));
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  padding: 1rem 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(76,166,255,0.35);
+}
+
+/* Each Row */
+.tech-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(76,166,255,0.15);
+}
+
+.tech-row:last-child {
+  border-bottom: none;
+}
+
+/* Key and Value styling */
+.tech-key {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-shadow: 0 0 6px rgba(76,166,255,0.4);
+}
+
+.tech-value {
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tech-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+  .tech-value {
+    text-align: left;
+  }
+}
+.product-company-info {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+
+.product-company-info .company-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+  opacity: 0.95;
+}
+
+.product-company-info small {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.product-company-info i {
+  font-size: 1rem;
+  color: var(--primary-color);
+  opacity: 0.7;
+}

@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 import { CustomerService } from '../../Services/customer.service';
 import { TechCompanyService } from '../../Services/tech-company.service';
-import { DeliveryPersonService } from '../../Services/delivery-person.service';
+import { DeliveryPerson, DeliveryPersonService } from '../../Services/delivery-person.service';
 import { AdminService } from '../../Services/admin.service';
 import { RolesService } from '../../Services/roles.service';
 import { OrderService } from '../../Services/order.service';
@@ -14,12 +14,17 @@ import { DeliveryService } from '../../Services/delivery.service';
 import { ImageUtilityService } from '../../Services/image-utility.service';
 import { Subscription } from 'rxjs';
 import { UserProfileService } from '../../Services/user-profile.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Environment } from '../../Environment/environment';
+import { UpdateLocation } from '../../Interfaces/iuser-profile';
+import { ToastrService } from 'ngx-toastr';
+import { DeliveryPersonStatus, DeliveryPersonUpdateDTO } from '../../Interfaces/idelvery-person';
+import { DelveryPersonService } from '../../Services/delvery-person.service';
+import { GeneralResponse } from '../../Interfaces/iorder';
 
 @Component({
   selector: 'app-profile',
@@ -35,12 +40,16 @@ import { Environment } from '../../Environment/environment';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-
   form: FormGroup;
   center = { lat: 30.033333, lng: 31.233334 };
   zoom = 6;
   markerPosition: google.maps.LatLngLiteral | null = null;
-
+  
+  
+  statuses = DeliveryPersonStatus; // enum reference
+  deliveryPersonId: string = '123'; // replace with dynamic id (e.g., from route param)
+  isLoading = false;
+  message: string = '';
   userData: any = null;
   userRoles: string[] = [];
   roleSpecificData: any = {};
@@ -74,15 +83,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private maintenanceService: MaintenanceService,
     private deliveryService: DeliveryService,
     private UserProfileService: UserProfileService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toaster: ToastrService,
+    private deliveryPersonService2: DelveryPersonService
   ) {
     this.form = this.fb.group({
-      name: [''],
-      description: [''],
+      postalCode: [''],
       latitude: [''],
       longitude: [''],
     });
+    
   }
+  updateForm: FormGroup = this.fb.group({
+      phoneNumber: ['', Validators.required],
+      city: [''],
+      country: [''],
+      vehicleNumber: [''],
+      vehicleType: [''],
+      vehicleImage: [''],
+      isAvailable: [false],
+      accountStatus: [DeliveryPersonStatus.Pending, Validators.required],
+    });;
 
   setMarker(event: google.maps.MapMouseEvent) {
     if (event.latLng) {
@@ -97,11 +118,41 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    console.log('Form data:', this.form.value);
-    // Here call your backend API service with this.form.value
+  if (this.form.invalid) {
+    console.warn("Form is invalid!");
+    return;
   }
 
+  const dto: UpdateLocation = {
+    postalCode: this.form.value.postalCode,
+    latitude: +this.form.value.latitude,
+    longitude: +this.form.value.longitude
+  };
+
+  this.UserProfileService.updateLocation(dto).subscribe({
+    next: (res) => {
+      console.log("✅ Location updated:", res);
+      this.toaster.success(res.message)
+
+      // Clear form and marker
+      this.form.reset();
+      this.markerPosition = null;
+
+      // Optional: toastr
+      // this.toastr.success("Location updated successfully!");
+    },
+    error: (err) => {
+      console.error("❌ Failed to update location:", err);
+      // this.toastr.error("Failed to update location");
+    }
+  });
+}
+
+
   ngOnInit(): void {
+    this.deliveryPersonService2.getById(this.deliveryPersonId).subscribe(person => {
+    this.updateForm.patchValue(person);
+  });
     this.loadUserProfile();
     this.loadWishListInfo();
     
@@ -110,6 +161,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       console.log('No roles detected, setting default roles for testing');
     }
   }
+  
 
   ngOnDestroy(): void {
     // Clean up subscriptions
@@ -342,6 +394,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
       );
     } else {
       console.error('Delivery person ID not found in localStorage');
+    }
+  }
+
+  onSubmit(): void {
+    if (this.updateForm.valid) {
+      const formValue = this.updateForm.value;
+      console.log('Submitting form:', formValue);
+
+      this.deliveryPersonService2.update(this.deliveryPersonId, formValue).subscribe({
+        next: () => console.log('Profile updated successfully'),
+        error: (err) => console.error('Update failed', err),
+      });
     }
   }
 

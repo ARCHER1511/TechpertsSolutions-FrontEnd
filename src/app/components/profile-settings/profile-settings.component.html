@@ -145,7 +145,7 @@
             </h5>
           </div>
           <div class="card-body">
-            <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+            <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
               <div class="row g-3">
                 <div class="col-12">
                   <label for="currentPassword" class="form-label">Current Password *</label>
@@ -210,12 +210,13 @@
               </div>
               <div class="form-actions">
                 <button
-                  type="submit"
-                  class="btn modern-btn"
-                  [disabled]="passwordForm.invalid || saving">
-                  <i class="bi bi-shield-check me-2"></i>
-                  {{ saving ? 'Changing...' : 'Change Password' }}
-                </button>
+  type="submit"
+  class="btn modern-btn"
+  [disabled]="!isPasswordFormValid() || saving">
+  <i class="bi bi-shield-check me-2"></i>
+  {{ saving ? 'Changing...' : 'Change Password' }}
+</button>
+
               </div>
             </form>
           </div>

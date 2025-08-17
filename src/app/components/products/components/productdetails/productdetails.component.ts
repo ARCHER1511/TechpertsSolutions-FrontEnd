@@ -25,6 +25,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   currentSlideIndex = 0;
 
   profilePhotoUrl: string = 'assets/Images/default-profile.jpg';
+  defaultPhotoUrl: string = 'assets/Images/default-profile.jpg';
 
   // Gallery
   productImages: string[] = [];

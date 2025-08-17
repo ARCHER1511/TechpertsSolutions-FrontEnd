@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment';
+import { DeliveryClusterTracking, DeliveryCreateDTO } from '../Interfaces/idelivery';
+import { GeneralResponse } from './cart.service';
 
 export interface Delivery {
   id: string;
@@ -35,36 +37,65 @@ export class DeliveryService {
   private apiUrl = Environment.baseUrl + '/Delivery';
 
   constructor(private http: HttpClient) {}
-
+  
   getAllDeliveries(): Observable<DeliveryResponse> {
     return this.http.get<DeliveryResponse>(`${this.apiUrl}`);
   }
-
+  
   getDeliveryById(id: string): Observable<SingleDeliveryResponse> {
     return this.http.get<SingleDeliveryResponse>(`${this.apiUrl}/${id}`);
   }
-
-  createDelivery(delivery: Partial<Delivery>): Observable<SingleDeliveryResponse> {
-    return this.http.post<SingleDeliveryResponse>(`${this.apiUrl}`, delivery);
-  }
-
-  updateDelivery(id: string, delivery: Partial<Delivery>): Observable<SingleDeliveryResponse> {
-    return this.http.put<SingleDeliveryResponse>(`${this.apiUrl}/${id}`, delivery);
-  }
-
-  deleteDelivery(id: string): Observable<SingleDeliveryResponse> {
-    return this.http.delete<SingleDeliveryResponse>(`${this.apiUrl}/${id}`);
-  }
-
-  getDeliveryDetails(id: string): Observable<SingleDeliveryResponse> {
-    return this.http.get<SingleDeliveryResponse>(`${this.apiUrl}/details/${id}`);
-  }
-
+  
   getDeliveriesByDeliveryPerson(deliveryPersonId: string): Observable<DeliveryResponse> {
     return this.http.get<DeliveryResponse>(`${this.apiUrl}/deliveryperson/${deliveryPersonId}`);
   }
+  create(dto: DeliveryCreateDTO): Observable<GeneralResponse<Delivery>> {
+    return this.http.post<GeneralResponse<Delivery>>(this.apiUrl, dto);
+  }
 
-  getDeliveriesByStatus(status: string): Observable<DeliveryResponse> {
-    return this.http.get<DeliveryResponse>(`${this.apiUrl}/status/${status}`);
+  delete(id: string): Observable<GeneralResponse<string>> {
+    return this.http.delete<GeneralResponse<string>>(`${this.apiUrl}/${id}`);
+  }
+
+  // --- Driver / Cluster Assignments ---
+  assignDriver(clusterId: string, driverId: string): Observable<GeneralResponse<any>> {
+    return this.http.post<GeneralResponse<any>>(
+      `${this.apiUrl}/assign-driver?clusterId=${clusterId}&driverId=${driverId}`, {}
+    );
+  }
+
+  acceptDelivery(clusterId: string, driverId: string): Observable<GeneralResponse<any>> {
+    return this.http.post<GeneralResponse<any>>(
+      `${this.apiUrl}/accept?clusterId=${clusterId}&driverId=${driverId}`, {}
+    );
+  }
+
+  declineDelivery(clusterId: string, driverId: string): Observable<GeneralResponse<any>> {
+    return this.http.post<GeneralResponse<any>>(
+      `${this.apiUrl}/decline?clusterId=${clusterId}&driverId=${driverId}`, {}
+    );
+  }
+
+  cancelDelivery(deliveryId: string): Observable<GeneralResponse<any>> {
+    return this.http.post<GeneralResponse<any>>(
+      `${this.apiUrl}/cancel/${deliveryId}`, {}
+    );
+  }
+
+  completeDelivery(deliveryId: string, driverId: string): Observable<GeneralResponse<any>> {
+    return this.http.post<GeneralResponse<any>>(
+      `${this.apiUrl}/complete?deliveryId=${deliveryId}&driverId=${driverId}`, {}
+    );
+  }
+
+  // --- Tracking & Special Queries ---
+  getTracking(deliveryId: string): Observable<GeneralResponse<DeliveryClusterTracking>> {
+    return this.http.get<GeneralResponse<DeliveryClusterTracking>>(
+      `${this.apiUrl}/tracking/${deliveryId}`
+    );
+  }
+
+  getExpiredOffers(): Observable<GeneralResponse<Delivery[]>> {
+    return this.http.get<GeneralResponse<Delivery[]>>(`${this.apiUrl}/expired-offers`);
   }
 } 

@@ -18,6 +18,7 @@ export interface UserProfile {
 
 export interface UserProfileUpdateDTO {
   fullName?: string;
+  userName?:string
   email?: string;
   phoneNumber?: string;
   address?: string;
@@ -28,4 +29,17 @@ export interface UserProfileUpdateDTO {
 
 export interface UserProfilePhotoUploadDTO {
   profilePhoto?: File | null;
+}
+
+
+export interface UpdateLocation {
+  postalCode: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface UpdatePassword {
+  CurrentPassword: string;
+  NewPassword: string;
+  ConfirmNewPassword: string;
 }

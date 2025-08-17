@@ -10,8 +10,8 @@ export interface Role {
 }
 
 export interface RoleAssignment {
-  userId: string;
-  roleId: string;
+  userEmail: string;
+  roleName: string;
 }
 
 export interface RoleResponse {

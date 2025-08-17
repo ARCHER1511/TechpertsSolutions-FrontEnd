@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AdminUserDTO, RoleType, UserRolesUpdateDTO } from '../../../../Interfaces/iadmin-user-management';
 import { AdminUserManagementService } from '../../../../Services/admin-user-management.service';
+import { RolesService, RoleAssignment } from '../../../../Services/roles.service';
 
 @Component({
   selector: 'app-role-management',
@@ -24,7 +25,10 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
 
-  constructor(private adminService: AdminUserManagementService) {}
+  constructor(
+    private adminService: AdminUserManagementService,
+    private rolesService: RolesService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsersWithRoles();
@@ -76,24 +80,21 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
     this.actionLoading = true;
     this.clearMessages();
 
-    const updatedRoles: RoleType[] = [...this.selectedUser.roles, this.selectedRole];
-    const dto: UserRolesUpdateDTO = { roles: updatedRoles };
+    const assignment: RoleAssignment = {
+      userEmail: this.selectedUser.email,
+      roleName: this.selectedRole
+    };
 
     this.subscription.add(
-      this.adminService.changeUserRoles(this.selectedUser.id, dto).subscribe({
-        next: (response) => {
-          if (response.success) {
-            console.log(response);
-            this.successMessage = `Role "${this.selectedRole}" assigned successfully to ${this.selectedUser?.fullName}.`;
-            this.loadUsersWithRoles();
-            this.selectedRole = '';
-          } else {
-            this.errorMessage = response.message || 'Failed to assign role.';
-          }
+      this.rolesService.assignRole(assignment).subscribe({
+        next: (res) => {
+          console.log('Assign response:', res);
+          this.successMessage = `Role "${this.selectedRole}" assigned successfully to ${this.selectedUser?.fullName}.`;
           this.actionLoading = false;
+          this.loadUsersWithRoles();
         },
-        error: (error) => {
-          console.error('Error assigning role:', error);
+        error: (err) => {
+          console.error('Error assigning role:', err);
           this.errorMessage = 'Failed to assign role. Please try again.';
           this.actionLoading = false;
         }
@@ -101,7 +102,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** Remove a role from a user */
+   /** Remove a role from a user */
   unassignRole(user: AdminUserDTO, roleToRemove: RoleType): void {
     if (!confirm(`Are you sure you want to remove the "${roleToRemove}" role from ${user.fullName}?`)) {
       return;
@@ -110,23 +111,21 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
     this.actionLoading = true;
     this.clearMessages();
 
-    const updatedRoles: RoleType[] = user.roles.filter(r => r !== roleToRemove);
-    const dto: UserRolesUpdateDTO = { roles: updatedRoles };
+    const assignment: RoleAssignment = {
+      userEmail: user.email,
+      roleName: roleToRemove
+    };
 
     this.subscription.add(
-      this.adminService.changeUserRoles(user.id, dto).subscribe({
-        next: (response) => {
-          if (response.success) {
-            console.log(response);
-            this.successMessage = `Role "${roleToRemove}" removed successfully from ${user.fullName}.`;
-            this.loadUsersWithRoles();
-          } else {
-            this.errorMessage = response.message || 'Failed to remove role.';
-          }
+      this.rolesService.unassignRole(assignment).subscribe({
+        next: (res) => {
+          console.log('Unassign response:', res);
+          this.successMessage = `Role "${roleToRemove}" removed successfully from ${user.fullName}.`;
           this.actionLoading = false;
+          this.loadUsersWithRoles();
         },
-        error: (error) => {
-          console.error('Error removing role:', error);
+        error: (err) => {
+          console.error('Error unassigning role:', err);
           this.errorMessage = 'Failed to remove role. Please try again.';
           this.actionLoading = false;
         }

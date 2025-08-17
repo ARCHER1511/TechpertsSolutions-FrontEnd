@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ImageUtilityService } from '../../Services/image-utility.service';
 import { Subscription } from 'rxjs';
 import { UserProfileService } from '../../Services/user-profile.service';
 import { UserProfile } from '../../Interfaces/auth';
 import { Environment } from '../../Environment/environment';
-import { UserProfilePhotoUploadDTO, UserProfileUpdateDTO } from '../../Interfaces/iuser-profile';
+import { UpdatePassword, UserProfilePhotoUploadDTO, UserProfileUpdateDTO } from '../../Interfaces/iuser-profile';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -52,11 +53,26 @@ export class CustomerProfileSettingsComponent implements OnInit, OnDestroy {
     marketingEmails: false
   };
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,
+  private toastr: ToastrService
+) {
     this.initializeForms();
   }
 
   ngOnInit(): void {
+   this.passwordForm = this.fb.group(
+  {
+    currentPassword: ['', [Validators.required]],
+    newPassword: ['', [Validators.required, Validators.minLength(6)]],
+    confirmPassword: ['', [Validators.required]],
+  },
+  { validators: this.passwordMatchValidator }
+);
+
+// Debugging form status (good idea 👍)
+this.passwordForm.statusChanges.subscribe(status => {
+  console.log('Form Status:', status, this.passwordForm.errors);
+});
     this.loadProfile();
     this.loadProfilePhoto();
   }
@@ -118,12 +134,6 @@ private initializeForms(): void {
     country: ['', [Validators.maxLength(50)]]
   });
 
-  this.passwordForm = this.fb.group({
-    currentPassword: ['', [Validators.required, Validators.minLength(6)]],
-    newPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)]],
-    confirmPassword: ['', [Validators.required]]
-  }, { validators: this.passwordMatchValidator });
-
   this.notificationForm = this.fb.group({
     emailNotifications: [true],
     smsNotifications: [false],
@@ -140,13 +150,22 @@ private initializeForms(): void {
     profilePhoto: [null, Validators.required]
   });
 }
+isPasswordFormValid(): boolean {
+  return this.passwordForm.valid;
+}
 
 
-  private passwordMatchValidator(form: FormGroup): { [key: string]: any } | null {
-    const newPassword = form.get('newPassword')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
+
+  // ✅ Password match validator
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const newPassword = control.get('newPassword')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+
+    if (!newPassword || !confirmPassword) return null; // don’t block when empty
+
     return newPassword === confirmPassword ? null : { passwordMismatch: true };
   }
+  
 
   async loadProfile(): Promise<void> {
     this.loading = true;
@@ -310,24 +329,36 @@ uploadImageForm(): void {
 }
 
 
-  async changePassword(): Promise<void> {
-    if (this.passwordForm.invalid) return;
+  onSubmit(): void {
+  if (this.passwordForm.invalid) {
+    this.toastr.error('Please fix the errors before submitting.');
+    return;
+  }
 
-    this.saving = true;
-    this.error = '';
+  this.saving = true;
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      this.success = 'Password changed successfully';
-      this.passwordForm.reset();
-      setTimeout(() => this.success = '', 3000);
-    } catch (error) {
-      console.error('Error changing password:', error);
-      this.error = 'Failed to change password';
-    } finally {
+  // Build FormData for [FromForm]
+  const formData = new FormData();
+  formData.append('CurrentPassword', this.passwordForm.get('currentPassword')?.value);
+  formData.append('NewPassword', this.passwordForm.get('newPassword')?.value);
+  formData.append('ConfirmNewPassword', this.passwordForm.get('confirmPassword')?.value);
+
+  this.userProfileService.changePassword(formData).subscribe({
+    next: () => {
+      this.toastr.success('Password updated successfully!');
+      this.passwordForm.reset(); // clear fields after success
+      this.saving = false;
+    },
+    error: (err) => {
+      console.error(err);
+      // show backend error if available
+      this.toastr.error(err?.error?.errors?.ConfirmNewPassword?.[0] || 'Failed to change password.');
       this.saving = false;
     }
-  }
+  });
+}
+
+
 
   async updateNotificationSettings(): Promise<void> {
     this.saving = true;

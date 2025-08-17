@@ -384,7 +384,7 @@
             </div>
 
             <!-- Role-Specific Information -->
-            @if (roleSpecificData.techCompany) {
+            @if (isTechCompany()) {
               <div class="details-card">
                 <div class="card-header">
                   <h3 class="card-title">
@@ -407,7 +407,7 @@
               </div>
             }
 
-            @if (roleSpecificData.deliveryPerson) {
+            @if (isDeliveryPerson()) {
               <div class="details-card">
                 <div class="card-header">
                   <h3 class="card-title">
@@ -428,21 +428,72 @@
                   </div>
                 </div>
               </div>
+              <div class="update-container">
+  <h2>Update Delivery Person</h2>
+
+  <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input formControlName="phoneNumber" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>City</label>
+      <input formControlName="city" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>Country</label>
+      <input formControlName="country" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>Vehicle Number</label>
+      <input formControlName="vehicleNumber" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>Vehicle Type</label>
+      <input formControlName="vehicleType" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>Vehicle Image (URL)</label>
+      <input formControlName="vehicleImage" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>Available?</label>
+      <input formControlName="isAvailable" type="checkbox" />
+    </div>
+
+    <div class="form-group">
+      <label>Account Status</label>
+      <select formControlName="accountStatus" class="form-control">
+        <option [ngValue]="statuses.Pending">Pending</option>
+        <option [ngValue]="statuses.Accepted">Accepted</option>
+        <option [ngValue]="statuses.Rejected">Rejected</option>
+      </select>
+    </div>
+
+    <button type="submit">
+      update
+    </button>
+  </form>
+
+  <p *ngIf="message">{{ message }}</p>
+</div>
+
+
             }
            <form [formGroup]="form" (ngSubmit)="submit()" class="form-card">
   <h2 class="form-title">Add Location</h2>
 
-  <!-- Name -->
+  <!-- postalCode -->
   <div class="form-group floating-label">
-    <input type="text" id="name" formControlName="name" required placeholder=" " />
-    <label for="name">Name</label>
-    <div class="form-line"></div>
-  </div>
-
-  <!-- Description -->
-  <div class="form-group floating-label">
-    <textarea id="description" formControlName="description" rows="3" placeholder=" "></textarea>
-    <label for="description">Description</label>
+    <input type="text" id="postalCode" formControlName="postalCode" required placeholder=" " />
+    <label for="postalCode">Postal Code</label>
     <div class="form-line"></div>
   </div>
 

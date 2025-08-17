@@ -31,6 +31,8 @@ export interface IProduct {
   stock?: number;
   techCompanyId: string;
   techCompanyName?: string;
+  techCompanyAddress?: string;
+  TechCompanyImage?: string;
   specifications?: ProductSpecification[];
   warranties?: Warranty[];
 }

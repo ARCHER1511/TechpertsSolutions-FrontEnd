@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { GeneralResponse } from './cart.service';
-import { UserProfilePhotoUploadDTO, UserProfileUpdateDTO } from '../Interfaces/iuser-profile';
+import { UpdateLocation, UpdatePassword, UserProfilePhotoUploadDTO, UserProfileUpdateDTO } from '../Interfaces/iuser-profile';
 import { UserProfile } from '../Interfaces/auth';
 import { Environment } from '../Environment/environment';
 
@@ -47,6 +47,7 @@ export class UserProfileService {
 
   // Append only if provided
   if (dto.fullName !== undefined) formData.append('FullName', dto.fullName);
+  if (dto.userName !== undefined) formData.append('UserName', dto.userName)
   if (dto.email !== undefined) formData.append('Email', dto.email);
   if (dto.phoneNumber !== undefined) formData.append('PhoneNumber', dto.phoneNumber);
   if (dto.address !== undefined) formData.append('Address', dto.address);
@@ -89,6 +90,18 @@ export class UserProfileService {
           observer.complete();
         }
       });
+    });
+  }
+
+  changePassword(dto: FormData): Observable<GeneralResponse<string>>{
+    return this.http.post<GeneralResponse<string>>(`${this.apiUrl}/change-password`, dto, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  updateLocation(dto : UpdateLocation): Observable<GeneralResponse<string>> {
+    return this.http.put<GeneralResponse<string>>(`${this.apiUrl}/update-location`, dto, {
+      headers: this.getAuthHeaders()
     });
   }
 }
