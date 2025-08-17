@@ -58,8 +58,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.availableRoles = [
             { id: 'Customer', name: 'Customer', description: 'Regular customer account for shopping and PC building' },
             { id: 'TechCompany', name: 'Tech Company', description: 'Technology company account for maintenance services' },
-            { id: 'DeliveryPerson', name: 'Delivery Person', description: 'Delivery person account for order fulfillment' },
-            { id: 'Admin', name: 'Admin', description: 'Administrator account with full system access' }
+            { id: 'DeliveryPerson', name: 'Delivery Person', description: 'Delivery person account for order fulfillment' }
           ];
         }
         this.loadingRoles = false;
