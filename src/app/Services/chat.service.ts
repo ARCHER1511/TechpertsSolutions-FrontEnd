@@ -4,8 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { Environment } from '../Environment/environment';
 
 export interface ChatMessage {
-  senderId: string;
-  message: string;
+  senderUserId: string;
+  receiverUserId: string;
+  messageText: string;
   sentAt: Date;
 }
 
@@ -21,7 +22,7 @@ export type ConnectionState =
 })
 export class ChatService implements OnDestroy {
   private hubConnection!: signalR.HubConnection;
-  private _baseUrl = Environment.baseUrl;
+  private readonly _baseUrl = Environment.baseUrl;
 
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
   messages$ = this.messagesSubject.asObservable();
@@ -33,9 +34,8 @@ export class ChatService implements OnDestroy {
   typing$ = this.typingSubject.asObservable();
 
   private retryCount = 0;
-  private maxRetries = 5;
-  private retryDelay = 2000;
-
+  private readonly maxRetries = 5;
+  private readonly retryDelay = 2000; 
   private tokenCheckInterval: any;
 
   constructor() {}
@@ -60,7 +60,6 @@ export class ChatService implements OnDestroy {
     this.registerHubEvents();
     this.tryStart();
 
-    // Monitor token changes every 5 seconds
     this.tokenCheckInterval = setInterval(() => {
       const currentToken = this.getToken();
       if (!currentToken || currentToken !== token) {
@@ -79,12 +78,20 @@ export class ChatService implements OnDestroy {
     this.hubConnection.onclose(() => {
       console.warn('❎ Disconnected from ChatHub');
       this.connectionStateSubject.next('disconnected');
-      this.clearMessages();
     });
 
-    this.hubConnection.on('ReceivePrivateMessage', (senderId: string, message: string) => {
-      this.addMessage({ senderId, message, sentAt: new Date() });
-    });
+    // ✅ Fix: use correct ChatMessage structure
+    this.hubConnection.on(
+      'ReceivePrivateMessage',
+      (senderUserId: string, receiverUserId: string, messageText: string, sentAt: string) => {
+        this.addMessage({
+          senderUserId,
+          receiverUserId,
+          messageText,
+          sentAt: new Date(sentAt)
+        });
+      }
+    );
 
     this.hubConnection.on('UserTyping', (senderId: string) => {
       this.typingSubject.next(senderId);
@@ -117,7 +124,8 @@ export class ChatService implements OnDestroy {
 
   public stopConnection(): void {
     if (this.hubConnection) {
-      this.hubConnection.stop()
+      this.hubConnection
+        .stop()
         .then(() => this.connectionStateSubject.next('disconnected'))
         .catch(err => console.error('❌ Error disconnecting:', err));
     }
@@ -134,22 +142,50 @@ export class ChatService implements OnDestroy {
   }
 
   public sendPrivateMessage(receiverUserId: string, message: string): void {
-    this.hubConnection.invoke('SendPrivateMessage', receiverUserId, message)
+    if (!this.hubConnection || this.connectionStateSubject.value !== 'connected') {
+      console.error('❌ Cannot send message, not connected.');
+      return;
+    }
+
+    this.hubConnection
+      .invoke('SendPrivateMessage', receiverUserId, message)
       .catch(err => console.error('❌ Send failed:', err));
   }
 
   public sendTyping(receiverUserId: string): void {
-    this.hubConnection.invoke('SendTyping', receiverUserId)
+    if (!this.hubConnection || this.connectionStateSubject.value !== 'connected') {
+      return;
+    }
+
+    this.hubConnection
+      .invoke('SendTyping', receiverUserId)
       .catch(err => console.error('❌ Typing send failed:', err));
+  }
+
+  // ✅ Fix: Map correctly
+  public async getMessageHistory(otherUserId: string, take: number = 50): Promise<ChatMessage[]> {
+    if (!this.hubConnection || this.connectionStateSubject.value !== 'connected') {
+      console.error('❌ Cannot get history, not connected.');
+      return [];
+    }
+
+    try {
+      const result = await this.hubConnection.invoke<any[]>('GetMessageHistory', otherUserId, take);
+      return result.map(m => ({
+        senderUserId: m.senderUserId,
+        receiverUserId: m.receiverUserId,
+        messageText: m.messageText,
+        sentAt: new Date(m.sentAt)
+      }));
+    } catch (err) {
+      console.error('❌ Failed to fetch history:', err);
+      return [];
+    }
   }
 
   private addMessage(msg: ChatMessage): void {
     const current = this.messagesSubject.value;
     this.messagesSubject.next([...current, msg]);
-  }
-
-  private clearMessages(): void {
-    this.messagesSubject.next([]);
   }
 
   private getToken(): string | null {

@@ -1,56 +1,109 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { ChatMessage, ConnectionState, ChatService } from '../../Services/chat.service';
-import { CommonModule } from '@angular/common'; // ngIf, ngFor, pipes
-import { FormsModule } from '@angular/forms';   // ngModel
+import * as signalR from '@microsoft/signalr';
+import { CommonModule, DatePipe, UpperCasePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+interface ChatMessage {
+  senderId: string;
+  message: string;
+  sentAt: Date;
+}
 
 @Component({
   selector: 'app-chat',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  standalone: true, // ✅ مهم علشان component يشتغل standalone
+  imports: [
+    CommonModule,   // ✅ يوفر *ngFor, *ngIf, ngClass
+    FormsModule,    // ✅ يوفر [(ngModel)]
+    DatePipe,       // ✅ يوفر date pipe
+    UpperCasePipe   // ✅ يوفر uppercase pipe
+  ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  hubConnection!: signalR.HubConnection;
+  connectionState: string = 'Disconnected';
+
   messages: ChatMessage[] = [];
-  connectionState: ConnectionState = 'disconnected';
   typingUser: string | null = null;
-
-  receiverUserId: string = ''; // dynamically set
   newMessage: string = '';
-
-  private subs: Subscription[] = [];
-
-  constructor(private chatService: ChatService) {}
+  receiverUserId: string = ''; // 👈 لازم يتحدد قبل الإرسال
 
   ngOnInit(): void {
-    // Start SignalR connection (service will read token from localStorage)
-    this.chatService.startConnection();
-
-    // Subscribe to reactive streams
-    this.subs.push(
-      this.chatService.messages$.subscribe(msgs => this.messages = msgs),
-      this.chatService.connectionState$.subscribe(state => this.connectionState = state),
-      this.chatService.typing$.subscribe(user => this.typingUser = user)
-    );
-  }
-
-  sendMessage(): void {
-    if (!this.newMessage.trim()) return;
-    if (!this.receiverUserId) return;
-
-    this.chatService.sendPrivateMessage(this.receiverUserId, this.newMessage);
-    this.newMessage = '';
-  }
-
-  sendTyping(): void {
-    if (this.receiverUserId) {
-      this.chatService.sendTyping(this.receiverUserId);
-    }
+    this.startConnection();
   }
 
   ngOnDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe());
-    this.chatService.stopConnection();
+    if (this.hubConnection) {
+      this.hubConnection.stop();
+    }
+  }
+
+  // ✅ Connect to SignalR Hub
+  startConnection() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('https://localhost:7230/chathub', {
+        accessTokenFactory: () => localStorage.getItem('jwt') || ''
+      })
+      .withAutomaticReconnect()
+      .build();
+
+    // Connection state
+    this.hubConnection.onreconnecting(() => (this.connectionState = 'Reconnecting...'));
+    this.hubConnection.onreconnected(() => (this.connectionState = 'Connected'));
+    this.hubConnection.onclose(() => (this.connectionState = 'Disconnected'));
+
+    this.hubConnection
+      .start()
+      .then(() => {
+        this.connectionState = 'Connected';
+        console.log('✅ Connected to ChatHub');
+        this.loadHistory();
+      })
+      .catch(err => console.error('❌ Error connecting to hub:', err));
+
+    // 🔹 Listen for incoming messages
+    this.hubConnection.on('ReceivePrivateMessage', (senderId: string, message: string) => {
+      this.messages.push({
+        senderId,
+        message,
+        sentAt: new Date()
+      });
+    });
+
+    // 🔹 Listen for typing indicator
+    this.hubConnection.on('UserTyping', (senderId: string) => {
+      this.typingUser = senderId;
+      setTimeout(() => (this.typingUser = null), 2000);
+    });
+  }
+
+  // ✅ Load chat history
+  loadHistory() {
+    if (!this.receiverUserId) return;
+    this.hubConnection
+      .invoke<ChatMessage[]>('GetMessageHistory', this.receiverUserId, 20)
+      .then(history => {
+        this.messages = history.reverse(); // oldest first
+      })
+      .catch(err => console.error('❌ Failed to load history:', err));
+  }
+
+  // ✅ Send a message
+  sendMessage() {
+    if (!this.newMessage.trim() || !this.receiverUserId) return;
+
+    this.hubConnection
+      .invoke('SendPrivateMessage', this.receiverUserId, this.newMessage)
+      .catch(err => console.error('❌ Send error:', err));
+
+    this.newMessage = '';
+  }
+
+  // ✅ Notify receiver that user is typing
+  sendTyping() {
+    if (!this.receiverUserId) return;
+    this.hubConnection.invoke('SendTyping', this.receiverUserId).catch(() => {});
   }
 }
