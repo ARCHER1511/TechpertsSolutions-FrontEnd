@@ -1,3 +1,25 @@
+/* Step indicator effect */
+.step-category {
+  transition: all 0.4s ease;
+}
+.step-category.completed {
+  opacity: 0.7;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+/* Animate product cards */
+.animate-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Animate comparison table */
+.animate-compare {
+  animation: fadeInUp 0.7s ease-out;
+}
+
+
+
 /* === Compare Section Wrapper === */
 .compare.contact {
   background-color: var(--content-bg);

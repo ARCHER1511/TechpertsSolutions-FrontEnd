@@ -3,17 +3,31 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../Services/product.service';
 import { CategoryService } from '../../Services/category.service';
+import { trigger, style, transition, animate } from '@angular/animations';
 import { IProduct } from '../../Interfaces/iproduct';
 import { ICategory, ICategoryWithProducts, ICategoryProduct } from '../../Interfaces/icategory';
 import { Environment } from '../../Environment/environment';
+
 
 @Component({
   selector: 'app-pc-compare',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pc-compare.component.html',
-  styleUrls: ['./pc-compare.component.css']
+  styleUrls: ['./pc-compare.component.css'],
+  animations: [
+    trigger('slideFadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'translateY(20px)' }))
+      ])
+    ])
+  ]
 })
+
 export class PcCompareComponent implements OnInit {
   allProducts: IProduct[] = [];
   categories: ICategoryWithProducts[] = [];
