@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DelveryPersonService } from '../../Services/delvery-person.service';
 
 @Component({
   selector: 'app-delivery-dashboard',
@@ -11,6 +12,9 @@ import { CommonModule } from '@angular/common';
 export class DeliveryDashboardComponent implements OnInit {
   loading = false;
   error: string | null = null;
+  driverId: string | null = localStorage.getItem('deliveryPersonId')
+
+  private delveyPersonService = inject(DelveryPersonService)
 
   stats = {
     totalDeliveries: 0,
@@ -26,6 +30,7 @@ export class DeliveryDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.loadOffers();
   }
 
   loadDashboard() {
@@ -96,5 +101,17 @@ export class DeliveryDashboardComponent implements OnInit {
 
   completeDelivery(id: number) {
     console.log('Completing delivery', id);
+  }
+
+  loadOffers(){
+    this.delveyPersonService.getAllOffers(this.driverId).subscribe({
+      next: (res) =>{
+        console.log(res);
+      },
+      error: (err) =>{
+        console.log(err);
+        
+      }
+    })
   }
 }
