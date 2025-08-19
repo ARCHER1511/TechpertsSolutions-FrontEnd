@@ -30,7 +30,7 @@ export class NotificationsComponent {
   this.notificationService.getMyNotifications(this.pageNumber, this.pageSize).subscribe({
     next: (res) => {
       console.log(res);
-      this.notifications = res;
+      this.notifications = res.data;
       this.loading = false;
     },
     error: (err) => {

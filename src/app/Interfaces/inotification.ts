@@ -42,11 +42,11 @@ export interface NotificationDTO {
 }
 
 export interface CreateNotificationDTO {
-  receiverUserId: string;
   message: string;
   type: NotificationType;
   relatedEntityId?: string;
   relatedEntityType?: string;
+  Args:string[];
 }
 
 export interface NotificationReadDTO {

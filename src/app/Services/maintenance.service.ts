@@ -1,89 +1,74 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment';
-
-export interface MaintenanceRequest {
-  id: string;
-  customerId: string;
-  techCompanyId?: string;
-  description: string;
-  status: 'Pending' | 'Accepted' | 'InProgress' | 'Completed' | 'Cancelled';
-  priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  requestDate: string;
-  completedDate?: string;
-  address: string;
-  phone: string;
-  serviceType: string;
-}
-
-export interface MaintenanceResponse {
-  success: boolean;
-  message: string;
-  data: MaintenanceRequest[];
-}
-
-export interface SingleMaintenanceResponse {
-  success: boolean;
-  message: string;
-  data: MaintenanceRequest;
-}
+import { CompleteMaintenanceRequest, Maintenance, MaintenanceStatus, GeneralResponse, MaintenanceDetails, MaintenanceNearest } from '../Interfaces/imaintenance';
+import { MaintenanceCreateDTO, MaintenanceUpdateDTO } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MaintenanceService {
-  private apiUrl = `${Environment.baseUrl}/Maintenance`;
+  private baseUrl = `${Environment.baseUrl}/Maintenance`;
+
 
   constructor(private http: HttpClient) {}
 
-  // Get all maintenance requests
-  getAllMaintenanceRequests(): Observable<MaintenanceResponse> {
-    return this.http.get<MaintenanceResponse>(this.apiUrl);
+  getAll(): Observable<GeneralResponse<Maintenance[]>> {
+    return this.http.get<GeneralResponse<Maintenance[]>>(this.baseUrl);
   }
 
-  // Create new maintenance request
-  createMaintenanceRequest(request: Partial<MaintenanceRequest>): Observable<any> {
-    return this.http.post(this.apiUrl, request);
+  getById(id: string): Observable<GeneralResponse<MaintenanceDetails>> {
+    return this.http.get<GeneralResponse<MaintenanceDetails>>(`${this.baseUrl}/${id}`);
   }
 
-  // Get maintenance request by ID
-  getMaintenanceRequestById(id: string): Observable<SingleMaintenanceResponse> {
-    return this.http.get<SingleMaintenanceResponse>(`${this.apiUrl}/${id}`);
+  create(maintenance: any): Observable<GeneralResponse<any>> {
+  return this.http.post<GeneralResponse<any>>(
+    `${this.baseUrl}`,
+    maintenance // no need to override status, your model has it
+  );
+}
+
+
+
+  update(id: string, dto: MaintenanceUpdateDTO, status?: MaintenanceStatus): Observable<GeneralResponse<Maintenance>> {
+    let params = new HttpParams();
+    if (status !== undefined) {
+      params = params.set('status', status);
+    }
+    return this.http.put<GeneralResponse<Maintenance>>(`${this.baseUrl}/${id}`, dto, { params });
   }
 
-  // Update maintenance request
-  updateMaintenanceRequest(id: string, request: Partial<MaintenanceRequest>): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, request);
+  delete(id: string): Observable<GeneralResponse<string>> {
+    return this.http.delete<GeneralResponse<string>>(`${this.baseUrl}/${id}`);
   }
 
-  // Delete maintenance request
-  deleteMaintenanceRequest(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  getByTechCompanyId(techCompanyId: string): Observable<GeneralResponse<Maintenance[]>> {
+    return this.http.get<GeneralResponse<Maintenance[]>>(`${this.baseUrl}/tech-company/${techCompanyId}`);
   }
 
-  // Get maintenance requests by tech company
-  getMaintenanceByTechCompany(techCompanyId: string): Observable<MaintenanceResponse> {
-    return this.http.get<MaintenanceResponse>(`${this.apiUrl}/tech-company/${techCompanyId}`);
+  getAvailableRequests(): Observable<GeneralResponse<Maintenance[]>> {
+    return this.http.get<GeneralResponse<Maintenance[]>>(`${this.baseUrl}/available-requests`);
   }
 
-  // Get available maintenance requests
-  getAvailableRequests(): Observable<MaintenanceResponse> {
-    return this.http.get<MaintenanceResponse>(`${this.apiUrl}/available-requests`);
+  acceptRequest(maintenanceId: string, techCompanyId: string): Observable<GeneralResponse<Maintenance>> {
+    return this.http.post<GeneralResponse<Maintenance>>(`${this.baseUrl}/${maintenanceId}/accept`, {techCompanyId}, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  // Accept maintenance request
-  acceptMaintenanceRequest(maintenanceId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${maintenanceId}/accept`, {});
+  completeMaintenance(maintenanceId: string, request: CompleteMaintenanceRequest): Observable<GeneralResponse<Maintenance>> {
+    return this.http.post<GeneralResponse<Maintenance>>(`${this.baseUrl}/${maintenanceId}/complete`, request);
   }
 
-  // Complete maintenance request
-  completeMaintenanceRequest(maintenanceId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${maintenanceId}/complete`, {});
+  updateStatus(maintenanceId: string, status: MaintenanceStatus, notes?: string): Observable<GeneralResponse<Maintenance>> {
+    let params = new HttpParams().set('status', status);
+    if (notes) params = params.set('notes', notes);
+    return this.http.put<GeneralResponse<Maintenance>>(`${this.baseUrl}/${maintenanceId}/status`, {}, { params });
   }
 
-  // Update maintenance status
-  updateMaintenanceStatus(maintenanceId: string, status: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${maintenanceId}/status`, { status });
+  getNearest(customerId: string): Observable<GeneralResponse<MaintenanceNearest>> {
+    const params = new HttpParams().set('customerId', customerId);
+    return this.http.get<GeneralResponse<MaintenanceNearest>>(`${this.baseUrl}/nearest`, { params });
   }
 } 

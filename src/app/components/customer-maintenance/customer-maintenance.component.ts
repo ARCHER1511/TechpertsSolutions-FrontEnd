@@ -3,6 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MaintenanceService } from '../../Services/maintenance.service';
 import { AuthService } from '../../Services/auth.service';
+import { Maintenance } from '../../Interfaces/imaintenance';
+import { GeneralResponse } from '../../Interfaces/iorder';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CreateComponent } from './components/create/create.component';
+import { log } from 'util';
 
 @Component({
   selector: 'app-customer-maintenance',
@@ -12,94 +17,42 @@ import { AuthService } from '../../Services/auth.service';
   styleUrls: ['./customer-maintenance.component.css']
 })
 export class CustomerMaintenanceComponent implements OnInit {
-  maintenanceRequests: any[] = [];
+  maintenances: Maintenance[] = [];
   loading = false;
-  error = '';
-  stats = {
-    total: 0,
-    pending: 0,
-    inProgress: 0,
-    completed: 0,
-    cancelled: 0
-  };
 
   constructor(
     private maintenanceService: MaintenanceService,
-    private authService: AuthService
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
-    this.loadCustomerMaintenance();
+    this.loadRequests();
   }
 
-  loadCustomerMaintenance(): void {
+  loadRequests(): void {
     this.loading = true;
-    this.error = '';
-
-    const customerId = this.authService.customerId;
-    if (customerId) {
-      this.maintenanceService.getAllMaintenanceRequests().subscribe({
-        next: (response) => {
-          if (response.success) {
-            // Filter requests for this customer
-            this.maintenanceRequests = response.data.filter((req: any) => 
-              req.customerId === customerId
-            );
-            this.updateStats();
-          } else {
-            this.error = response.message || 'Failed to load maintenance requests';
-          }
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error loading maintenance requests:', err);
-          this.error = 'Failed to load maintenance requests';
-          this.loading = false;
-        }
-      });
-    } else {
-      this.error = 'User not authenticated';
-      this.loading = false;
-    }
+    this.maintenanceService.getAll().subscribe({
+      next: (res) => {
+        console.log(res);
+        
+        if (res.success) this.maintenances = res.data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.log(err);
+        
+        this.loading = false
+      }
+    });
   }
 
-  private updateStats(): void {
-    this.stats.total = this.maintenanceRequests.length;
-    this.stats.pending = this.maintenanceRequests.filter(req => req.status === 'Pending').length;
-    this.stats.inProgress = this.maintenanceRequests.filter(req => req.status === 'InProgress').length;
-    this.stats.completed = this.maintenanceRequests.filter(req => req.status === 'Completed').length;
-    this.stats.cancelled = this.maintenanceRequests.filter(req => req.status === 'Cancelled').length;
-  }
+  openCreateModal(): void {
+    const modalRef = this.modalService.open(CreateComponent, { size: 'lg', backdrop: 'static' });
 
-  getStatusBadgeClass(status: string): string {
-    switch (status) {
-      case 'Pending': return 'bg-warning';
-      case 'Accepted': return 'bg-info';
-      case 'InProgress': return 'bg-primary';
-      case 'Completed': return 'bg-success';
-      case 'Cancelled': return 'bg-danger';
-      default: return 'bg-secondary';
-    }
+    modalRef.result.then((result) => {
+      if (result === 'created') {
+        this.loadRequests(); // refresh list after creation
+      }
+    }).catch(() => {});
   }
-
-  getPriorityBadgeClass(priority: string): string {
-    switch (priority) {
-      case 'Low': return 'bg-success';
-      case 'Medium': return 'bg-warning';
-      case 'High': return 'bg-danger';
-      case 'Critical': return 'bg-danger';
-      default: return 'bg-secondary';
-    }
-  }
-
-  getStatusIcon(status: string): string {
-    switch (status) {
-      case 'Pending': return 'bi-clock';
-      case 'Accepted': return 'bi-check-circle';
-      case 'InProgress': return 'bi-gear';
-      case 'Completed': return 'bi-check-circle-fill';
-      case 'Cancelled': return 'bi-x-circle';
-      default: return 'bi-question-circle';
-    }
-  }
-} 
+}

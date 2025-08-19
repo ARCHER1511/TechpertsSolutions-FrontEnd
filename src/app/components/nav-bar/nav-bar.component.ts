@@ -223,7 +223,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 loadNotifications() {
     this.notificationService.getMyNotifications(1, 20).subscribe({
       next: (res) => {
-        this.notifications = res ?? [];
+        this.notifications = res.data ?? [];
       },
       error: (err) => {
         console.log(err);

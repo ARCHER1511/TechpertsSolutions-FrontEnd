@@ -153,6 +153,7 @@ export interface MaintenanceUpdateDTO {
   techCompanyId?: string;
   status?: string;
   notes?: string;
+  completedDate: Date;
 }
 
 export interface MaintenanceNearestDTO {

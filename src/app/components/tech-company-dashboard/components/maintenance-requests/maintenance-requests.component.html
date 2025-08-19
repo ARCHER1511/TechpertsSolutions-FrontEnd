@@ -1,0 +1,46 @@
+<div class="maintenance-grid">
+  <div class="maintenance-card" *ngFor="let m of maintenances">
+    
+    <!-- Header with tech company + customer -->
+    <div class="maintenance-card-header">
+      <img 
+        [src]="m.techCompanyImage || '../../../../../assets/Images/about.jpg'" 
+        alt="Tech Company Logo" 
+        class="company-logo"
+      />
+      <div class="header-info">
+        <h5 class="company-name">{{ m.techCompanyName || '-' }}</h5>
+        <p class="customer-name">👤 {{ m.customerName }}</p>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="maintenance-details">
+      <div class="detail-item">
+        <span class="detail-label">📦 Product</span>
+        <span class="detail-value">{{ m.productName || '-' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">🛠 Service</span>
+        <span class="badge">{{ m.serviceType || '-' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">🗓 Warranty Start</span>
+        <span class="detail-value">{{ m.warrantyStart | date:'shortDate' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">⏳ Warranty End</span>
+        <span class="detail-value">{{ m.warrantyEnd | date:'shortDate' }}</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <button 
+        class="btn-glow"
+        (click)="accept(m.id)">
+        <i class="bi bi-check2-circle me-1"></i> Accept
+      </button>
+    </div>
+  </div>
+</div>

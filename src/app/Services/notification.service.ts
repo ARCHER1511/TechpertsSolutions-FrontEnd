@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { RoleType } from '../Interfaces/iadmin-user-management';
 import { Environment } from '../Environment/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { GeneralResponse } from '../Interfaces/iorder';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +14,17 @@ export class NotificationService {
 
   private apiUrl = `${Environment.baseUrl}/Notification`;
   private isBrowser: boolean;
+  private id: string | null = null;
 
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) platformId: object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
+
+    if (this.isBrowser) {
+      this.id = localStorage.getItem('userId');
+    }
   }
 
   /** Get token from localStorage (SSR safe) */
@@ -33,20 +39,18 @@ export class NotificationService {
     return headers;
   }
 
-  getMyNotifications(pageNumber = 1, pageSize = 20): Observable<NotificationDTO[]> {
+  getMyNotifications(pageNumber = 1, pageSize = 20): Observable<GeneralResponse<NotificationDTO[]>> {
   let params = new HttpParams()
     .set('pageNumber', pageNumber.toString())
     .set('pageSize', pageSize.toString());
 
-  return this.http.get<{ success: boolean, message: string, data: NotificationDTO[] }>(
-    `${this.apiUrl}/my-notifications`,
+  return this.http.get<GeneralResponse<NotificationDTO[]>>(
+    `${this.apiUrl}/user/${this.id}`,
     {
       params,
       headers: this.getAuthHeaders()
     }
-  ).pipe(
-    map(response => response.data)
-  );
+  )
 }
 
 
@@ -63,13 +67,13 @@ export class NotificationService {
   }
 
   markAsRead(notificationId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/mark-as-read/${notificationId}`, null, {
+    return this.http.post(`${this.apiUrl}/mark-read/${notificationId}`, null, {
       headers: this.getAuthHeaders()
     });
   }
 
   markAllAsRead(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/mark-all-as-read`, null, {
+    return this.http.post(`${this.apiUrl}/mark-all-read`, null, {
       headers: this.getAuthHeaders()
     });
   }
@@ -80,9 +84,9 @@ export class NotificationService {
     });
   }
 
-  sendNotification(dto: CreateNotificationDTO, type: NotificationType): Observable<any> {
+  sendNotification(dto: CreateNotificationDTO, type: NotificationType, receiverUserId: string): Observable<any> {
     let params = new HttpParams().set('type', type.toString());
-    return this.http.post(`${this.apiUrl}/send`, dto, {
+    return this.http.post(`${this.apiUrl}/send/${receiverUserId}`, dto, {
       params,
       headers: this.getAuthHeaders()
     });
@@ -100,7 +104,7 @@ export class NotificationService {
       params = params.set('relatedEntityType', relatedEntityType);
     }
 
-    return this.http.post(`${this.apiUrl}/send-to-role`, message, {
+    return this.http.post(`${this.apiUrl}/send/role`, message, {
       params,
       headers: this.getAuthHeaders()
     });
@@ -108,7 +112,7 @@ export class NotificationService {
 
   sendNotificationToMultipleUsers(dto: SendToMultipleUsersNotificationDTO, type: NotificationType): Observable<any> {
     let params = new HttpParams().set('type', type.toString());
-    return this.http.post(`${this.apiUrl}/send-to-multiple`, dto, {
+    return this.http.post(`${this.apiUrl}/send/multiple`, dto, {
       params,
       headers: this.getAuthHeaders()
     });

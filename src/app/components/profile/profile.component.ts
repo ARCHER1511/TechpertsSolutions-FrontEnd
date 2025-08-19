@@ -25,6 +25,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DeliveryPersonStatus, DeliveryPersonUpdateDTO } from '../../Interfaces/idelvery-person';
 import { DelveryPersonService } from '../../Services/delvery-person.service';
 import { GeneralResponse } from '../../Interfaces/iorder';
+import { Maintenance } from '../../Interfaces/imaintenance';
 
 @Component({
   selector: 'app-profile',
@@ -58,7 +59,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   activeOrders: number = 0;
   totalWishlist: number = 0;
   wishlistItems: number = 0;
-  maintenanceRequests: number = 0;
+  maintenanceRequests: Maintenance[] = [];
   deliveries: number = 0;
   pendingProducts: number = 0;
   loading = false;
@@ -494,24 +495,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   private loadTechCompanyStats(): void {
-    const techCompanyId = localStorage.getItem('techCompanyId');
-    if (techCompanyId) {
-      // Load maintenance requests
-      this.subscriptions.push(
-        this.maintenanceService.getMaintenanceByTechCompany(techCompanyId).subscribe({
-          next: (response) => {
-            console.log(response);
-            if (response.success) {
-              this.maintenanceRequests = response.data.length;
-            }
-          },
-          error: (err) => {
-            console.error('Error loading tech company stats:', err);
+  const techCompanyId = localStorage.getItem('techCompanyId');
+  if (techCompanyId) {
+    this.subscriptions.push(
+      this.maintenanceService.getByTechCompanyId(techCompanyId).subscribe({
+        next: (response) => {
+          console.log('Tech company maintenance response:', response);
+          if (response.success) {
+            // response.data is Maintenance[] 
+            this.maintenanceRequests = response.data; 
+            // If you want just the count:
+            // this.maintenanceRequestsCount = response.data.length;
           }
-        })
-      );
-    }
+        },
+        error: (err) => {
+          console.error('Error loading tech company stats:', err);
+        }
+      })
+    );
   }
+}
+
 
   private loadDeliveryPersonStats(): void {
     const deliveryPersonId = localStorage.getItem('deliveryPersonId');

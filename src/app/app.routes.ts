@@ -245,7 +245,7 @@ export const routes: Routes = [
       // Service Management
       {
         path: 'maintenance-requests',
-        loadComponent: () => import('./components/tech-company-dashboard/pages/maintenance-requests/maintenance-requests.component').then(m => m.MaintenanceRequestsComponent),
+        loadComponent: () => import('./components/tech-company-dashboard/components/maintenance-requests/maintenance-requests.component').then(m => m.MaintenanceRequestsComponent),
         title: 'Maintenance Requests'
       },
       {
@@ -356,6 +356,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/customer-dashboard/customer-dashboard.component').then(m => m.CustomerDashboardComponent),
         title: 'Customer Dashboard'
       },
+      { path: 'Maintenance',
+        loadComponent: () => import('./components/customer-maintenance/customer-maintenance.component').then(m => m.CustomerMaintenanceComponent),
+        title: 'Customer MAintenance'
+       },
       
       // Orders
       {
