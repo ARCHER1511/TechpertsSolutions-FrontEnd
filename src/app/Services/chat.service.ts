@@ -4,10 +4,14 @@ import { BehaviorSubject } from 'rxjs';
 import { Environment } from '../Environment/environment';
 
 export interface ChatMessage {
+  id: string;
   senderUserId: string;
   receiverUserId: string;
+  senderName: string;     // ✅ matches DTO
+  receiverName: string;   // ✅ matches DTO
   messageText: string;
   sentAt: Date;
+  isRead: boolean;
 }
 
 export type ConnectionState =
@@ -35,10 +39,10 @@ export class ChatService implements OnDestroy {
 
   private retryCount = 0;
   private readonly maxRetries = 5;
-  private readonly retryDelay = 2000; 
+  private readonly retryDelay = 2000;
   private tokenCheckInterval: any;
 
-  constructor() {}
+  constructor() { }
 
   public startConnection(): void {
     this.connectionStateSubject.next('connecting');
@@ -81,17 +85,18 @@ export class ChatService implements OnDestroy {
     });
 
     // ✅ Fix: use correct ChatMessage structure
-    this.hubConnection.on(
-      'ReceivePrivateMessage',
-      (senderUserId: string, receiverUserId: string, messageText: string, sentAt: string) => {
-        this.addMessage({
-          senderUserId,
-          receiverUserId,
-          messageText,
-          sentAt: new Date(sentAt)
-        });
-      }
-    );
+    this.hubConnection.on('ReceivePrivateMessage', (dto: any) => {
+      this.addMessage({
+        id: dto.id,
+        senderUserId: dto.senderUserId,
+        receiverUserId: dto.receiverUserId,
+        senderName: dto.senderName,
+        receiverName: dto.receiverName,
+        messageText: dto.messageText,
+        sentAt: new Date(dto.sentAt),
+        isRead: dto.isRead
+      });
+    });
 
     this.hubConnection.on('UserTyping', (senderId: string) => {
       this.typingSubject.next(senderId);
@@ -172,10 +177,14 @@ export class ChatService implements OnDestroy {
     try {
       const result = await this.hubConnection.invoke<any[]>('GetMessageHistory', otherUserId, take);
       return result.map(m => ({
+        id: m.id,
         senderUserId: m.senderUserId,
         receiverUserId: m.receiverUserId,
+        senderName: m.senderName,
+        receiverName: m.receiverName,
         messageText: m.messageText,
-        sentAt: new Date(m.sentAt)
+        sentAt: new Date(m.sentAt),
+        isRead: m.isRead
       }));
     } catch (err) {
       console.error('❌ Failed to fetch history:', err);
