@@ -1,8 +1,15 @@
-<div *ngIf="deliveryPerson">
-  <h3>Delivery Person Details</h3>
-  <p><strong>Vehicle:</strong> {{ deliveryPerson.vehicleType }} - {{ deliveryPerson.vehicleNumber }}</p>
-  <p><strong>License:</strong> {{ deliveryPerson.license }}</p>
-  <p><strong>Available:</strong> {{ deliveryPerson.isAvailable ? 'Yes' : 'No' }}</p>
-  <p><strong>Deliveries:</strong> {{ deliveryPerson.deliveriesCount }}</p>
-  <p><strong>Offers:</strong> {{ deliveryPerson.offersCount }}</p>
+<div *ngIf="deliveryPerson" class="card shadow-md mb-4">
+  <div class="card-header bg-success text-white">Delivery Person Details</div>
+  <div class="card-body">
+    <p><strong>Vehicle:</strong> {{ deliveryPerson.vehicleType }} - {{ deliveryPerson.vehicleNumber }}</p>
+    <p><strong>License:</strong> {{ deliveryPerson.license }}</p>
+    <p><strong>Available:</strong> 
+      <span [class.text-success]="deliveryPerson.isAvailable" 
+            [class.text-danger]="!deliveryPerson.isAvailable">
+        {{ deliveryPerson.isAvailable ? 'Yes' : 'No' }}
+      </span>
+    </p>
+    <p><strong>Deliveries:</strong> <span class="badge bg-info">{{ deliveryPerson.deliveriesCount }}</span></p>
+    <p><strong>Offers:</strong> <span class="badge bg-warning">{{ deliveryPerson.offersCount }}</span></p>
+  </div>
 </div>

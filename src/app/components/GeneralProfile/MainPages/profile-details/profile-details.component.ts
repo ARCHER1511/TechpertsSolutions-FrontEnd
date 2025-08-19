@@ -26,6 +26,7 @@ export class ProfileDetailsComponent implements OnInit {
     this.userId = this.route.snapshot.paramMap.get('id')!;
     this.loadProfile();
   }
+  
 
   loadProfile(): void {
     this.profileService.getProfileById(this.userId).subscribe({

@@ -1,8 +1,10 @@
-<div *ngIf="customer">
-  <h3>Customer Details</h3>
-  <p><strong>Email:</strong> {{ customer.email }}</p>
-  <p><strong>Orders:</strong> {{ customer.ordersCount }}</p>
-  <p><strong>Assemblies:</strong> {{ customer.pcAssembliesCount }}</p>
-  <p><strong>Deliveries:</strong> {{ customer.deliveriesCount }}</p>
-  <p><strong>Maintenances:</strong> {{ customer.maintenancesCount }}</p>
+<div *ngIf="customer" class="card shadow-md mb-4">
+  <div class="card-header bg-primary text-white">Customer Details</div>
+  <div class="card-body">
+    <p><strong>Email:</strong> {{ customer.email }}</p>
+    <p><strong>Orders:</strong> <span class="badge bg-primary">{{ customer.ordersCount }}</span></p>
+    <p><strong>Assemblies:</strong> <span class="badge bg-success">{{ customer.pcAssembliesCount }}</span></p>
+    <p><strong>Deliveries:</strong> <span class="badge bg-info">{{ customer.deliveriesCount }}</span></p>
+    <p><strong>Maintenances:</strong> <span class="badge bg-warning">{{ customer.maintenancesCount }}</span></p>
+  </div>
 </div>

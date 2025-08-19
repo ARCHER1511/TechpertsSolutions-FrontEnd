@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DeliveryPersonProfileDTO } from '../../../../Interfaces/GenProfileInterfaces/DeliveryPersonProfileDTO';
 import { ProfilesService } from '../../../../Services/profiles.service';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
   standalone: true,
-  imports: [NgIf],
+  imports: [NgIf,CommonModule],
   selector: 'app-deliveryperson-profile-details',
   templateUrl: './deliveryperson-profile-details.component.html'
 })
