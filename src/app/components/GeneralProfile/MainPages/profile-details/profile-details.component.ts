@@ -6,12 +6,13 @@ import { CustomerProfileDetailsComponent } from '../../Components/customer-profi
 import { TechCompanyProfileDetailsComponent } from '../../Components/techcompany-profile-details/techcompany-profile-details.component';
 import { DeliveryPersonProfileDetailsComponent } from '../../Components/deliveryperson-profile-details/deliveryperson-profile-details.component';
 import { NgIf } from '@angular/common';
+import { ChatComponent } from "./chat/chat.component";
 
 
 @Component({
   standalone: true,
   selector: 'app-profile-details',
-  imports: [CustomerProfileDetailsComponent,TechCompanyProfileDetailsComponent,DeliveryPersonProfileDetailsComponent,NgIf],
+  imports: [CustomerProfileDetailsComponent, TechCompanyProfileDetailsComponent, DeliveryPersonProfileDetailsComponent, NgIf, ChatComponent],
   templateUrl: './profile-details.component.html'
 })
 export class ProfileDetailsComponent implements OnInit {

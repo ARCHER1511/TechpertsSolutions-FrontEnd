@@ -5,19 +5,19 @@ export interface GeneralResponse<T> {
 }
 
 export enum DeliveryClusterStatus {
-  Pending = 0,
-  Assigned = 1,
-  InProgress = 2,
-  Completed = 3,
-  Cancelled = 4
+  Pending = 'Pending',
+  Assigned = 'Assigned',
+  InProgress = 'InProgress',
+  Completed = 'Completed',
+  Cancelled = 'Cancelled'
 }
 
 export enum DeliveryOfferStatus {
-  Pending = 0,
-  Accepted = 1,
-  Declined = 2,
-  Canceled = 3,
-  Expired = 4
+  Pending = 'Pending',
+  Accepted = 'Accepted',
+  Declined = 'Declined',
+  Canceled = 'Canceled',
+  Expired = 'Expired'
 }
 
 export interface DeliveryOfferDTO {
@@ -26,8 +26,8 @@ export interface DeliveryOfferDTO {
   clusterId: string;
   deliveryPersonId: string;
   status: DeliveryOfferStatus;
-  createdAt?: string;
-  expiryTime?: string;
+  createdAt?: Date;
+  expiryTime?: Date;
   isActive: boolean;
 
   // Optional related info
@@ -40,31 +40,23 @@ export interface DeliveryOfferDTO {
 export interface DeliveryClusterTrackingDTO {
   clusterId: string;
   deliveryId: string;
-
   techCompanyId: string;
   techCompanyName: string;
-
   distanceKm: number;
   price: number;
-
   assignedDriverId: string;
   driverName: string;
-  assignmentTime?: string;
-
+  assignmentTime?: Date;
   dropoffLatitude?: number;
   dropoffLongitude?: number;
-
   sequenceOrder: number;
-
   estimatedDistance: number;
   estimatedPrice: number;
-
   status: DeliveryClusterStatus;
   location: string;
-  lastUpdated: string;
-
+  lastUpdated: Date;
   pickupConfirmed: boolean;
-  pickupConfirmedAt?: string;
+  pickupConfirmedAt?: Date;
 }
 
 export interface DeliveryClusterDTO {
@@ -72,31 +64,24 @@ export interface DeliveryClusterDTO {
   deliveryId: string;
   techCompanyId: string;
   techCompanyName: string;
-
   distanceKm: number;
   price: number;
   status: DeliveryClusterStatus;
-
   assignedDriverId?: string;
   assignedDriverName?: string;
-  assignmentTime?: string;
-
+  assignmentTime?: Date;
   retryCount: number;
-  lastRetryTime?: string;
-
+  lastRetryTime?: Date;
   dropoffLatitude?: number;
   dropoffLongitude?: number;
   pickupLatitude?: number;
   pickupLongitude?: number;
-
   sequenceOrder: number;
   driverOfferCount: number;
-
   latitude?: number;
   longitude?: number;
   estimatedDistance?: number;
   estimatedPrice?: number;
-
   tracking?: DeliveryClusterTrackingDTO;
   offers?: DeliveryOfferDTO[];
 }
@@ -105,21 +90,15 @@ export interface DeliveryClusterCreateDTO {
   deliveryId: string;
   techCompanyId: string;
   techCompanyName: string;
-
   distanceKm: number;
   price: number;
-
   assignedDriverId?: string;
-
   dropoffLatitude?: number;
   dropoffLongitude?: number;
-
   pickupLatitude?: number;
   pickupLongitude?: number;
-
   pickupConfirmed?: boolean;
-  pickupConfirmedAt?: string;
-
+  pickupConfirmedAt?: Date;
   sequenceOrder: number;
   tracking?: DeliveryClusterTrackingDTO;
 }

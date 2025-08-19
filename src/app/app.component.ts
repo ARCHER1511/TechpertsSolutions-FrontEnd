@@ -6,7 +6,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ScrollProgressComponent } from './components/scroll-progress/scroll-progress.component';
 import { CartService } from './Services/cart.service';
 import { ServiceUsageService } from './Services/service-usage.service';
-import { ChatComponent } from "./components/chat/chat.component";
 
 @Component({
   selector: 'app-root',
@@ -16,8 +15,7 @@ import { ChatComponent } from "./components/chat/chat.component";
     NavBarComponent,
     FooterComponent,
     CommonModule,
-    ScrollProgressComponent,
-    ChatComponent
+    ScrollProgressComponent
 ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

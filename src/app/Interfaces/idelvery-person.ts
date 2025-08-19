@@ -5,9 +5,9 @@ export interface GeneralResponse<T> {
 }
 
 export enum DeliveryPersonStatus {
-  Pending = 0,
-  Accepted = 1,
-  Rejected = 2
+  Pending = 'Pending',
+  Accepted = 'Accepted',
+  Rejected = 'Rejected'
 }
 
 export interface DeliveryPersonUpdateDTO {
@@ -23,15 +23,13 @@ export interface DeliveryPersonUpdateDTO {
 
 export interface DeliveryPerson {
   id: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  city?: string;
-  country?: string;
-  isAvailable: boolean;
   vehicleNumber?: string;
   vehicleType?: string;
   vehicleImage?: string;
+  phoneNumber?: string;
+  city?: string;
+  country?: string;
+  isAvailable: boolean;
   accountStatus: DeliveryPersonStatus;
 }
 
