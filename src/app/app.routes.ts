@@ -453,8 +453,8 @@ export const routes: Routes = [
       }
     ]
   },
-
- 
+  {path: 'profiles', loadComponent: () => import('./components/GeneralProfile/MainPages/profile-list/profile-list.component').then(m => m.ProfileListComponent), title: 'Profiles'},
+  {path: 'profile-details/:id', loadComponent: () => import('./components/GeneralProfile/MainPages/profile-details/profile-details.component').then(m => m.ProfileDetailsComponent), title: 'Profile Details'},
 
   // Error Routes
   { path: 'unauthorized', loadComponent: () => import('./components/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent), title: 'Unauthorized' },
