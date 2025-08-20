@@ -1,5 +1,8 @@
 <div *ngIf="company" class="card shadow-md mb-4">
   <div class="card-header bg-info text-white">Tech Company Details</div>
+
+  <app-customer-maintenance></app-customer-maintenance>
+
   <div class="card-body">
     <p><strong>Description:</strong> {{ company.description }}</p>
     <p><strong>Rating:</strong> ⭐ {{ company.rating }}</p>

@@ -1,1 +1,84 @@
-<p>assigend-deliveries works!</p>
+<div class="delivery-dashboard-container">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">Delivery Dashboard</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading delivery data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ error }}
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error">
+    <div class="row">
+      <!-- Delivery Cards -->
+      <div class="col-12 mb-4" *ngFor="let o of offer">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="mb-1">Delivery #{{ o.id }}</h6>
+              <small class="text-muted">Created: {{ o.createdAt | date:'short' }}</small><br>
+              <small class="text-muted"><i class="bi bi-person me-1"></i> Driver: {{ o.driverName }}</small><br>
+              <small class="text-muted"><i class="bi bi-building me-1"></i> Company: {{ o.companyName }}</small>
+            </div>
+            <span class="badge" [ngClass]="getStatusBadgeClass(o.status)">
+              <i class="bi me-1" [ngClass]="getStatusIcon(o.status)"></i>
+              {{ o.status }}
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <small class="text-muted">
+                  <i class="bi bi-geo-alt me-1"></i>
+                  Lat: {{ o.deliveryLatitude }}, Lng: {{ o.deliveryLongitude }}
+                </small>
+              </div>
+              <div class="col-md-6">
+                <small class="text-muted">
+                  <i class="bi bi-clock me-1"></i>
+                  Assigned: {{ o.expiryTime | date:'short' }}
+                </small>
+              </div>
+            </div>
+
+            <!-- Status Dropdown -->
+            <div class="row">
+              <div class="col-md-6">
+                <select [(ngModel)]="o.selectedStatus" class="form-select">
+                  <option *ngFor="let s of getAllStatuses()" [value]="s">{{ s }}</option>
+                </select>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <button class="btn btn-primary ms-auto" (click)="changeClusterStatus(o)">
+                  Update Status
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No deliveries -->
+      <div *ngIf="offer.length === 0" class="text-center py-4">
+        <i class="bi bi-inbox display-4 text-muted"></i>
+        <h6 class="mt-2 text-muted">No Deliveries Assigned</h6>
+        <p class="text-muted">You don’t have any active deliveries right now.</p>
+      </div>
+    </div>
+  </div>
+</div>

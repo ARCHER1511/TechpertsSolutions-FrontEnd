@@ -6,17 +6,41 @@ import { DeliveryClusterTracking, DeliveryCreateDTO } from '../Interfaces/ideliv
 import { GeneralResponse } from './cart.service';
 import { isPlatformBrowser } from '@angular/common';
 
+// delivery.interfaces.ts
+
+export interface DeliveryCluster {
+  id: string;
+  deliveryId: string;
+  assignedDriverId: string;
+  assignedDriverName: string;
+  assignmentTime: string;
+  distanceKm: number;
+  driverOfferCount: number;
+  dropoffLatitude: number;
+  dropoffLongitude: number;
+  estimatedDistance: number;
+  estimatedPrice: number;
+  lastRetryTime: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  offers: any[]; // you can replace with a proper Offer interface later
+  pickupLatitude: number | null;
+  pickupLongitude: number | null;
+  price: number;
+  retryCount: number;
+  sequenceOrder: number;
+  status: string;
+  techCompanyId: string;
+  techCompanyName: string;
+  tracking: any | null; // replace with a Tracking interface if you have one
+}
+
 export interface Delivery {
   id: string;
-  orderId: string;
-  deliveryPersonId: string;
   status: string;
-  estimatedDeliveryDate: string;
-  actualDeliveryDate?: string;
-  trackingNumber: string;
-  deliveryAddress: string;
-  customerPhone: string;
-  notes?: string;
+  deliveryFee: number;
+  createdAt: string;
+  clusters: DeliveryCluster[];
 }
 
 export interface DeliveryResponse {
@@ -25,11 +49,27 @@ export interface DeliveryResponse {
   data: Delivery[];
 }
 
+
 export interface SingleDeliveryResponse {
   success: boolean;
   message: string;
   data: Delivery;
 }
+
+// delivery.interfaces.ts
+export enum DeliveryClusterStatus {
+  Pending = 'Pending',
+  Assigned = 'Assigned',
+  InProgress = 'InProgress',
+  Completed = 'Completed',
+  Cancelled = 'Cancelled'
+}
+
+export interface UpdateClusterStatusRequest {
+  status: DeliveryClusterStatus;
+  assignedDriverId?: string | null;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +107,11 @@ export class DeliveryService {
   }
   create(dto: DeliveryCreateDTO): Observable<GeneralResponse<Delivery>> {
     return this.http.post<GeneralResponse<Delivery>>(this.apiUrl, dto, { headers: this.getAuthHeaders() });
+  }
+  updateClusterStatus(clusterId: string, request: UpdateClusterStatusRequest): Observable<GeneralResponse<any>> {
+    return this.http.put<GeneralResponse<any>>(`${this.apiUrl}/${clusterId}/status`, request, {
+      headers: this.getAuthHeaders()
+    });
   }
 
   delete(id: string): Observable<GeneralResponse<string>> {

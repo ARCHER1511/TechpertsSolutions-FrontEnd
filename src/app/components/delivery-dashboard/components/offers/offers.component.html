@@ -1,1 +1,97 @@
-<p>offers works!</p>
+<div class="delivery-dashboard-container">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">Delivery Dashboard</h2>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading delivery data...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !loading) {
+    <div class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      {{ error }}
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!loading && !error) {
+    <div class="row">
+      <!-- Offers -->
+      <div class="col-12 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-gift me-2"></i>Available Offers
+            </h5>
+          </div>
+          <div class="card-body">
+            @if (offer && offer.length > 0) {
+              <div class="offer-list">
+                @for (o of offer; track o.id) {
+                  <div class="offer-item mb-3 p-3 border rounded">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div>
+                        <h6 class="mb-1">Offer #{{ o.id }}</h6>
+                        <small class="text-muted">Created: {{ o.createdAt | date:'short' }}</small>
+                      </div>
+                      <span class="badge" [ngClass]="getStatusBadgeClass(o.status)">
+                        <i class="bi me-1" [ngClass]="getStatusIcon(o.status)"></i>
+                        {{ o.status }}
+                      </span>
+                    </div>
+
+                    <div class="offer-details">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <small class="text-muted">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            Lat: {{ o.deliveryLatitude }}, Lng: {{ o.deliveryLongitude }}
+                          </small>
+                        </div>
+                        <div class="col-md-6">
+                          <small class="text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            Expires: {{ o.expiryTime | date:'shortTime' }}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="offer-actions mt-3">
+                      <button class="btn btn-success btn-sm me-2" (click)="acceptOffer(o.id)">
+                        <i class="bi bi-check me-1"></i>Accept
+                      </button>
+                      <button class="btn btn-danger btn-sm" (click)="cancelOffer(o.id)">
+                        <i class="bi bi-x me-1"></i>Cancel
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-4">
+                <i class="bi bi-inbox display-4 text-muted"></i>
+                <h6 class="mt-2 text-muted">No Offers Available</h6>
+                <p class="text-muted">You don’t have any active offers right now.</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -8,11 +8,12 @@ import { WishlistService } from '../../../../Services/wishlist.service';
 import { ToastrService } from 'ngx-toastr';
 import { Environment } from '../../../../Environment/environment';
 import { ProductCardDTO } from '../../../../Interfaces/GenProfileInterfaces/ProductCardDTO';
+import { CustomerMaintenanceComponent } from "../../MainPages/profile-details/customer-maintenance/customer-maintenance.component";
 
 
 @Component({
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, CustomerMaintenanceComponent],
   selector: 'app-techcompany-profile-details',
   templateUrl: './techcompany-profile-details.component.html'
 })

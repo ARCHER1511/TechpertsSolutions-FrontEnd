@@ -295,53 +295,19 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./components/delivery-dashboard/delivery-dashboard.component').then(m => m.DeliveryDashboardComponent),
-        title: 'Delivery Dashboard'
-      },
-      
-      // Delivery Management
-      {
-        path: 'active-deliveries',
-        loadComponent: () => import('./components/delivery-dashboard/pages/active-deliveries/active-deliveries.component').then(m => m.ActiveDeliveriesComponent),
-        title: 'Active Deliveries'
-      },
-      {
-        path: 'delivery-history',
-        loadComponent: () => import('./components/delivery-dashboard/pages/delivery-history/delivery-history.component').then(m => m.DeliveryHistoryComponent),
-        title: 'Delivery History'
-      },
-      {
-        path: 'delivery-details/:id',
-        loadComponent: () => import('./components/delivery-dashboard/pages/delivery-details/delivery-details.component').then(m => m.DeliveryDetailsComponent),
-        title: 'Delivery Details'
-      },
-      
-      // Earnings & Performance
-      {
-        path: 'earnings',
-        loadComponent: () => import('./components/delivery-dashboard/pages/earnings/earnings.component').then(m => m.EarningsComponent),
-        title: 'My Earnings'
-      },
-      {
-        path: 'performance',
-        loadComponent: () => import('./components/delivery-dashboard/pages/performance/performance.component').then(m => m.PerformanceComponent),
-        title: 'Performance Stats'
-      },
-      
-      // Profile & Settings
-      {
-        path: 'profile',
-        loadComponent: () => import('./components/delivery-dashboard/pages/profile/profile.component').then(m => m.ProfileComponent),
-        title: 'Profile'
-      },
-      {
-        path: 'profile-settings',
-        loadComponent: () => import('./components/profile-settings/profile-settings.component').then(m => m.CustomerProfileSettingsComponent),
-        title: 'Profile Settings'
-      },
-      {
-        path: 'settings',
-        loadComponent: () => import('./components/delivery-dashboard/pages/settings/settings.component').then(m => m.SettingsComponent),
-        title: 'Settings'
+        title: 'Delivery Dashboard',
+        children: [
+          {
+            path: 'delivery-offers',
+            loadComponent: () => import('./components/delivery-dashboard/components/offers/offers.component').then(m => m.OffersComponent),
+            title: 'Offers'
+          },
+          {
+            path: 'assigend-deliveries',
+            loadComponent: () => import('./components/delivery-dashboard/components/assigend-deliveries/assigend-deliveries.component').then(m => m.AssigendDeliveriesComponent),
+            title: 'Assigend Deliveries'
+          }
+        ]
       }
     ]
   },
