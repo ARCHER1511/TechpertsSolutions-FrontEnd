@@ -188,7 +188,7 @@ p {
 
 .section-title {
   position: relative;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: 2.8rem !important;
   margin-bottom: 3rem;
   padding: 2rem 0;
   color: var(--primary-color);
@@ -207,7 +207,7 @@ p {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 1.5rem;
+  bottom:0rem;
   width: 100px;
   height: 4px;
   background: linear-gradient(90deg, #7f5af0, #ff4c4c);
@@ -1101,4 +1101,40 @@ body.dark-theme {
   font-size: 16px;
   cursor: pointer;
   color:var(--accent-blue);
+}
+
+.upload-page{
+  background: transparent!important;
+}
+.payment-container{
+background: transparent!important;
+}
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-blue)!important;
+    margin-bottom: 0.5rem;
+}
+p{
+  color: #2281b8!important;
+}
+
+.item-name{
+
+  color: #30e4cf!important;
+}
+strong{
+  
+  color: #30e4cf!important;
+}
+.form-label{
+color: #30e4cf!important;
+
+}
+.text-muted {
+    color:var(--button-bg)!important;
+}
+
+.service-card {
+  background: var(--card-bg)!important;
 }

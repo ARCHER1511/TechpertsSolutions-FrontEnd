@@ -45,9 +45,9 @@ body.dark-mode {
 }
 
 .navbar-scrolled {
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: var(--bg-color);
+  
+ 
   border-bottom: 1px solid var(--glass-border);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
@@ -680,8 +680,9 @@ body.dark-mode .cart-btn:hover {
 .notification-button {
   background: none;
   border: none;
-  color: var(--navbar-text);
+  color: rgb(226, 11, 11);
   font-size: 24px;
+  margin-left: 0.2rem;
   position: relative;
   outline: none;
 }

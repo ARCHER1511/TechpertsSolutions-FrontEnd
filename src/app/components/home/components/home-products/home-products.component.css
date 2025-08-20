@@ -112,3 +112,12 @@
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
+
+.section-title {
+  font-size: 2.8rem;
+  margin-bottom: 3.5rem;
+  color: #7f5af0;
+  text-shadow: 0 0 15px rgba(127, 90, 240, 0.5);
+  letter-spacing: 1.2px;
+  transition: color 0.3s ease;
+}
