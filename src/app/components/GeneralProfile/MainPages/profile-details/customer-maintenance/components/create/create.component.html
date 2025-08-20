@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h5 class="modal-title">New Maintenance Request</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <form (ngSubmit)="submit()" #f="ngForm">
+    <div class="mb-3">
+      <label class="form-label">Customer ID</label>
+      <input type="text" class="form-control" [(ngModel)]="model.customerId" name="customerId" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tech Company ID</label>
+      <input type="text" class="form-control" [(ngModel)]="model.techCompanyId" name="techCompanyId">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Warranty ID</label>
+      <input type="text" class="form-control" [(ngModel)]="model.warrantyId" name="warrantyId">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Notes</label>
+      <textarea class="form-control" [(ngModel)]="model.notes" name="notes"></textarea>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
+  <button type="submit" class="btn btn-primary" [disabled]="loading" (click)="submit()">
+    <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+    Create
+  </button>
+</div>
