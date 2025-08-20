@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Environment } from '../Environment/environment';
 import { GeneralResponse, OrderReadDTO } from './api.service';
+import { DeliveryPerson, DeliveryPersonStatus } from './delivery-person.service';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface Admin {
   id: string;
@@ -71,7 +73,25 @@ export interface UserRoleResponse {
 export class AdminService {
   private apiUrl = `${Environment.baseUrl}/Admins`;
 
-  constructor(private http: HttpClient) {}
+  private isBrowser: boolean;
+    
+      constructor(
+        private http: HttpClient,
+        @Inject(PLATFORM_ID) platformId: object
+      ) {
+        this.isBrowser = isPlatformBrowser(platformId);
+      }
+    
+      private getAuthHeaders(): HttpHeaders {
+        let token = '';
+        if (this.isBrowser) {
+          token = localStorage.getItem('userToken') || '';
+        }
+    
+        return new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+      }
 
   // Get all admins
   getAllAdmins(): Observable<AdminResponse> {
@@ -163,4 +183,14 @@ export class AdminService {
         })
       );
     }
+
+    // Update delivery person
+      updateDeliveryPerson(id: string, deliveryPerson: Partial<DeliveryPerson>): Observable<any> {
+      return this.http.put(
+        `${this.apiUrl}/deliveryPerson/${id}`,
+        deliveryPerson,
+        { headers: this.getAuthHeaders() }
+      );
+    }
+
 }

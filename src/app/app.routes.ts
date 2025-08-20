@@ -37,6 +37,7 @@ export const routes: Routes = [
   { path: 'forgot-password', loadComponent: () => import('./components/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent), title: 'Forgot Password' },
 { path: 'reset-password', loadComponent: () => import('./components/reset-password/reset-password.component').then(m => m.ResetPasswordComponent), title: 'Reset Password' },
   { path: 'cart', loadComponent: () => import('./components/cart/cart.component').then(m => m.CartComponent), title: 'Cart', canActivate: [authGuard] },
+  { path: 'payment', loadComponent: () => import('./components/payment/payment.component').then(m => m.PaymentComponent), title: 'Payment', canActivate: [authGuard] },
 
   { path: 'pc-build', loadComponent: () => import('./components/pc-build/pc-build.component').then(m => m.PcBuildComponent), title: 'Creat PC Build', canActivate: [PcBuildGuard] },
   { path: 'selector', loadComponent: () => import('./components/pc-build/selector/selector.component').then(m => m.SelectorComponent), title: 'Component Selector', canActivate: [buildGuardGuard] },
@@ -245,7 +246,7 @@ export const routes: Routes = [
       // Service Management
       {
         path: 'maintenance-requests',
-        loadComponent: () => import('./components/tech-company-dashboard/components/maintenance-requests/maintenance-requests.component').then(m => m.MaintenanceRequestsComponent),
+        loadComponent: () => import('./components/tech-company-dashboard/pages/maintenance-requests/maintenance-requests.component').then(m => m.MaintenanceRequestsComponent),
         title: 'Maintenance Requests'
       },
       {
@@ -356,10 +357,6 @@ export const routes: Routes = [
         loadComponent: () => import('./components/customer-dashboard/customer-dashboard.component').then(m => m.CustomerDashboardComponent),
         title: 'Customer Dashboard'
       },
-      { path: 'Maintenance',
-        loadComponent: () => import('./components/customer-maintenance/customer-maintenance.component').then(m => m.CustomerMaintenanceComponent),
-        title: 'Customer MAintenance'
-       },
       
       // Orders
       {

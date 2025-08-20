@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GeneralResponse } from './cart.service';
+import { GeneralResponse } from '../Interfaces/iorder';
 import { DeliveryPerson } from './delivery-person.service';
 import { DeliveryPersonUpdateDTO, Offer } from '../Interfaces/idelvery-person';
 import { Environment } from '../Environment/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { GeneralResponce } from '../Interfaces/iproduct';
 
 @Injectable({
   providedIn: 'root'
@@ -59,13 +60,13 @@ export class DelveryPersonService {
     return this.http.get<GeneralResponse<Offer[]>>(`${this.apiUrl}/${driverId}/offers/pending`, { headers: this.getAuthHeaders() });
   }
 
-  acceptOffer(driverId: string, offerId: string): Observable<GeneralResponse<Offer>> {
+  acceptOffer(driverId: string | null, offerId: string | null): Observable<GeneralResponse<Offer>> {
     return this.http.post<GeneralResponse<Offer>>(
       `${this.apiUrl}/${driverId}/offers/${offerId}/accept`, { headers: this.getAuthHeaders() }
     );
   }
 
-  declineOffer(driverId: string, offerId: string): Observable<GeneralResponse<Offer>> {
+  declineOffer(driverId: string | null, offerId: string | null): Observable<GeneralResponse<Offer>> {
     return this.http.post<GeneralResponse<Offer>>(
       `${this.apiUrl}/${driverId}/offers/${offerId}/decline`, { headers: this.getAuthHeaders() }
     );

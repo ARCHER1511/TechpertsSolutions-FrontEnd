@@ -315,3 +315,20 @@
     font-size: 0.85rem;
   }
 }
+
+
+
+
+/* Stripe Button */
+.stripe-btn {
+  background: linear-gradient(90deg, #635bff, #6c5bff);
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.stripe-btn:hover {
+  background: linear-gradient(90deg, #5149e3, #5a49e3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 91, 255, 0.4);
+}

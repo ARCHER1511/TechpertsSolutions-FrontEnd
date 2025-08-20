@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DelveryPersonService } from '../../Services/delvery-person.service';
+import { Offer } from '../../Interfaces/idelvery-person';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-delivery-dashboard',
@@ -12,9 +14,11 @@ import { DelveryPersonService } from '../../Services/delvery-person.service';
 export class DeliveryDashboardComponent implements OnInit {
   loading = false;
   error: string | null = null;
+  offer!: Offer[]
   driverId: string | null = localStorage.getItem('deliveryPersonId')
 
   private delveyPersonService = inject(DelveryPersonService)
+  private toastr = inject(ToastrService)
 
   stats = {
     totalDeliveries: 0,
@@ -106,6 +110,7 @@ export class DeliveryDashboardComponent implements OnInit {
   loadOffers(){
     this.delveyPersonService.getAllOffers(this.driverId).subscribe({
       next: (res) =>{
+        this.offer = res.data
         console.log(res);
       },
       error: (err) =>{
@@ -114,4 +119,41 @@ export class DeliveryDashboardComponent implements OnInit {
       }
     })
   }
+
+  acceptOffer(offerId: string) {
+    this.delveyPersonService.acceptOffer(this.driverId, offerId).subscribe({
+      next: (res) => {
+        console.log(res);
+        
+        this.toastr.success('Offer accepted successfully!');
+        // Update status locally
+        const o = this.offer.find(x => x.id === offerId);
+        if (o) o.status = 'Accepted';
+      },
+      error: (err) => {
+        console.log(err);
+        
+        this.toastr.error('Failed to accept offer');
+      }
+    });
+  }
+
+  cancelOffer(offerId: string) {
+    this.delveyPersonService.declineOffer(this.driverId, offerId).subscribe({
+      next: (res) => {
+        console.log(res);
+        
+        this.toastr.info('Offer declined');
+        // Remove from list or update status
+        this.offer = this.offer.filter(o => o.id !== offerId);
+      },
+      error: (err) => {
+        console.log(err);
+        
+        this.toastr.error('Failed to decline offer');
+      }
+    });
+  }
 }
+
+

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DeliveryPerson, DeliveryPersonService } from '../../../../Services/delivery-person.service';
 import { CommonModule, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminService } from '../../../../Services/admin.service';
 
 @Component({
   selector: 'app-delivery',
@@ -18,7 +19,7 @@ export class DeliveryComponent implements OnInit {
   showEditModal = false;
   editPerson: Partial<DeliveryPerson> | null = null;
 
-  constructor(private deliveryService: DeliveryPersonService) {}
+  constructor(private deliveryService: DeliveryPersonService, private adminService: AdminService) {}
 
   ngOnInit(): void {
     this.loadDeliveryPersons();
@@ -69,21 +70,21 @@ export class DeliveryComponent implements OnInit {
   }
 
   saveEdit(): void {
-    if (!this.editPerson || !this.editPerson.id) return;
+  if (!this.editPerson || !this.editPerson.id) return;
 
-    this.deliveryService.updateDeliveryPerson(this.editPerson.id, this.editPerson).subscribe({
-      next: (res) => {
-        // Update local list
-        console.log(res);
-        const index = this.deliveryPersons.findIndex(p => p.id === this.editPerson!.id);
-        if (index !== -1) {
-          this.deliveryPersons[index] = { ...this.deliveryPersons[index], ...this.editPerson } as DeliveryPerson;
-        }
-        this.closeEditModal();
-      },
-      error: (err) => {
-        console.error(err);
+  this.adminService.updateDeliveryPerson(this.editPerson.id, this.editPerson).subscribe({
+    next: (res) => {
+      console.log(res);
+      const index = this.deliveryPersons.findIndex(p => p.id === this.editPerson!.id);
+      if (index !== -1) {
+        this.deliveryPersons[index] = { ...this.deliveryPersons[index], ...this.editPerson } as DeliveryPerson;
       }
-    });
-  }
+      this.closeEditModal();
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+}
+
 }

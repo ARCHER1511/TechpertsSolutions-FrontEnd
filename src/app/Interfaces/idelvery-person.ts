@@ -34,9 +34,24 @@ export interface DeliveryPerson {
 }
 
 export interface Offer {
-  id: string;
-  orderId: string;
-  driverId: string;
-  status: string;
+  clusterId: string;
   createdAt: string;
+  customerName: string;
+  deliveryId: string;
+  deliveryLatitude: number;
+  deliveryLongitude: number;
+  deliveryPersonId: string;
+  deliveryTrackingNumber: string;
+  expiryTime: Date;
+  id: string;
+  isActive: boolean;
+  status: string;
+  techCompanies: any[]
+}
+
+export interface TechCompany {
+  Rating: number;
+  Description: string;
+  RoleId: string;
+  Role: string;
 }
