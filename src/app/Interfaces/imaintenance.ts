@@ -63,6 +63,10 @@ export interface MaintenanceCreateDTO {
   warrantyId?: string;
   status?: MaintenanceStatus;
   notes?: string;
+  deviceType: string;
+  priority: string;
+  issue: string;
+  deviceImages: string[];
 }
 
 export interface MaintenanceUpdateDTO {

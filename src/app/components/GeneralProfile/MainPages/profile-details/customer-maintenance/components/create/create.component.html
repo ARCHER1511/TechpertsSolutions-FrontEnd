@@ -5,19 +5,25 @@
 
 <div class="modal-body">
   <form (ngSubmit)="submit()" #f="ngForm">
+
     <div class="mb-3">
-      <label class="form-label">Customer ID</label>
-      <input type="text" class="form-control" [(ngModel)]="model.customerId" name="customerId" required>
+      <label class="form-label">Device Type</label>
+      <input type="text" class="form-control" [(ngModel)]="model.deviceType" name="deviceType" required>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Tech Company ID</label>
-      <input type="text" class="form-control" [(ngModel)]="model.techCompanyId" name="techCompanyId">
+      <label class="form-label">Issue</label>
+      <input type="text" class="form-control" [(ngModel)]="model.issue" name="issue" required>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Warranty ID</label>
-      <input type="text" class="form-control" [(ngModel)]="model.warrantyId" name="warrantyId">
+      <label class="form-label">Priority</label>
+      <select class="form-select" [(ngModel)]="model.priority" name="priority" required>
+        <option value="" disabled selected>Select priority</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
     </div>
 
     <div class="mb-3">

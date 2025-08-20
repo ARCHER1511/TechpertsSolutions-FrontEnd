@@ -3,7 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment';
 import { CompleteMaintenanceRequest, Maintenance, MaintenanceStatus, GeneralResponse, MaintenanceDetails, MaintenanceNearest } from '../Interfaces/imaintenance';
-import { MaintenanceCreateDTO, MaintenanceUpdateDTO } from './api.service';
+import {  MaintenanceUpdateDTO } from './api.service';
+import { MaintenanceCreateDTO } from '../Interfaces/imaintenance';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class MaintenanceService {
     return this.http.get<GeneralResponse<MaintenanceDetails>>(`${this.baseUrl}/${id}`);
   }
 
-  create(maintenance: any): Observable<GeneralResponse<any>> {
+  create(maintenance: MaintenanceCreateDTO): Observable<GeneralResponse<any>> {
   return this.http.post<GeneralResponse<any>>(
     `${this.baseUrl}`,
     maintenance // no need to override status, your model has it
